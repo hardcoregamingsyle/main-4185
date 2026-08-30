@@ -1,0 +1,117 @@
+[gd_scene load_steps=7 format=3 uid="uid://car_main_scene"]
+
+[ext_resource type="Script" path="res://scripts/vehicles/Car.gd" id="1_car"]
+[ext_resource type="Script" path="res://scripts/vehicles/SuspensionSystem.gd" id="2_suspension"]
+[ext_resource type="Script" path="res://scripts/vehicles/Wheel.gd" id="3_wheel"]
+[ext_resource type="Script" path="res://scripts/vehicles/Aerodynamics.gd" id="4_aero"]
+[ext_resource type="Script" path="res://scripts/vehicles/Powertrain.gd" id="5_powertrain"]
+[ext_resource type="PackedScene" uid="uid://wheel_mesh" path="res://assets/meshes/wheel.tscn" id="6_wheel_mesh"]
+[ext_resource type="PackedScene" uid="uid://chassis_mesh" path="res://assets/meshes/chassis.tscn" id="7_chassis"]
+
+[node name="Car" type="Node3D"]
+script = ExtResource("1_car")
+
+[node name="Chassis" type="Node3D" parent="."]
+position = Vector3(0, 0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Chassis"]
+mesh = ExtResource("7_chassis")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chassis"]
+shape = SubResource("default_box_shape")
+
+[node name="VehicleBody3D" type="VehicleBody3D" parent="Chassis"]
+name = "VehicleBody"
+mass = 1500.0
+suspension_stiffness = 25.0
+suspension_damping = 150.0
+suspension_travel = 0.3
+brake_force = 15000.0
+hand_brake_force = 8000.0
+
+[node name="FrontLeftWheel" type="VehicleWheel3D" parent="Chassis/VehicleBody3D"]
+name = "Front Left Wheel"
+suspension_rest_length = 0.33
+tire_friction = 1.2
+roll_influence = 0.9
+max_hang_angle = 0.5
+suspension_stiffness = 25.0
+suspension_damping = 150.0
+suspension_travel = 0.2
+brake_force = 15000.0
+driven_wheel_max_torque = 400.0
+engine_force = 400.0
+
+[node name="FrontRightWheel" type="VehicleWheel3D" parent="Chassis/VehicleBody3D"]
+name = "Front Right Wheel"
+suspension_rest_length = 0.33
+tire_friction = 1.2
+roll_influence = 0.9
+max_hang_angle = 0.5
+suspension_stiffness = 25.0
+suspension_damping = 150.0
+suspension_travel = 0.2
+brake_force = 15000.0
+driven_wheel_max_torque = 400.0
+engine_force = 400.0
+
+[node name="RearLeftWheel" type="VehicleWheel3D" parent="Chassis/VehicleBody3D"]
+name = "Rear Left Wheel"
+suspension_rest_length = 0.33
+tire_friction = 1.2
+roll_influence = 0.9
+max_hang_angle = 0.5
+suspension_stiffness = 25.0
+suspension_damping = 150.0
+suspension_travel = 0.2
+brake_force = 15000.0
+driven_wheel_max_torque = 600.0
+engine_force = 600.0
+
+[node name="RearRightWheel" type="VehicleWheel3D" parent="Chassis/VehicleBody3D"]
+name = "Rear Right Wheel"
+suspension_rest_length = 0.33
+tire_friction = 1.2
+roll_influence = 0.9
+max_hang_angle = 0.5
+suspension_stiffness = 25.0
+suspension_damping = 150.0
+suspension_travel = 0.2
+brake_force = 15000.0
+driven_wheel_max_torque = 600.0
+engine_force = 600.0
+
+[node name="Aerodynamics" type="Node3D" parent="Chassis"]
+script = ExtResource("4_aero")
+
+[node name="Powertrain" type="Node3D" parent="Chassis"]
+script = ExtResource("5_powertrain")
+
+[node name="CameraMount" type="Node3D" parent="Chassis"]
+position = Vector3(0, 1.2, -2.5)
+
+[node name="MainCamera" type="Camera3D" parent="Chassis/CameraMount"]
+fov = 75.0
+position_offset = Vector3(0, 0.5, 0)
+
+[node name="SuspensionVisuals" type="Node3D" parent="Chassis"]
+name = "SuspensionVisuals"
+
+[node name="FL_SuspensionRod" type="Line3D" parent="Chassis/SuspensionVisuals"]
+color = Color(0.8, 0.8, 0.8)
+point_count = 2
+
+[node name="FR_SuspensionRod" type="Line3D" parent="Chassis/SuspensionVisuals"]
+color = Color(0.8, 0.8, 0.8)
+point_count = 2
+
+[node name="RL_SuspensionRod" type="Line3D" parent="Chassis/SuspensionVisuals"]
+color = Color(0.8, 0.8, 0.8)
+point_count = 2
+
+[node name="RR_SuspensionRod" type="Line3D" parent="Chassis/SuspensionVisuals"]
+color = Color(0.8, 0.8, 0.8)
+point_count = 2
+
+[sub_resource type="BoxShape3D" id="default_box_shape"]
+size = Vector3(1.8, 0.5, 4.5)
