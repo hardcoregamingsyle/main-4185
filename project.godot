@@ -34,6 +34,60 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/fullscreen/exclusive=true
+window/resizable=true
+window/position=Vector2i(100, 100)
+
+[input]
+
+move_forward={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":315,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+move_backward={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":316,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+move_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":314,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+move_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":317,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+brake={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":316,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+throttle={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":315,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+handbrake={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":340,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+look_up={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"button_mask":0,"global_position":Vector2(0, 0),"position":Vector2(0, 0),"factor":0.0,"control_pressed":false,"meta_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"alt_pressed":false,"delta":Vector2(0, 0),"button_index":0,"button_mask":0,"double_click":false,"focused":false,"scroll_factor":Vector2(1, 1),"global_scroll_factor":Vector2(1, 1),"motion_source":0,"time":0.0,"user_data":null,"script":null)]
+}
+look_down={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"button_mask":0,"global_position":Vector2(0, 0),"position":Vector2(0, 0),"factor":0.0,"control_pressed":false,"meta_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"alt_pressed":false,"delta":Vector2(0, 0),"button_index":0,"button_mask":0,"double_click":false,"focused":false,"scroll_factor":Vector2(1, 1),"global_scroll_factor":Vector2(1, 1),"motion_source":0,"time":0.0,"user_data":null,"script":null)]
+}
+camera_toggle={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":9,"key_label":0,"unicode":9,"echo":false,"script":null)]
+}
+pause_game={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":27,"key_label":0,"unicode":27,"echo":false,"script":null)]
+}
+restart_race={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":114,"key_label":0,"unicode":114,"echo":false,"script":null)]
+}
 
 [rendering]
 
@@ -45,13 +99,18 @@ quality/features/shadows/cascaded_shadow_maps_enabled=true
 quality/features/shadows/soft_shadows_enabled=true
 environment/default_environment="res://assets/environment/default_env.tres"
 vrs/use_vrs=false
+shaders/reject_unsupported_shaders=false
+glsl_version/glsl_330=true
+glsl_version/glsl_450=true
 
 [physics]
 
-common/physics_ticks_per_second=60
+common/physics_ticks_per_second=120
 common/3d/default_gravity=Vector3(0, -9.81, 0)
 collision/triangle_limit=8
 continuous_cd/disable_ccd_when_not_colliding=true
+common/max_steps=4
+common/max_step_delta=0.1
 
 [physics_3d]
 
@@ -59,342 +118,90 @@ stepper/substep_splitting=true
 stepper/adaptive_substeps=true
 stepper/max_steps=4
 stepper/adaptive_threshold=0.1
-
-[input]
-
-move_forward={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":315,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-move_backward={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":316,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-move_left={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":314,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-move_right={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":317,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-brake={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-hand_brake={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":16,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-accelerate={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-look_up={
-"deadzone": 0.5,
-"events": [Object(InputEventMouseMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"button_mask":0,"global_position":Vector2(0, 0),"position":Vector2(0, 0),"factor":0.0,"motion":Vector2(0, 0),"screen_position":Vector2(0, 0),"global_transform":Transform2D(1, 0, 0, 1, 0, 0),"transform":Transform2D(1, 0, 0, 1, 0, 0),"button_index":0,"which":0,"meta_pressed":false,"pressure":1.0,"double_click":false,"timestamp":0,"gui_event":0,"scroll_factor_x":0.0,"scroll_factor_y":0.0,"scroll_factor_z":0.0,"normalized_velocity":Vector2(0, 0),"velocity":Vector2(0, 0),"speed":0.0,"angle":0.0,"force":0.0,"orientation":"right","event_flags":0,"is_replay":false,"script":null)
-]
-}
-look_down={
-"deadzone": 0.5,
-"events": [Object(InputEventMouseMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"button_mask":0,"global_position":Vector2(0, 0),"position":Vector2(0, 0),"factor":0.0,"motion":Vector2(0, 0),"screen_position":Vector2(0, 0),"global_transform":Transform2D(1, 0, 0, 1, 0, 0),"transform":Transform2D(1, 0, 0, 1, 0, 0),"button_index":0,"which":0,"meta_pressed":false,"pressure":1.0,"double_click":false,"timestamp":0,"gui_event":0,"scroll_factor_x":0.0,"scroll_factor_y":0.0,"scroll_factor_z":0.0,"normalized_velocity":Vector2(0, 0),"velocity":Vector2(0, 0),"speed":0.0,"angle":0.0,"force":0.0,"orientation":"right","event_flags":0,"is_replay":false,"script":null)
-]
-}
-toggle_spectator={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":116,"key_label":0,"unicode":116,"echo":false,"script":null)
-]
-}
-pause_game={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":27,"key_label":0,"unicode":0,"echo":false,"script":null)
-]
-}
-
-[layer_names]=PackedStringArray("player", "world", "vehicle", "camera", "ui", "effects")
-
-[navigation]
-
-navigation_3d/navigation_server="Default"
+stepper/adaptive_divisor=1
 
 [export]
 
-include_empty_dirs=true
+include_filter=["*.gd","*.tscn","*.tres","*.svg","*.png","*.jpg","*.ogg","*.mp3"]
+exclude_filter=["*.bak","*.tmp","*.gitignore"]
 
-[pak]
+[export_plugins]
 
-encryption/search_path=true
+editor_plugins_enabled=PackedStringArray()
 
-[platform]
+[gui]
 
-android={
-"features": PackedStringArray("gamersense", "gamepad_support", "vr_ar")
-}
-ios={
-"features": PackedStringArray("gamersense", "gamepad_support")
-}
-mac={
-"features": PackedStringArray("gamersense", "gamepad_support")
-}
-server={
-"features": PackedStringArray("gamersense", "gamepad_support")
-}
-windows={
-"features": PackedStringArray("gamersense", "gamepad_support")
-}
+theme/theme_override/styles/StyleBoxFlat/background_color=Color(0.15, 0.15, 0.15, 1)
+theme/theme_override/colors/button_text_color=Color(1, 1, 1, 1)
+theme/theme_override/colors/title_color=Color(0.2, 0.6, 1, 1)
 
 [shader]
 
-mode/prefer_gles3=false
-mode/revert_to_gles3_on_error=false
+feature/profile="high_end_pc"
 
-[vr]
+[monitors]
 
-sdk/openxr_enabled=true
-sdk/openxr_layers/Priority/order=0
-
-[subdivision]
-
-enabled=true
-max_depth=3
-
-[screenshot]
-
-path="user://screenshot_$YEAR-$MONTH-$DAY_$HOUR-$MINUTE-$SECOND.png"
-file_format=PNG
-
-[studio]
-
-remote_debug/host=""
-remote_debug/port=3000
-
-[time]
-
-speed_scale=1.0
-time_scale=1.0
+monitor/filter=""
+monitor/display_mode=0
+monitor/refresh_rate=60
 
 [debug]
 
-gizmos/show_editable_gizmos_only=false
-profiling/run_profiler=false
+gdb/connect_profile_url="tcp://localhost:37026"
+profiling/startup_profiling=false
+profile_release=false
+
+[drawing]
+
+debug/show_overdraw=false
+debug/show_collision_layers=false
+debug/gizmos=true
 
 [locale]
 
-translation/po_files=[]
+translated_strings/PackedStringArray("")
 
-[editor_plugins]
+[platform]
 
-enabled=PackedStringArray()
+android/apk_compression=1
+android/min_sdk=23
+android/target_sdk=33
+android/one_signing_profile=true
+ios/code_signing_identity="iPhone Developer"
+ios/provisioning_profile_uuid=""
+ios/export/architectures="arm64"
+macos/export/icon=""
+macos/signing_identity=""
+web/browser/url/host="localhost"
+web/browser/url/port=8080
+windows/console_debugging=false
+windows/code_signing_enabled=false
+windows/code_signing_timestamp_url="http://timestamp.digicert.com"
+windows/code_signing_certificate=""
+windows/code_signing_crl_url=""
+windows/code_signing_intermediate_certs=false
+windows/export/filters="*.png;*.jpg;*.jpeg;*.ogg;*.wav;*.mp3;*.ttf;*.pdf;*.json;*.xml;*.html;*.txt;*.md;*.cfg;*.ini;*.conf;*.cfg;*.lock;*.log"
+windows/export/include_sources=true
+windows/export/include_scripts=true
+windows/export/debug/export_on_save=false
+windows/export/release/debugger=false
+windows/export/release/threaded_export=false
 
-[overlay]
+[[options]]
 
-debug/text_font_size=10
-debug/wireframe_color=Color(0.75, 0.75, 0.75, 1)
-debug/show_fps=false
-debug/show_overdraw=false
-debug/show_collision_shapes=false
-debug/show_navigation=false
-debug/show_nav_polygons=false
-debug/show_nav_obstacles=false
-debug/show_nav_nodes=false
-debug/show_nav_links=false
-debug/show_nav_region=false
-debug/show_nav_mesh=false
-debug/show_nav_polygon=false
-debug/show_nav_obstacle=false
-debug/show_nav_node=false
-debug/show_nav_link=false
-debug/show_nav_region=false
+debug/debugging_mode=1
+export/path="C:/Users/User/Desktop/Thalamus_Racing.exe"
+export/format=0
+export/filter="all_excluding_scenes"
+export/type=0
 
-[terrain]
+[[options]]
 
-use_threads=true
-use_multithreading=true
-
-[vdb]
-
-enabled=false
-
-[drc]
-
-compression_level=5
-
-[monetization]
-
-google_play_store_id=""
-app_store_id=""
-
-[performance]
-
-debug/garbage_collection/enabled=true
-debug/memory_allocations/enabled=false
-
-[threads]
-
-max_threads=8
-default_pool_size_max=8
-
-[rendering]
-
-tiling/enable_cubemap_prefilter=true
-tiling/prefilter_resolution=128
-tiling/cache_tile_size=64
-vrs/use_vrs=false
-vrs/compress_compressed_images=true
-vrs/compress_compressed_screenshots=false
-pipeline/rendering_pipelines_enabled=true
-pipeline/custom_pipeline_enables=PoolStringArray("")
-pipeline/depth_texture_enabled=true
-pipeline/transparent_depth_enabled=true
-pipeline/displacement_mapping_enabled=true
-pipeline/tessellation_enabled=true
-pipeline/screen_space_reflections_enabled=true
-pipeline/global_illumination_enabled=true
-pipeline/reflection_probe_enabled=true
-pipeline/cubemap_enabled=true
-pipeline/env_map_enabled=true
-pipeline/baked_lightmaps_enabled=true
-pipeline/realtime_lightmaps_enabled=true
-pipeline/voxelGI_enabled=false
-pipeline/fog_enabled=true
-pipeline/atmosphere_enabled=true
-pipeline/sky_enabled=true
-pipeline/caustics_enabled=false
-pipeline/refraction_enabled=true
-pipeline/transparency_enabled=true
-pipeline/shadow_quality/enabled=true
-pipeline/shadow_quality/max_distance=500
-pipeline/shadow_quality/max_cascade_distance=1000
-pipeline/shadow_quality/max_soft_shadows=64
-pipeline/shadow_quality/soft_shadows_max_distance=100
-pipeline/shadow_quality/soft_shadows_min_distance=0
-pipeline/shadow_quality/cascades=4
-pipeline/shadow_quality/cascade_count=4
-pipeline/shadow_quality/cascade_split_ratio=PackedFloat32Array(0.05, 0.15, 0.35, 0.6)
-pipeline/shadow_quality/cascade_transition_ratio=0.1
-pipeline/shadow_quality/blur_soft_shadows=true
-pipeline/shadow_quality/blur_filter_size=3
-pipeline/shadow_quality/blur_bias=0.001
-pipeline/shadow_quality/blur_multiplier=1.0
-pipeline/shadow_quality/half_resolution=false
-pipeline/shadow_quality/use_high_precision_normals=true
-pipeline/shadow_quality/use_contact_shadows=false
-pipeline/shadow_quality/contact_shadow_radius=0.5
-pipeline/shadow_quality/contact_shadow_distance=2
-pipeline/shadow_quality/contact_shadow_bias=0.001
-pipeline/shadow_quality/contact_shadow_normal_bias=0.1
-pipeline/shadow_quality/dynamic_cascades=false
-pipeline/shadow_quality/dynamic_cascade_distance=100
-pipeline/shadow_quality/dynamic_cascade_count=2
-pipeline/shadow_quality/dynamic_cascade_transition_ratio=0.1
-pipeline/shadow_quality/penumbra_smoothing=0.5
-pipeline/shadow_quality/penumbra_blur_amount=0.5
-pipeline/shadow_quality/penumbra_blur_samples=16
-pipeline/shadow_quality/penumbra_blur_iterations=3
-pipeline/shadow_quality/penumbra_blur_kernel_size=3
-pipeline/shadow_quality/penumbra_blur_kernel_type="box"
-pipeline/shadow_quality/penumbra_blur_kernel_weight=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_offset=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_expansion=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_falloff=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_edge=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_softness=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_hardness=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_roundness=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_smoothness=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_tapering=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_angle=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_height=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_width=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_depth=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_radius=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_length=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_thickness=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_density=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_opacity=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_transparency=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_visibility=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_enabled=false
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_mode="back"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_face="back"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_side="back"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_axis="y"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_plane="z"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_distance=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_start=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_end=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_range=0.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_mode="linear"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_curve="linear"
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_exponent=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_power=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_strength=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_intensity=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_brightness=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_contrast=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_saturation=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_hue=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_gamma=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_luminance=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_alpha=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_rgb=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_gray=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_black=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_white=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_red=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_green=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_blue=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_yellow=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_magenta=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_cyan=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_orange=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_purple=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_teal=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_indigo=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_violet=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_brown=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_pink=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_gold=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_silver=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_brass=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_copper=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_iron=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_steel=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_aluminum=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_titanium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_nickel=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_zinc=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_lead=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_mercury=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_platinum=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_rhodium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_osmium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_ruthenium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_iridium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_palladium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_tungsten=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_rhenium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_technetium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_promethium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_neodymium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_praseodymium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_samarium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_europium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_gadolinium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_terbium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_dysprosium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_holmium=1.0
-pipeline/shadow_quality/penumbra_blur_kernel_cone_cull_fade_erbiu
-</script>
+debug/debugging_mode=1
+export/path="C:/Users/User/Desktop/Thalamus_Racing_Desktop.exe"
+export/format=0
+export/filter="all_excluding_scenes"
+export/type=0
+</export>
+</File>
+</file>
