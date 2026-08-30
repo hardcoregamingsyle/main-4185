@@ -51,225 +51,214 @@ const NITRO_CONSUMPTION_RATE: float = 50.0
 var throttle_input: float = 0.0
 var brake_input: float = 0.0
 var steering_input: float = 0.0
-var clutch_input: float = 0.0
+var shift_up_request: bool = false
+var shift_down_request: bool = false
 
-# Constants from PhysicsSettings
-var _max_throttle_force: float = 5000.0
-var _max_brake_force: float = 8000.0
-var _max_steering_angle: float = PI / 4  # 45 degrees
-var _engine_power_curve: Array[float] = []
+# Physics settings reference
+var _settings: PhysicsSettings = null
 
-# Time tracking for distance calculation
-var _last_position: Vector2 = Vector2.ZERO
-var _update_timer: float = 0.0
-const UPDATE_INTERVAL: float = 0.016  # ~60 FPS
+# Constants
+const MIN_SPEED_FOR_GEAR_CHANGE: float = 5.0
+const GEAR_RATIOS: Array[float] = [0.0, 3.5, 2.8, 2.1, 1.6, 1.2, 0.9, -3.8]
+const MAX_STEERING_ANGLE: float = deg_to_rad(45.0)
+const STEERING_SENSITIVITY: float = 0.6
+const ACCELERATION_RATE: float = 1500.0
+const BRAKE_ACCELERATION: float = 3000.0
+const FRICTION_COEFFICIENT: float = 0.85
+const AIR_RESISTANCE: float = 0.02
+const TORQUE_MULTIPLIER: float = 0.9
+const CLUTCH_ENGAGE_THRESHOLD: float = 0.3
+
+func _init() -> void:
+	"""Initialize physics controller with default values."""
+	_settings = PhysicsSettings.new()
 
 func _ready() -> void:
-	_process_mode = ProcessModeEnum.ALWAYS
-	_init_constants()
-	_init_gear_ratios()
-	_setup_physics_body()
-	print("VehicleController initialized successfully")
+	"""Initialize vehicle controller when ready."""
+	_connect_signals()
+	_init_physics_body()
+	_reset_vehicle()
+	emit_signal("engine_started")
 
-func _init_constants() -> void:
-	"""Initialize physics constants from PhysicsSettings resource"""
-	if Engine.has_singleton("PhysicsSettings"):
-		var settings = PhysicsSettings.new()
-		_max_throttle_force = settings.default_vehicle_mass * 3.33
-		_max_brake_force = settings.default_vehicle_mass * 5.33
-	else:
-		_max_throttle_force = 5000.0
-		_max_brake_force = 8000.0
-	
-	# Build engine power curve (simplified torque curve)
-	for i in range(10):
-		var ratio = float(i) / 9.0
-		_engine_power_curve.append(ratio * ratio * (4.0 - 5.0 * ratio + 2.0 * ratio * ratio))
-
-func _init_gear_ratios() -> void:
-	"""Initialize gear ratios for transmission simulation"""
+func _connect_signals() -> void:
+	"""Connect all required signals."""
 	if powertrain:
-		powertrain.set_gear_ratios([0.0, 3.5, 2.5, 1.8, 1.4, 1.1, 0.9, -3.0])  # Neutral + gears + reverse
+		powertrain.engine_started.connect(_on_engine_started)
+		powertrain.engine_stopped.connect(_on_engine_stopped)
+		powertrain.rpm_changed.connect(_update_rpm_display)
 
-func _setup_physics_body() -> void:
-	"""Find or create physics body for movement"""
-	if get_parent():
-		_physics_body = get_parent().get_node_or_null("CharacterBody2D")
-	
+func _init_physics_body() -> void:
+	"""Initialize reference to physics body."""
+	_physics_body = get_parent() as CharacterBody2D
 	if not _physics_body:
-		_physics_body = CharacterBody2D.new()
-		_physics_body.name = "CharacterBody2D"
-		add_child(_physics_body)
+		push_warning("VehicleController: No CharacterBody2D parent found!")
+
+func _reset_vehicle() -> void:
+	"""Reset vehicle to initial state."""
+	current_speed = 0.0
+	target_speed = 0.0
+	acceleration = 0.0
+	braking_force = 0.0
+	steering_angle = 0.0
+	total_distance_traveled = 0.0
+	current_gear = 0
+	rpm = idle_rpm
+	nitro_available = true
+	nitro_amount = 100.0
+	nitro_cooldown = 0.0
+	current_vehicle_state = VehicleState.IDLE
+
+# ============================================================================
+# INPUT PROCESSING
+# ============================================================================
 
 func _process(delta: float) -> void:
-	"""Main update loop for vehicle physics"""
-	_update_timer += delta
-	
-	if _update_timer >= UPDATE_INTERVAL:
-		_update_timer = 0.0
-		_process_physics(delta)
-	
-	_handle_nitro(delta)
-	_check_vehicle_state()
+	"""Process input and update vehicle state."""
+	_handle_inputs(delta)
+	_update_physics(delta)
+	_check_gear_limits()
+	_update_nitro(delta)
+	_emit_signals()
 
-func _process_physics(delta: float) -> void:
-	"""Process vehicle physics calculations"""
-	_calculate_rpm()
-	_calculate_target_speed()
-	_apply_forces(delta)
-	_update_movement(delta)
+func _handle_inputs(delta: float) -> void:
+	"""Handle all input processing."""
+	throttle_input = clamp(InputManager.get_axis("throttle", "brake"), 0.0, 1.0)
+	brake_input = clamp(InputManager.get_axis("brake", "reverse"), 0.0, 1.0)
+	steering_input = clamp(InputManager.get_axis("steering_left", "steering_right"), -1.0, 1.0)
+	
+	shift_up_request = InputManager.is_action_pressed("gear_up")
+	shift_down_request = InputManager.is_action_pressed("gear_down")
+	
+	# Clamp steering to maximum angle
+	steering_angle = steering_input * MAX_STEERING_ANGLE
 
-func _calculate_rpm() -> void:
-	"""Calculate current engine RPM based on gear and speed"""
-	if current_gear == 0:
-		rpm = lerp(rpm, idle_rpm, 0.1)
-		return
-	
-	var gear_ratio: float = 1.0
-	if powertrain:
-		gear_ratio = powertrain.get_gear_ratio(current_gear)
-	
-	# RPM proportional to speed divided by gear ratio
-	var base_rpm = (current_speed * 10.0) / max(gear_ratio, 0.1)
-	rpm = clamp(base_rpm, idle_rpm, max_rpm)
-	
-	emit_signal("rpm_changed", rpm, max_rpm)
+# ============================================================================
+# PHYSICS UPDATE
+# ============================================================================
 
-func _calculate_target_speed() -> void:
-	"""Calculate target speed based on gear and input"""
-	var max_speed_per_gear: Dictionary = {
-		0: 0.0,
-		1: 30.0,
-		2: 60.0,
-		3: 100.0,
-		4: 140.0,
-		5: 180.0,
-		6: 220.0,
-		-1: -40.0
-	}
+func _update_physics(delta: float) -> void:
+	"""Update vehicle physics based on current state."""
+	var torque_output: float = _calculate_torque_output()
+	var effective_friction: float = _get_effective_friction()
+	var air_drag: float = _calculate_air_resistance()
 	
-	var gear_max_speed: float = max_speed_per_gear.get(current_gear, 0.0)
+	# Calculate net force
+	var net_force: float = torque_output - effective_friction - air_drag
 	
-	if current_gear == 0:
-		target_speed = 0.0
-	elif throttle_input > 0:
-		target_speed = gear_max_speed * throttle_input
-	elif brake_input > 0:
-		target_speed = 0.0
-	else:
-		target_speed = lerp(target_speed, 0.0, 0.05)
+	# Apply acceleration
+	acceleration = net_force / _settings.default_vehicle_mass
+	
+	# Update speed with smoothing
+	var old_speed: float = current_speed
+	current_speed += acceleration * delta
+	
+	# Handle direction change
+	if current_speed > 0 and old_speed < 0:
+		current_speed = 0.0
+	elif current_speed < 0 and old_speed > 0:
+		current_speed = 0.0
+	
+	# Update distance traveled
+	var delta_distance: float = abs(current_speed * delta)
+	total_distance_traveled += delta_distance
+	
+	# Update vehicle state
+	_update_vehicle_state()
+	
+	# Apply movement to physics body
+	if _physics_body:
+		_apply_movement_to_body()
 
-func _apply_forces(delta: float) -> void:
-	"""Apply forces to vehicle based on inputs"""
+func _calculate_torque_output() -> float:
+	"""Calculate engine torque output based on gear and throttle."""
+	var base_torque: float = powertrain.base_torque if powertrain else 500.0
+	var gear_ratio: float = GEAR_RATIOS[current_gear] if current_gear >= 0 and current_gear <= 7 else 0.0
+	
+	# Apply throttle and torque multiplier
+	var torque: float = base_torque * gear_ratio * throttle_input * TORQUE_MULTIPLIER
+	
+	# Apply nitro bonus if available
+	if nitro_available and nitro_amount > 0:
+		torque *= NITRO_BONUS
+	
+	return torque
+
+func _get_effective_friction() -> float:
+	"""Calculate friction force based on current conditions."""
+	var base_friction: float = _settings.default_vehicle_mass * _settings.gravity * FRICTION_COEFFICIENT
+	var braking_multiplier: float = 1.0 + (brake_input * 2.0)
+	return base_friction * braking_multiplier
+
+func _calculate_air_resistance() -> float:
+	"""Calculate air resistance based on speed."""
+	return 0.5 * AIR_RESISTANCE * pow(current_speed, 2)
+
+func _apply_movement_to_body() -> void:
+	"""Apply calculated movement to the physics body."""
 	if not _physics_body:
 		return
 	
-	# Calculate throttle force
-	var throttle_force: float = 0.0
-	if current_gear != 0 and throttle_input > 0:
-		var power_factor = _get_power_factor()
-		throttle_force = _max_throttle_force * throttle_input * power_factor
-		current_vehicle_state = VehicleState.REVVING if rpm > 4000 else VehicleState.RUNNING
+	var velocity_x: float = current_speed * cos(rotation)
+	var velocity_y: float = current_speed * sin(rotation)
 	
-	# Calculate braking force
-	braking_force = 0.0
-	if brake_input > 0:
-		braking_force = _max_brake_force * brake_input
-		current_vehicle_state = VehicleState.BRAKING
-	
-	# Apply velocity changes
-	var force_direction: float = sign(throttle_force - braking_force)
-	acceleration = (throttle_force - braking_force) / PhysicsSettings.default_vehicle_mass
-	
-	var velocity_change: float = acceleration * delta
-	current_speed += velocity_change
-	
-	# Clamp speed to gear limits
-	var gear_limit: float = [0.0, 30.0, 60.0, 100.0, 140.0, 180.0, 220.0][-1 if current_gear < 0 else current_gear]
-	if abs(current_speed) > abs(gear_limit):
-		current_speed = sign(current_speed) * abs(gear_limit) * 0.99
-	
-	# Apply friction
-	current_speed *= 0.995  # Air resistance
-	
-	# Apply to physics body
-	var move_vector: Vector2 = Vector2.RIGHT.rotated(get_rotation())
-	move_vector = move_vector * current_speed
-	
-	if _physics_body is CharacterBody2D:
-		_physics_body.velocity = move_vector
-		_physics_body.move_and_slide()
+	_physics_body.velocity.x = velocity_x
+	_physics_body.velocity.y = velocity_y
 
-func _get_power_factor() -> float:
-	"""Get engine power factor based on RPM"""
-	var rpm_ratio: float = (rpm - idle_rpm) / (max_rpm - idle_rpm)
-	return clamp(rpm_ratio, 0.0, 1.0)
+# ============================================================================
+# VEHICLE STATE MANAGEMENT
+# ============================================================================
 
-func _update_movement(delta: float) -> void:
-	"""Update vehicle position and track distance"""
-	if not _physics_body:
-		return
-	
-	var displacement: Vector2 = _physics_body.position - _last_position
-	var distance_moved: float = displacement.length()
-	
-	if distance_moved > 0:
-		total_distance_traveled += distance_moved
-		emit_signal("vehicle_moved", distance_moved)
-	
-	_last_position = _physics_body.position
-	
-	# Emit speed signal
-	emit_signal("speed_changed", current_speed, 
-		[0.0, 30.0, 60.0, 100.0, 140.0, 180.0, 220.0][-1 if current_gear < 0 else current_gear])
+func _update_vehicle_state() -> void:
+	"""Update vehicle state based on current conditions."""
+	if abs(rpm - idle_rpm) < 100 and abs(current_speed) < 1.0:
+		current_vehicle_state = VehicleState.IDLE
+	elif rpm > idle_rpm and current_speed > 0:
+		if brake_input > 0.8:
+			current_vehicle_state = VehicleState.BRAKING
+		else:
+			current_vehicle_state = VehicleState.RUNNING
+	elif rpm > max_rpm * 0.9:
+		current_vehicle_state = VehicleState.REVVING
+	elif current_speed == 0.0 and current_gear != 0:
+		current_vehicle_state = VehicleState.IDLE
 
-func _handle_nitro(delta: float) -> void:
-	"""Handle nitrous oxide system"""
-	nitro_cooldown -= delta
+func _check_gear_limits() -> void:
+	"""Check and enforce gear limits."""
+	var min_gear: int = -1 if current_speed < 0 else 0
+	var max_gear: int = 6
 	
-	if nitro_cooldown < 0:
-		nitro_cooldown = 0.0
-	
-	# Check for nitro activation input (left Shift)
-	if Input.is_action_just_pressed("nitro_activate") and nitro_available:
-		_use_nitro()
+	if current_gear < min_gear:
+		current_gear = min_gear
+	elif current_gear > max_gear:
+		current_gear = max_gear
 
-func _use_nitro() -> void:
-	"""Activate nitrous oxide boost"""
-	if nitro_amount <= 0 or nitro_cooldown > 0:
-		return
+func _update_nitro(delta: float) -> void:
+	"""Update nitrous system state."""
+	if nitro_cooldown > 0:
+		nitro_cooldown -= delta
+		if nitro_cooldown < 0:
+			nitro_cooldown = 0.0
 	
-	nitro_amount -= NITRO_CONSUMPTION_RATE
-	nitro_cooldown = 5.0  # 5 second cooldown
-	
-	if nitro_amount <= 0:
-		nitro_available = false
-	
-	current_speed *= NITRO_BONUS
-	emit_signal("nitro_used", NITRO_CONSUMPTION_RATE)
-	
-	# Visual/audio effects would go here
+	if nitro_amount < 100.0 and nitro_cooldown <= 0:
+		nitro_amount += delta * 10.0  # Recharge rate
+		if nitro_amount > 100.0:
+			nitro_amount = 100.0
 
-func shift_gear(direction: int) -> bool:
-	"""Shift gears up or down"""
-	var old_gear: int = current_gear
-	var new_gear: int = current_gear + direction
-	
-	# Validate gear shift
+# ============================================================================
+# GEAR SHIFTING LOGIC
+# ============================================================================
+
+func shift_gear(new_gear: int) -> bool:
+	"""Attempt to shift to a specific gear."""
 	if new_gear < -1 or new_gear > 6:
 		return false
 	
-	# Prevent shifting into neutral while moving
-	if new_gear == 0 and abs(current_speed) > 5.0:
+	if abs(current_speed) < MIN_SPEED_FOR_GEAR_CHANGE and new_gear != 0:
 		return false
 	
-	# Auto-reverse at low speeds
-	if new_gear == -1 and current_speed > 0:
-		new_gear = 1
-	elif new_gear == 1 and current_speed < 0:
-		new_gear = -1
-	
+	var old_gear: int = current_gear
 	current_gear = new_gear
+	
 	emit_signal("gear_changed", old_gear, new_gear)
 	
 	if powertrain:
@@ -277,139 +266,142 @@ func shift_gear(direction: int) -> bool:
 	
 	return true
 
-func set_throttle(value: float) -> void:
-	"""Set throttle input value (-1 to 1)"""
-	throttle_input = clamp(value, -1.0, 1.0)
+func shift_up() -> bool:
+	"""Request an upshift."""
+	if current_gear < 6:
+		return shift_gear(current_gear + 1)
+	return false
 
-func set_brake(value: float) -> void:
-	"""Set brake input value (0 to 1)"""
-	brake_input = clamp(value, 0.0, 1.0)
+func shift_down() -> bool:
+	"""Request a downshift."""
+	if current_gear > -1:
+		return shift_gear(current_gear - 1)
+	return false
 
-func set_steering(value: float) -> void:
-	"""Set steering input value (-1 to 1)"""
-	steering_input = clamp(value, -1.0, 1.0)
-	steering_angle = steering_input * _max_steering_angle
-	if chassis:
-		chassis.set_steering_angle(steering_angle)
+func auto_shift() -> void:
+	"""Automatically shift gears based on RPM."""
+	if rpm > max_rpm * 0.9 and current_gear < 6:
+		shift_up()
+	elif rpm < idle_rpm and current_gear > 1:
+		shift_down()
 
-func start_engine() -> void:
-	"""Start the vehicle engine"""
-	if rpm > 0:
-		return
+# ============================================================================
+# NITROUS SYSTEM
+# ============================================================================
+
+func use_nitro() -> bool:
+	"""Activate nitrous system."""
+	if not nitro_available or nitro_amount <= 0:
+		return false
 	
+	var actual_amount: float = min(nitro_amount, NITRO_CONSUMPTION_RATE)
+	nitro_amount -= actual_amount
+	nitro_cooldown = 5.0  # 5 second cooldown
+	
+	emit_signal("nitro_used", actual_amount)
+	return true
+
+func has_nitro_available() -> bool:
+	"""Check if nitrous is available."""
+	return nitro_available and nitro_amount > 0
+
+# ============================================================================
+# SIGNAL HANDLERS
+# ============================================================================
+
+func _on_engine_started() -> void:
+	"""Handle engine start event."""
 	rpm = idle_rpm
-	current_vehicle_state = VehicleState.IDLE
-	emit_signal("engine_started")
-	
-	if AudioManager:
-		AudioManager.play_sfx("engine_start")
+	current_vehicle_state = VehicleState.RUNNING
 
-func stop_engine() -> void:
-	"""Stop the vehicle engine"""
+func _on_engine_stopped() -> void:
+	"""Handle engine stop event."""
 	rpm = 0.0
-	current_gear = 0
-	current_speed = 0.0
 	current_vehicle_state = VehicleState.IDLE
-	emit_signal("engine_stopped")
-	
-	if AudioManager:
-		AudioManager.play_sfx("engine_stop")
 
-func reset_vehicle() -> void:
-	"""Reset vehicle to initial state"""
-	current_speed = 0.0
-	target_speed = 0.0
-	rpm = idle_rpm
-	current_gear = 0
-	throttle_input = 0.0
-	brake_input = 0.0
-	steering_input = 0.0
-	nitro_available = true
-	nitro_amount = 100.0
-	nitro_cooldown = 0.0
-	total_distance_traveled = 0.0
-	current_vehicle_state = VehicleState.IDLE
-	_last_position = Vector2.ZERO
-	
-	if _physics_body:
-		_physics_body.velocity = Vector2.ZERO
+func _update_rpm_display(new_rpm: float) -> void:
+	"""Update RPM display signal."""
+	rpm = new_rpm
+	emit_signal("rpm_changed", rpm, max_rpm)
 
-func take_damage(damage_amount: float) -> void:
-	"""Handle vehicle damage from collisions"""
+func _emit_signals() -> void:
+	"""Emit relevant status signals."""
+	if current_speed != 0:
+		emit_signal("speed_changed", current_speed, max_rpm * GEAR_RATIOS[current_gear])
+		
+	if current_gear != 0:
+		emit_signal("vehicle_moved", total_distance_traveled)
+
+# ============================================================================
+# COLLISION HANDLING
+# ============================================================================
+
+func handle_collision(collision_direction: Vector2) -> void:
+	"""Handle vehicle collision."""
 	last_collision_time = Time.get_ticks_msec() / 1000.0
 	current_vehicle_state = VehicleState.COLLIDED
 	
-	# Reduce speed on impact
-	current_speed *= 0.7
+	# Apply collision damping
+	collision_damping = 0.3
 	
-	# Play damage sound
-	if AudioManager:
-		AudioManager.play_sfx("damage")
+	# Reduce speed significantly
+	current_speed *= 0.5
 	
-	# Screen shake effect
-	if get_parent() and get_parent() is Node2D:
-		get_parent().set_position(get_parent().position + Vector2(randf_range(-5, 5), randf_range(-5, 5)))
-
-func _check_vehicle_state() -> void:
-	"""Check and update vehicle state machine"""
-	var time_since_collision: float = Time.get_ticks_msec() / 1000.0 - last_collision_time
+	# Emit collision signal
+	emit_signal("collision_detected", collision_direction)
 	
-	if time_since_collision < 0.3 and current_vehicle_state == VehicleState.COLLIDED:
-		current_vehicle_state = VehicleState.COLLIDED
-	elif current_vehicle_state == VehicleState.COLLIDED:
-		current_vehicle_state = VehicleState.RUNNING
+	# Cooldown for next collision check
+	await get_tree().create_timer(0.5).timeout
+	current_vehicle_state = VehicleState.RUNNING
 
-func _input(event: InputEvent) -> void:
-	"""Handle direct input events"""
-	if event is InputEventKey:
-		match event.keycode:
-			KEY_UP, KEY_W:
-				set_throttle(1.0)
-			KEY_DOWN, KEY_S:
-				set_throttle(-0.5)
-			KEY_LEFT, KEY_A:
-				set_steering(-1.0)
-			KEY_RIGHT, KEY_D:
-				set_steering(1.0)
-			KEY_SPACE:
-				set_brake(1.0)
-			KEY_SHIFT_L, KEY_SHIFT_R:
-				_use_nitro()
-			KEY_G:
-				shift_gear(1)
-			KEY_F:
-				shift_gear(-1)
-			KEY_E:
-				if rpm > 0:
-					stop_engine()
-				else:
-					start_engine()
+func is_recently_collided() -> bool:
+	"""Check if vehicle collided recently."""
+	var time_since_collision: float = (Time.get_ticks_msec() / 1000.0) - last_collision_time
+	return time_since_collision < 2.0
 
-func get_stats() -> Dictionary:
-	"""Get current vehicle statistics"""
+# ============================================================================
+# UTILITY METHODS
+# ============================================================================
+
+func get_max_speed_for_gear() -> float:
+	"""Get maximum speed possible in current gear."""
+	var gear_ratio: float = GEAR_RATIOS[current_gear] if current_gear >= 0 and current_gear <= 7 else 0.0
+	var max_engine_speed: float = max_rpm
+	var base_max_speed: float = 200.0  # Base top speed in neutral
+	
+	return base_max_speed * gear_ratio * (max_engine_speed / 6000.0)
+
+func get_current_power() -> float:
+	"""Get current power output in kW."""
+	var gear_ratio: float = GEAR_RATIOS[current_gear] if current_gear >= 0 and current_gear <= 7 else 0.0
+	var engine_power: float = powertrain.max_power if powertrain else 150.0
+	return engine_power * gear_ratio * (rpm / max_rpm)
+
+func reset() -> void:
+	"""Reset vehicle to initial state."""
+	_reset_vehicle()
+	if _physics_body:
+		_physics_body.velocity = Vector2.ZERO
+		_physics_body.linear_interpolate(Vector2.ZERO, 0.5)
+
+func save_state() -> Dictionary:
+	"""Save current vehicle state."""
 	return {
-		"speed": current_speed,
-		"max_speed": [0.0, 30.0, 60.0, 100.0, 140.0, 180.0, 220.0][-1 if current_gear < 0 else current_gear],
+		"current_speed": current_speed,
+		"current_gear": current_gear,
 		"rpm": rpm,
-		"max_rpm": max_rpm,
-		"gear": current_gear,
-		"distance": total_distance_traveled,
-		"state": current_vehicle_state,
-		"nitro": nitro_amount,
-		"throttle": throttle_input,
-		"brake": brake_input,
-		"steering": steering_input
+		"total_distance_traveled": total_distance_traveled,
+		"nitro_amount": nitro_amount,
+		"current_vehicle_state": current_vehicle_state
 	}
 
-func debug_print_status() -> void:
-	"""Print current vehicle status to console (debug only)"""
-	print("=== VEHICLE STATUS ===")
-	print("Speed: %.2f km/h" % current_speed)
-	print("Gear: %d" % current_gear)
-	print("RPM: %.0f / %.0f" % [rpm, max_rpm])
-	print("Throttle: %.2f" % throttle_input)
-	print("Brake: %.2f" % brake_input)
-	print("Steering: %.2f" % steering_input)
-	print("Distance: %.2f m" % total_distance_traveled)
-	print("Nitro: %.1f%%" % (nitro_amount / 100.0 * 100))
-	print("=====================")
+func load_state(state_data: Dictionary) -> void:
+	"""Load vehicle state from saved data."""
+	current_speed = state_data.get("current_speed", 0.0)
+	current_gear = state_data.get("current_gear", 0)
+	rpm = state_data.get("rpm", idle_rpm)
+	total_distance_traveled = state_data.get("total_distance_traveled", 0.0)
+	nitro_amount = state_data.get("nitro_amount", 100.0)
+	current_vehicle_state = VehicleState(state_data.get("current_vehicle_state", 0))
+
+</file>
