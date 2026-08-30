@@ -1,0 +1,199 @@
+[gd_scene load_steps=3 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://scripts/core/GameManager.gd" id="1_game_manager"]
+[ext_resource type="Script" path="res://scripts/core/InputManager.gd" id="2_input_manager"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_game_manager")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_game_manager")
+
+[node name="InputManager" type="Node" parent="."]
+script = ExtResource("2_input_manager")
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Terrain" type="StaticBody3D" parent="World"]
+collision_layer = 1
+collision_mask = 2
+script = {
+instance = SubResource(),
+resource_name = "TerrainMaterial"
+}
+
+[node name="Ground" type="MeshInstance3D" parent="World/Terrain"]
+mesh = SubResource()
+
+[node name="Lighting" type="DirectionalLight3D" parent="World"]
+shadow_enabled = true
+light_color = Color(1, 0.95, 0.9, 1)
+rotation_degrees = Vector3(45, 45, 0)
+position = Vector3(50, 100, 50)
+
+[node name="Environment" type="Environment" parent="World"]
+ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+ambient_light_color = Color(0.4, 0.5, 0.6, 1)
+sky_material = SubResource()
+fog_mode = Environment.FOG_ENABLED
+fog_top_color = Color(0.9, 0.95, 1, 1)
+fog_bottom_color = Color(0.6, 0.7, 0.8, 1)
+fog_distance = 2000
+fog_depth_fade_start = 1000
+fog_depth_fade_end = 3000
+
+[node name="PostProcessing" type="GPUPostEffect" parent="World"]
+enabled = true
+shader = SubResource()
+
+[sub_resource type="StandardMaterial3D" id="TerrainMaterial"]
+albedo_color = Color(0.15, 0.25, 0.15, 1)
+metallic = 0.0
+roughness = 0.9
+normal_map = ""
+environment_ambient_light_blend_factor = 0.0
+emission_enabled = false
+emission_color = Color(0, 0, 0, 1)
+use_energy = false
+uv1_generated_from = StandardMaterial3D.UV1_GENERATED_FROM_NONE
+uv1_tangent_basis = StandardMaterial3D.TANGENT_BASIS_RIGHT_HANDED
+wireframe = false
+
+[sub_resource type="PlainSky" id="SkyMaterial"]
+color = Color(0.9, 0.95, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="PostEffectShader"]
+shader_script = null
+render_priority = 100
+params_float = {}
+params_color = {}
+params_int = {}
+params_texture = {}
+params_sdf = {}
+
+[node name="HUD" type="CanvasLayer" parent="World"]
+
+[node name="ScoreDisplay" type="Label" parent="World/HUD"]
+text = "SCORE: 0"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+vertical_alignment = VERTICAL_ALIGNMENT_TOP
+offset_left = -200
+offset_right = 200
+offset_top = 20
+theme_override_font_sizes/font_size = 24
+visible = false
+
+[node name="SpeedDisplay" type="Label" parent="World/HUD"]
+text = "SPEED: 0 km/h"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+offset_left = 20
+offset_bottom = -20
+theme_override_font_sizes/font_size = 32
+visible = false
+
+[node name="RPMDisplay" type="Label" parent="World/HUD"]
+text = "RPM: 0"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+offset_right = -20
+offset_bottom = -20
+theme_override_font_sizes/font_size = 32
+visible = false
+
+[node name="GearDisplay" type="Label" parent="World/HUD"]
+text = "GEAR: N"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+offset_right = -20
+offset_bottom = -60
+theme_override_font_sizes/font_size = 28
+visible = false
+
+[node name="DebugInfo" type="Label" parent="World/HUD"]
+text = ""
+horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+vertical_alignment = VERTICAL_ALIGNMENT_TOP
+offset_left = 20
+offset_top = 60
+theme_override_font_sizes/font_size = 14
+visible = false
+</node>
+
+[node name="MainMenu" type="Control" parent="World/HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = true
+
+[node name="Background" type="ColorRect" parent="World/HUD/MainMenu"]
+color = Color(0.1, 0.1, 0.15, 1)
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleContainer" type="VBoxContainer" parent="World/HUD/MainMenu"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="World/HUD/MainMenu/TitleContainer"]
+text = "THALAMUS RACING SIMULATOR"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 48
+
+[node name="Version" type="Label" parent="World/HUD/MainMenu/TitleContainer"]
+text = "v1.0.0 - Advanced Physics Engine"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+vertical_alignment = VERTICAL_ALIGNMENT_TOP
+offset_top = 20
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="MenuButtons" type="VBoxContainer" parent="World/HUD/MainMenu/TitleContainer"]
+layout_mode = 2
+alignment = CENTER
+custom_minimum_size = Vector2i(200, 300)
+
+[node name="NewRaceButton" type="Button" parent="World/HUD/MainMenu/TitleContainer/MenuButtons"]
+text = "NEW RACE"
+custom_minimum_size = Vector2i(300, 60)
+theme_override_font_sizes/font_size = 24
+flat = true
+
+[node name="GarageButton" type="Button" parent="World/HUD/MainMenu/TitleContainer/MenuButtons"]
+text = "GARAGE"
+custom_minimum_size = Vector2i(300, 60)
+theme_override_font_sizes/font_size = 24
+flat = true
+
+[node name="SettingsButton" type="Button" parent="World/HUD/MainMenu/TitleContainer/MenuButtons"]
+text = "SETTINGS"
+custom_minimum_size = Vector2i(300, 60)
+theme_override_font_sizes/font_size = 24
+flat = true
+
+[node name="QuitButton" type="Button" parent="World/HUD/MainMenu/TitleContainer/MenuButtons"]
+text = "QUIT"
+custom_minimum_size = Vector2i(300, 60)
+theme_override_font_sizes/font_size = 24
+flat = true
+
+[node name="Credits" type="Label" parent="World/HUD/MainMenu"]
+text = "© 2026 Thalamus Racing | All Rights Reserved"
+horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+offset_bottom = -10
+theme_override_colors/font_color = Color(0.5, 0.5, 0.6, 1)
+theme_override_font_sizes/font_size = 12
+</node>
