@@ -42,297 +42,226 @@ class_name PhysicsSettings
 @export var lift_coefficient: float = 0.15
 @export var front_area: float = 2.2  # m^2 frontal area
 @export var center_of_pressure_x: float = 0.5  # normalized vehicle length
-@export var center_of_pressure_y: float = 0.0
-@export var center_of_pressure_z: float = 0.3
+@export var wing_downforce_coefficient: float = 0.8
+@export var ground_effect_coefficient: float = 1.2
+@export var downforce_falloff_distance: float = 0.1  # meters from ground
 
-@export_group("Engine Physics")
-@export var idle_rpm: float = 800.0
-@export var redline_rpm: float = 7000.0
-@export var peak_torque_rpm: float = 4000.0
-@export var peak_torque_nm: float = 450.0  # Nm at peak torque rpm
-@export var max_engine_braking: float = 0.8  # Engine braking multiplier
+@export_group("Engine & Powertrain")
+@export var engine_max_rpm: float = 8500.0
+@export var engine_idle_rpm: float = 800.0
+@export var engine_peak_torque_rpm: float = 5500.0
+@export var peak_torque_nm: float = 450.0
+@export var torque_curve_points: Array[Vector2] = [
+	Vector2(0.0, 0.0),
+	Vector2(0.1, 0.3),
+	Vector2(0.3, 0.7),
+	Vector2(0.5, 1.0),
+	Vector2(0.7, 0.95),
+	Vector2(0.85, 0.85),
+	Vector2(1.0, 0.75)
+]
+@export var idle_throttle: float = 0.05
 
 @export_group("Gear Ratios")
-@export var final_drive_ratio: float = 3.5
-@export var first_gear_ratio: float = 3.8
-@export var second_gear_ratio: float = 2.5
-@export var third_gear_ratio: float = 1.8
-@export var fourth_gear_ratio: float = 1.35
-@export var fifth_gear_ratio: float = 1.0
-@export var sixth_gear_ratio: float = 0.85
-@export var reverse_gear_ratio: float = 3.5
+@export var gear_ratios: Array[float] = [3.8, 2.4, 1.7, 1.3, 1.0, 0.85]
+@export var final_drive_ratio: float = 3.55
+@export var reverse_gear_ratio: float = 3.2
+@export var clutch_slip_factor: float = 0.95
+@export var transmission_efficiency: float = 0.92
 
 @export_group("Differential Settings")
-@export var differential_type: int = DifferentialType.LSD  # LSD=1, Open=0, Locked=2
-@export var lsd_preload_torque: float = 50.0  # Nm preload torque
-@export var lsd_acceleration_lock: float = 0.3  # Acceleration lock ratio (0-1)
-@export var lsd_deceleration_lock: float = 0.2  # Deceleration lock ratio (0-1)
-@export var open_diff_max_slip: float = 0.5  # Max slip before open diff locks
-@export var locked_diff_lock_force: float = 1000.0  # Nm locking force
+@export var diff_type: String = "limited_slip"  # open, locked, limited_slip
+@export var diff_lock_percentage: float = 0.35  # 0-1, higher = more lock
+@export var diff_preload_torque: float = 15.0  # Nm
+@export var diff_side_gear_ratio: float = 1.5
 
 @export_group("Brake System")
-@export var brake_force_per_pedal: float = 15000.0  # N max brake force per wheel
-@export var brake_bias_front: float = 0.6  # Front brake bias (0-1)
-@export var brake_pressure_ratio: float = 10.0  # Master cylinder pressure ratio
-@export var abs_threshold: float = 0.15  # ABS activation threshold
-@export var abs_recovery_speed: float = 10.0  # ABS recovery speed
+@export var brake_force_distribution_front: float = 0.6
+@export var brake_force_distribution_rear: float = 0.4
+@export var max_brake_pressure_bar: float = 150.0
+@export var brake_disc_radius: float = 0.29  # meters
+@export var brake_piston_area: float = 0.0008  # m^2 per piston
+@export var brake_pad_friction: float = 0.4
+@export var brake_caliper_piston_count: int = 4
+@export var brake_bias_adjustment: float = 0.0  # -1.0 to +1.0 manual bias
 
 @export_group("Steering System")
-@export var steering_ratio: float = 15.0  # Steering ratio (degrees wheel : degrees wheel turn)
-@export var max_steering_angle: float = 30.0  # Max wheel angle in degrees
-@export var steering_speed: float = 45.0  # Degrees per second max steering speed
-@export var steering_return_speed: float = 20.0  # Degrees per second return speed
-@export var steering_friction: float = 0.1  # Steering friction coefficient
-@export var power_steering_assist: float = 0.5  # Power steering assist (0-1)
+@export var steering_ratio: float = 14.0  # ratio of steering wheel angle to wheel angle
+@export var max_steering_angle: float = 35.0  # degrees
+@export var steering_response_rate: float = 25.0  # degrees per second
+@export var steering_centering_torque: float = 2.5  # Nm
+@export var power_assist_ratio: float = 3.0
+@export var bump_stop_angle: float = 40.0  # degrees before mechanical limit
 
-@export_group("Transmission")
-@export var clutch_engagement_time: float = 0.15  # Seconds to fully engage clutch
-@export var clutch_disengagement_time: float = 0.1  # Seconds to disengage
-@export var transmission_shift_delay: float = 0.1  # Delay after shift command
-@export var automatic_shifting_enabled: bool = true
-@export var manual_shifting_enabled: bool = true
+@export_group("Chassis Dynamics")
+@export var track_width_front: float = 1.62  # meters
+@export var track_width_rear: float = 1.58  # meters
+@export var wheelbase: float = 2.70  # meters
+@export var cg_height: float = 0.55  # meters above ground
+@export var cg_offset_front: float = 0.45  # meters forward from center
+@export var body_roll_coefficient: float = 0.002
+@export var pitch_under_acceleration: float = 0.001
+@export var pitch_under_braking: float = 0.0015
 
-@export_group("Track Physics")
-@export var track_roughness: float = 0.05  # Track surface roughness
-@export var track_temperature_base: float = 20.0  # Base track temperature Celsius
-@export var track_temp_variation: float = 15.0  # Temperature variation during race
-@export var weather_effects_enabled: bool = true
-@export var rain_friction_reduction: float = 0.4  # Friction reduction in rain
-@export var snow_friction_reduction: float = 0.2  # Friction reduction in snow
+@export_group("Gameplay Tuning")
+@export var lap_time_target: float = 90.0  # seconds for reference lap
+@export var ai_skill_level: float = 0.85  # 0-1 multiplier for AI performance
+@export var player_skill_level: float = 0.75  # 0-1 multiplier for player performance
+@export var assist_steering: bool = true
+@export var assist_traction_control: bool = true
+@export var assist_braking: bool = false
+@export var assist_collision: bool = false
 
-@export_group("Collision Detection")
-@export var collision_margin: float = 0.01  # Collision detection margin in meters
-@export var penetration_tolerance: float = 0.005  # Maximum allowed penetration
-@export var contact_point_offset: float = 0.02  # Offset for contact point generation
-
-@export_group("Simulation Quality")
-@export var high_quality_physics: bool = false
-@export var accurate_aerodynamics: bool = false
-@export var detailed_suspension: bool = false
-@export var tire_heat_model: bool = true
-@export var tire_deformation_model: bool = false
-
-enum DifferentialType {
-	OPEN,
-	LSD,
-	LOCKED
-}
-
-enum TireCompound {
-	HARD,
-	MEDIUM,
-	SOFT,
-	RAIN,
-	SNOW
-}
-
-# Predefined tire compound configurations
-var tire_compounds: Dictionary = {
-	TireCompound.HARD: {
-		"friction": 1.0,
-		"temperature_min": 50.0,
-		"temperature_max": 120.0,
-		"optimal_temp": 80.0,
-		"degradation_rate": 0.5
-	},
-	TireCompound.MEDIUM: {
-		"friction": 1.1,
-		"temperature_min": 40.0,
-		"temperature_max": 100.0,
-		"optimal_temp": 70.0,
-		"degradation_rate": 1.0
-	},
-	TireCompound.SOFT: {
-		"friction": 1.25,
-		"temperature_min": 30.0,
-		"temperature_max": 90.0,
-		"optical_temp": 60.0,
-		"degradation_rate": 2.0
-	},
-	TireCompound.RAIN: {
-		"friction": 0.6,
-		"temperature_min": 10.0,
-		"temperature_max": 60.0,
-		"optimal_temp": 35.0,
-		"degradation_rate": 0.3
-	},
-	TireCompound.SNOW: {
-		"friction": 0.3,
-		"temperature_min": -20.0,
-		"temperature_max": 10.0,
-		"optimal_temp": -5.0,
-		"degradation_rate": 0.1
-	}
-}
-
-## Helper methods for unit conversions
-
-func kmh_to_ms(speed_kmh: float) -> float:
-	return speed_kmh / 3.6
-
-func ms_to_kmh(speed_ms: float) -> float:
-	return speed_ms * 3.6
-
-func deg_to_rad(angle_deg: float) -> float:
-	return angle_deg * PI / 180.0
-
-func rad_to_deg(angle_rad: float) -> float:
-	return angle_rad * 180.0 / PI
-
-func rpm_to_frequency(rpm: float) -> float:
-	return rpm / 60.0
-
-func frequency_to_rpm(frequency_hz: float) -> float:
-	return frequency_hz * 60.0
-
-func nm_to_lb_ft(torque_nm: float) -> float:
-	return torque_nm * 0.737562
-
-func lb_ft_to_nm(torque_lb_ft: float) -> float:
-	return torque_lb_ft * 1.35582
-
-func inches_to_meters(length_inches: float) -> float:
-	return length_inches * 0.0254
-
-def meters_to_inches(length_meters: float) -> float:
-	return length_meters / 0.0254
-
-func psi_to_bar(pressure_psi: float) -> float:
-	return pressure_psi * 0.0689476
-
-func bar_to_psi(pressure_bar: float) -> float:
-	return pressure_bar / 0.0689476
-
-func hp_to_kw(power_hp: float) -> float:
-	return power_hp * 0.7457
-
-func kw_to_hp(power_kw: float) -> float:
-	return power_kw / 0.7457
-
-## Calculate engine torque based on RPM using a simplified curve
-func get_engine_torque(rpm: float) -> float:
-	var normalized_rpm: float = clamp((rpm - idle_rpm) / (redline_rpm - idle_rpm), 0.0, 1.0)
+func get_torque_at_rpm(rpm: float) -> float:
+	"""Calculate engine torque based on RPM using interpolated curve points."""
+	var normalized_rpm = clampf(rpm / engine_max_rpm, 0.0, 1.0)
+	if normalized_rpm <= 0.0:
+		return peak_torque_nm * 0.1
 	
-	# Simplified torque curve - peak at peak_torque_rpm
-	if rpm <= peak_torque_rpm:
-		var ramp_up: float = (rpm - idle_rpm) / (peak_torque_rpm - idle_rpm)
-		return peak_torque_nm * (0.7 + 0.3 * ramp_up)
+	for i in range(1, torque_curve_points.size()):
+		if normalized_rpm >= torque_curve_points[i-1].x and normalized_rpm <= torque_curve_points[i].x:
+			var t = linear_interpolate(torque_curve_points[i-1].y, torque_curve_points[i].y, 
+				(normalized_rpm - torque_curve_points[i-1].x) / (torque_curve_points[i].x - torque_curve_points[i-1].x))
+			return peak_torque_nm * t
+	
+	return peak_torque_nm * 0.75
+
+func calculate_drag_force(speed_ms: float) -> float:
+	"""Calculate aerodynamic drag force at given speed."""
+	var speed_squared = speed_ms * speed_ms
+	return 0.5 * air_density * drag_coefficient * front_area * speed_squared
+
+func calculate_downforce(speed_ms: float, ground_clearance: float = 0.1) -> float:
+	"""Calculate total downforce considering wing and ground effect."""
+	var speed_squared = speed_ms * speed_ms
+	var base_downforce = 0.5 * air_density * wing_downforce_coefficient * front_area * speed_squared
+	var ground_effect_bonus = ground_effect_coefficient if ground_clearance < downforce_falloff_distance else 0.0
+	return base_downforce + ground_effect_bonus
+
+func calculate_brake_force(pedal_pressure: float, speed_ms: float) -> Dictionary:
+	"""Calculate brake forces for front and rear axles."""
+	var pressure_bar = pedal_pressure * max_brake_pressure_bar
+	var normal_force_total = default_vehicle_mass * gravity
+	var normal_force_front = normal_force_total * brake_force_distribution_front
+	var normal_force_rear = normal_force_total * brake_force_distribution_rear
+	
+	var friction_front = normal_force_front * brake_pad_friction
+	var friction_rear = normal_force_rear * brake_pad_friction
+	
+	var total_brake_force = (friction_front * brake_force_distribution_front + friction_rear * brake_force_distribution_rear) * pedal_pressure
+	return {
+		"total_force": total_brake_force,
+		"front_force": friction_front * brake_force_distribution_front * pedal_pressure,
+		"rear_force": friction_rear * brake_force_distribution_rear * pedal_pressure
+	}
+
+func convert_to_game_units(value: float, unit_type: String) -> float:
+	"""Convert physical units to game scale units."""
+	match unit_type:
+		"length_meters": return value * 100.0  # Game uses cm
+		"mass_kg": return value / 100.0  # Game uses hg
+		"velocity_ms": return value * 10.0  # Game uses cm/s
+		"acceleration_ms2": return value * 100.0  # Game uses cm/s^2
+		"pressure_bar": return value * 10.0  # Game uses kPa
+		"angle_degrees": return value * 10.0  # Game uses dec-degrees
+		"torque_nm": return value * 10.0  # Game uses dNm
+		"force_newtons": return value / 10.0  # Game uses daN
+		"power_kw": return value * 100.0  # Game uses W
+		_: return value
+
+func convert_from_game_units(value: float, unit_type: String) -> float:
+	"""Convert game scale units to physical units."""
+	match unit_type:
+		"length_meters": return value / 100.0
+		"mass_kg": return value * 100.0
+		"velocity_ms": return value / 10.0
+		"acceleration_ms2": return value / 100.0
+		"pressure_bar": return value / 10.0
+		"angle_degrees": return value / 10.0
+		"torque_nm": return value / 10.0
+		"force_newtons": return value * 10.0
+		"power_kw": return value / 100.0
+		_: return value
+
+func get_gear_ratio(gear_index: int) -> float:
+	"""Get gear ratio for a specific gear index."""
+	if gear_index == -1:  # Reverse
+		return -reverse_gear_ratio * final_drive_ratio
+	elif gear_index >= gear_ratios.size():  # Overdrive/cruise
+		return gear_ratios[-1] * final_drive_ratio
 	else:
-		var ramp_down: float = (rpm - peak_torque_rpm) / (redline_rpm - peak_torque_rpm)
-		return peak_torque_nm * (1.0 - 0.3 * ramp_down)
+		return gear_ratios[gear_index] * final_drive_ratio
 
-## Calculate drag force on vehicle
-func calculate_drag_force(velocity_ms: float) -> float:
-	var velocity_sq: float = abs(velocity_ms) * abs(velocity_ms)
-	return 0.5 * air_density * drag_coefficient * front_area * velocity_sq
+func get_optimal_shift_point(current_rpm: float) -> float:
+	"""Calculate optimal RPM for upshifting based on torque curve."""
+	var torque_at_current = get_torque_at_rpm(current_rpm)
+	var next_gear_ratio = get_gear_ratio(current_rpm > 0 ? current_rpm : 0)
+	
+	for rpm in range(engine_idle_rpm, engine_max_rpm, 100):
+		var next_gear_torque = get_torque_at_rpm(rpm / next_gear_ratio)
+		if next_gear_torque >= torque_at_current:
+			return min(rpm, engine_max_rpm)
+	
+	return engine_max_rpm * 0.9
 
-## Calculate downforce on vehicle
-func calculate_downforce(velocity_ms: float) -> float:
-	var velocity_sq: float = abs(velocity_ms) * abs(velocity_ms)
-	return 0.5 * air_density * lift_coefficient * front_area * velocity_sq
+func calculate_camber_gain(suspension_travel: float) -> float:
+	"""Calculate camber change based on suspension travel."""
+	var compression = suspension_travel > 0
+	var travel_ratio = abs(suspension_travel) / max_suspension_travel
+	return (compression ? -1.0 : 1.0) * 0.01 * travel_ratio  # radians
 
-## Get current gear based on RPM
-func get_current_gear(rpm: float) -> int:
-	if rpm < idle_rpm:
-		return -1  # Reverse
-	elif rpm < 1500:
-		return 1
-	elif rpm < 3000:
-		return 2
-	elif rpm < 4500:
-		return 3
-	elif rpm < 5500:
-		return 4
-	elif rpm < 6200:
-		return 5
-	else:
-		return 6
+func calculate_ackermann_correction(left_wheel_angle: float, right_wheel_angle: float, track_width: float) -> Vector2:
+	"""Calculate Ackermann steering correction for inner/outer wheels."""
+	var inner_angle = min(abs(left_wheel_angle), abs(right_wheel_angle))
+	var outer_angle = max(abs(left_wheel_angle), abs(right_wheel_angle))
+	var ackermann_factor = tan(inner_angle) / tan(outer_angle)
+	var ideal_inner = atan(track_width / (wheelbase * ackermann_factor))
+	return Vector2(deg_to_rad(left_wheel_angle), deg_to_rad(right_wheel_angle))
 
-## Get gear ratio for current gear
-func get_gear_ratio(gear: int) -> float:
-	match gear:
-		1: return first_gear_ratio
-		2: return second_gear_ratio
-		3: return third_gear_ratio
-		4: return fourth_gear_ratio
-		5: return fifth_gear_ratio
-		6: return sixth_gear_ratio
-		-1: return reverse_gear_ratio
-		_: return 1.0
-
-## Calculate optimal shift point for acceleration
-func get_optimal_shift_rpm() -> float:
-	return redline_rpm * 0.95
-
-## Calculate fuel consumption rate (L/hour)
-func calculate_fuel_consumption(engine_load: float, rpm: float) -> float:
-	var base_consumption: float = 5.0  # L/h at idle
-	var load_factor: float = max(1.0, engine_load * 3.0)
-	var rpm_factor: float = max(1.0, rpm / 3000.0)
-	return base_consumption * load_factor * rpm_factor
-
-## Reset all physics settings to defaults
 func reset_to_defaults() -> void:
+	"""Reset all settings to factory defaults."""
 	gravity = 9.81
 	default_vehicle_mass = 1500.0
 	default_wheel_radius = 0.33
-	default_wheel_width = 0.215
-	default_wheel_mass = 25.0
-	default_wheel_inertia = 1.2
 	suspension_stiffness = 35000.0
-	suspension_compression_damping = 1200.0
-	suspension_rebound_damping = 600.0
-	max_suspension_travel = 0.25
-	spring_rest_length = 0.35
 	tire_friction_horizontal = 1.2
-	tire_friction_vertical = 0.3
-	slipp_threshold = 0.15
-	lateral_slip_stiffness = 3.5e5
-	longitudinal_slip_stiffness = 8.0e5
+	drift_multiplier = 1.5
+	drag_coefficient = 0.32
+	engine_max_rpm = 8500.0
+	gear_ratios = [3.8, 2.4, 1.7, 1.3, 1.0, 0.85]
+	brake_force_distribution_front = 0.6
+	steering_ratio = 14.0
+	wheelbase = 2.70
+	cg_height = 0.55
+	lap_time_target = 90.0
+	ai_skill_level = 0.85
+	player_skill_level = 0.75
 
-## Load preset configuration
-func load_preset(preset_name: String) -> void:
-	match preset_name:
-		"simulator":
-			high_quality_physics = true
-			accurate_aerodynamics = true
-			detailed_suspension = true
-			tire_heat_model = true
-		"arcade":
-			high_quality_physics = false
-			accurate_aerodynamics = false
-			detailed_suspension = false
-			tire_heat_model = false
-			drift_multiplier = 2.0
-		"realistic":
-			high_quality_physics = true
-			accurate_aerodynamics = true
-			detailed_suspension = true
-			tire_heat_model = true
-			tire_deformation_model = true
-		_:
-			push_warning("Unknown preset: " + preset_name)
-
-## Validate all physics settings
-func validate_settings() -> Array[String]:
-	var warnings: Array[String] = []
+func validate_settings() -> Error:
+	"""Validate all physics settings for consistency."""
+	var errors: PackedStringArray = []
 	
-	if gravity < 0:
-		warnings.append("Gravity cannot be negative")
 	if default_vehicle_mass <= 0:
-		warnings.append("Vehicle mass must be positive")
+		errors.append("default_vehicle_mass must be positive")
 	if default_wheel_radius <= 0:
-		warnings.append("Wheel radius must be positive")
+		errors.append("default_wheel_radius must be positive")
+	if gravity <= 0:
+		errors.append("gravity must be positive")
 	if suspension_stiffness <= 0:
-		warnings.append("Suspension stiffness must be positive")
-	if tire_friction_horizontal <= 0:
-		warnings.append("Tire friction must be positive")
-	if redline_rpm <= idle_rpm:
-		warnings.append("Redline must be higher than idle RPM")
-	if max_steering_angle < 0 or max_steering_angle > 60:
-		warnings.append("Steering angle should be between 0 and 60 degrees")
-	if brake_bias_front < 0 or brake_bias_front > 1:
-		warnings.append("Brake bias must be between 0 and 1")
+		errors.append("suspension_stiffness must be positive")
+	if engine_max_rpm <= 0:
+		errors.append("engine_max_rpm must be positive")
+	if engine_idle_rpm >= engine_max_rpm:
+		errors.append("engine_idle_rpm must be less than engine_max_rpm")
+	if abs(brake_force_distribution_front - 1.0) < 0.001 and abs(brake_force_distribution_rear - 1.0) < 0.001:
+		errors.append("brake_force_distribution sum should equal 1.0")
+	if len(gear_ratios) < 1:
+		errors.append("gear_ratios array cannot be empty")
 	
-	return warnings
-</file_content>
+	if errors.is_empty():
+		return OK
+	else:
+		push_warning("PhysicsSettings validation failed:")
+		for error in errors:
+			push_warning("  - %s" % error)
+		return ERR_INVALID_DATA
