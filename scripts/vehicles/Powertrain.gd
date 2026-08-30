@@ -1,336 +1,552 @@
 extends Resource
 class_name Powertrain
 
-## Powertrain - Complete engine and transmission physics simulation
-## Calculates actual vehicle speed from engine parameters: RPM, torque, HP, gearing, wheel size
-## Never sets speed directly - speed emerges from physics
+## Powertrain - Advanced vehicle powertrain physics simulation
+## Simulates real-world engine behavior including RPM, torque curves, horsepower, 
+## gearboxes, transmission efficiency, and aerodynamic drag
 
 signal rpm_changed(rpm: float)
 signal gear_changed(old_gear: int, new_gear: int)
-signal throttle_changed(throttle_value: float)
-signal clutch_engaged(bool engaged)
+signal clutch_engaged()
+signal clutch_disengaged()
+signal throttle_change(value: float)
 
-@export_group("Engine Configuration")
-@export var max_rpm: float = 7000.0          # Redline RPM
-@export var idle_rpm: float = 800.0           # Idle RPM
-@export var stall_rpm: float = 400.0          # Stall RPM
-@export var engine_displacement: float = 4.0  # Liters
-@export var cylinders: int = 8                # Cylinder count
-@export var compression_ratio: float = 10.5   # Compression ratio
-@export var redline_rpm: float = 7000.0       # Max safe RPM
+enum PowertrainType { ICE, ELECTRIC, HYBRID }
+enum ClutchState { ENGAGED, DISENGAGED, PARTIAL }
 
-@export_group("Power Characteristics")
-@export var peak_horsepower: float = 450.0    # Peak HP at certain RPM
-@export var peak_hp_rpm: float = 6000.0       # RPM where peak HP occurs
-@export var peak_torque_nm: float = 600.0     # Peak torque in Newton-meters
-@export var peak_torque_rpm: float = 4500.0   # RPM where peak torque occurs
-@export var horsepower_curve: Array[Vector2]  # Custom HP curve points (RPM -> HP)
-@export var torque_curve: Array[Vector2]      # Custom torque curve points (RPM -> Nm)
+# ============================================================================
+# ENGINE PHYSICS PARAMETERS
+# ============================================================================
+
+@export_group("Engine Specifications")
+@export var powertrain_type: PowertrainType = PowertrainType.ICE
+
+@export var engine_displacement_liters: float = 5.0  # Cylinder volume in liters
+@export var cylinder_count: int = 8
+@export var compression_ratio: float = 11.5
+@export var max_rpm: float = 7500.0  # Redline RPM
+@export var idle_rpm: float = 800.0  # Idle RPM
+@export var stall_rpm: float = 400.0  # Stall RPM threshold
+
+@export var peak_power_hp: float = 450.0  # Maximum horsepower
+@export var peak_power_rpm: float = 6200.0  # RPM at peak power
+@export var peak_torque_nm: float = 600.0  # Maximum torque in Newton-meters
+@export var peak_torque_rpm: float = 4500.0  # RPM at peak torque
+
+@export var rev_limit_rpm: float = 7800.0  # Absolute maximum before limiter engages
+@export var redline_rpm: float = 7500.0  # Warning threshold
+
+# ============================================================================
+# TRANSMISSION SPECIFICATIONS
+# ============================================================================
 
 @export_group("Transmission")
-@export var transmission_type: String = "manual"  # "manual", "automatic", "dual_clutch"
-@export var final_drive_ratio: float = 3.73      # Final drive differential ratio
-@export var gear_ratios: Dictionary = {          # Gear ratios (negative = reverse)
-	"neutral": 0.0,
-	"r": -3.5,
-	"1": 4.0,
-	"2": 2.8,
-	"3": 2.1,
-	"4": 1.6,
-	"5": 1.3,
-	"6": 1.0,
-	"7": 0.8,
-	"8": 0.65,
-	"d": 1.0,              # Drive mode for auto/transmission
-	"l": 3.0               # Low range/off-road
-}
-@export var current_gear: int = 1  # Current selected gear (1-8, R, N)
+@export var transmission_type: String = "Manual"
+@export var number_of_gears: int = 6
+@export var final_drive_ratio: float = 3.45
+@export var clutch_friction_coefficient: float = 0.35
+@export var drivetrain_efficiency: float = 0.85  # 85% efficiency loss
 
-@export_group("Wheel Configuration")
-@export var wheel_diameter: float = 0.68  # Meters (approx 26 inch tire including sidewall)
-@export var wheel_radius: float = 0.34    # Meters
-@export var tire_friction_coefficient: float = 1.2  # Dry asphalt
-@export var tire_width: float = 0.275     # Meters
+# Gear ratios (reverse included if needed)
+var _gear_ratios: Array[float] = [3.9, 2.4, 1.7, 1.3, 1.0, 0.8]
+var _reverse_ratio: float = -3.5
 
-@export_group("Drivetrain")
-@export var drivetrain_type: String = "rwd"  # "fwd", "rwd", "awd", "4wd"
-@export var front_torque_bias: float = 0.0   # Percentage to front wheels (for AWD/FWD)
-@export var rear_torque_bias: float = 1.0    # Percentage to rear wheels (for AWD/RWD)
-@export var limited_slip_diff: bool = true
-@export var diff_lock_ratio: float = 0.7     # How locked the LSD is (0 = open, 1 = locked)
+# ============================================================================
+# VEHICLE PHYSICS INPUTS
+# ============================================================================
 
-@export_group("Vehicle Mass & Inertia")
-@export var vehicle_mass_kg: float = 1500.0   # Total vehicle mass
-@export var drivetrain_loss_factor: float = 0.15  # 15% power loss through drivetrain
-@export var rotating_mass_inertia: float = 2.5  # kg*m^2 equivalent rotating mass
+@export_group("Vehicle Parameters")
+@export var vehicle_mass_kg: float = 1500.0
+@export var wheel_radius_meters: float = 0.33
+@export var wheel_diameter_meters: float = 0.66
+@export var tire_friction_coefficient: float = 1.2
+@export var aerodynamic_drag_coefficient: float = 0.32
+@export var frontal_area_m2: float = 2.2
 
 @export_group("Aerodynamics")
-@export var drag_coefficient: float = 0.32    # Cd value
-@export var frontal_area_m2: float = 2.2      # m^2
-@export var air_density: float = 1.225        # kg/m^3 sea level
+@export var downforce_coefficient: float = 0.5
+@export var front_downforce_ratio: float = 0.45
+@export var rear_downforce_ratio: float = 0.55
 
-var _current_rpm: float = 0.0                  # Actual current RPM
-var _throttle_input: float = 0.0               # 0.0 to 1.0 pedal position
-var _clutch_pedal: float = 1.0                 # 1.0 = disengaged, 0.0 = fully engaged
-var _brake_pressure: float = 0.0               # 0.0 to 1.0 brake pressure
-var _vehicle_speed_ms: float = 0.0             # Calculated vehicle speed (m/s)
-var _wheel_angular_velocity: float = 0.0       # Rad/s
-var _engine_braking_enabled: bool = true
-var _auto_shift_mode: bool = false
-var _shift_points: Dictionary = {}              # Auto shift thresholds per gear
-var _engine_temp: float = 90.0                  # Celsius
-var _turbo_boost: float = 0.0                   # Bar of boost pressure
-var _turbo_spool_level: float = 0.0             # 0.0 to 1.0 turbo spool state
+# ============================================================================
+# INTERNAL STATE
+# ============================================================================
+
+var current_rpm: float = 0.0
+var current_gear: int = 0  # 0 = Neutral
+var clutch_state: ClutchState = ClutchState.DISENGAGED
+var throttle_input: float = 0.0  # 0.0 to 1.0
+var brake_input: float = 0.0  # 0.0 to 1.0
+var vehicle_speed_ms: float = 0.0  # Speed in meters per second
+var vehicle_speed_kmh: float = 0.0  # Speed in km/h
+
+var _torque_curve_points: Array[Vector2] = []
+var _horsepower_curve_points: Array[Vector2] = []
+var _engine_braking_factor: float = 0.4
+var _last_updated_time: float = 0.0
 
 func _init() -> void:
-	_default_shift_points()
-	_init_turbo_model()
+	_generate_torque_curve()
+	_generate_horsepower_curve()
+	_last_updated_time = Time.get_ticks_msec()
 
-func _default_shift_points() -> void:
-	_shift_points = {
-		"up": Vector2(peak_hp_rpm * 0.95, peak_hp_rpm * 1.0),  # Upshift near peak HP
-		"down": Vector2(idle_rpm * 1.3, idle_rpm * 1.5),       # Downshift above idle + margin
-	}
+# ============================================================================
+# TORQUE & HORSEPOWER CURVE GENERATION
+# ============================================================================
 
-func _init_turbo_model() -> void:
-	# Initialize turbo characteristics
-	_turbo_spool_level = 0.0
-	_turbo_boost = 0.0
-
-func get_current_rpm() -> float:
-	return _current_rpm
-
-func get_throttle_input() -> float:
-	return _throttle_input
-
-func get_vehicle_speed_ms() -> float:
-	return _vehicle_speed_ms
-
-func get_vehicle_speed_kmh() -> float:
-	return _vehicle_speed_ms * 3.6
-
-func set_throttle(value: float) -> void:
-	_throttle_input = clamp(value, 0.0, 1.0)
-	throttle_changed.emit(_throttle_input)
-
-func set_clutch(value: float) -> void:
-	_clutch_pedal = clamp(value, 0.0, 1.0)
-	clutch_engaged.emit(_clutch_pedal < 0.1)
-
-func set_brake_pressure(value: float) -> void:
-	_brake_pressure = clamp(value, 0.0, 1.0)
-
-func set_gear(gear: String) -> void:
-	if gear in gear_ratios:
-		var old_gear = current_gear
-		current_gear = gear
-		gear_changed.emit(old_gear, gear)
-
-func set_gear_numeric(gear_num: int) -> void:
-	if gear_num >= 1 and gear_num <= 8:
-		set_gear(str(gear_num))
-	elif gear_num == -1:
-		set_gear("r")
-	elif gear_num == 0:
-		set_gear("n")
-
-func get_gear_ratio() -> float:
-	if current_gear in gear_ratios:
-		return abs(gear_ratios[current_gear])
-	return 0.0
-
-func calculate_torque_at_wheels() -> float:
-	"""Calculate torque delivered to wheels based on current RPM and throttle."""
-	if current_gear == "n":
-		return 0.0
+func _generate_torque_curve() -> void:
+	"""Generate smooth torque curve based on engine characteristics"""
+	var points := 100
+	var step: float = max_rpm / points
 	
-	var engine_torque = get_engine_torque(_current_rpm)
-	var total_ratio = get_total_ratio()
-	var effective_torque = engine_torque * total_ratio * (1.0 - drivetrain_loss_factor)
-	
-	# Apply clutch engagement factor
-	effective_torque *= (1.0 - _clutch_pedal)
-	
-	# Apply turbo boost multiplier if applicable
-	var turbo_multiplier = 1.0 + (_turbo_boost * 0.3)
-	effective_torque *= turbo_multiplier
-	
-	return effective_torque
-
-func get_engine_torque(rpm: float) -> float:
-	"""Get torque output at given RPM using interpolated curve."""
-	if torque_curve.is_empty():
-		# Use default bell curve approximation
-		var rpm_normalized = (rpm - idle_rpm) / (max_rpm - idle_rpm)
-		rpm_normalized = clamp(rpm_normalized, 0.0, 1.0)
+	for i in range(points + 1):
+		var rpm: float = i * step
+		var normalized_rpm: float = fposmod(rpm, max_rpm) / max_rpm
 		
-		# Bell curve peaking at peak_torque_rpm
-		var peak_pos = (peak_torque_rpm - idle_rpm) / (max_rpm - idle_rpm)
-		var distance_from_peak = abs(rpm_normalized - peak_pos)
-		var torque_reduction = pow(distance_from_peak, 2) * 0.5
+		# Gaussian-based torque curve peaking at peak_torque_rpm
+		var gaussian_peak: float = exp(-pow(normalized_rpm - (peak_torque_rpm / max_rpm), 2) / 0.15)
 		
-		return peak_torque_nm * (1.0 - torque_reduction)
-	else:
-		# Interpolate custom curve
-		for i in range(torque_curve.size() - 1):
-			var point1 = torque_curve[i]
-			var point2 = torque_curve[i + 1]
+		# Add some asymmetry for realistic feel
+		var low_ramp: float = 0.0 if normalized_rpm < 0.1 else pow(normalized_rpm - 0.1, 2) * 0.5
+		var high_cut: float = 1.0 if normalized_rpm > 0.95 else (1.0 - normalized_rpm) * 4.0
+		
+		var torque_value: float = peak_torque_nm * gaussian_peak * (1.0 - high_cut) + (low_ramp * peak_torque_nm * 0.3)
+		
+		# Ensure minimum torque at idle
+		if rpm <= idle_rpm:
+			torque_value = max(torque_value, peak_torque_nm * 0.4)
 			
-			if rpm >= point1.x and rpm <= point2.x:
-				var t = (rpm - point1.x) / (point2.x - point1.x)
-				return lerp(point1.y, point2.y, t)
-		
-		# Fallback to last point
-		return torque_curve.back().y
+		_torque_curve_points.append(Vector2(rpm, torque_value))
 
-func get_engine_horsepower(rpm: float) -> float:
-	"""Calculate horsepower at given RPM."""
-	var torque = get_engine_torque(rpm)
-	# HP = (Torque * RPM) / 5252 (imperial) or (Torque * RPM) / 9549 (metric Nm)
-	return (torque * rpm) / 9549.0
+func _generate_horsepower_curve() -> void:
+	"""Generate horsepower curve from torque curve"""
+	for point in _torque_curve_points:
+		var rpm: float = point.x
+		var torque: float = point.y
+		# HP = (Torque * RPM) / 5252 (imperial units conversion)
+		var hp: float = (torque * rpm) / 5252.0
+		_horsepower_curve_points.append(Vector2(rpm, hp))
 
-func get_total_ratio() -> float:
-	"""Get total gear reduction from engine to wheels."""
-	if current_gear == "n":
+# ============================================================================
+# CURVE LOOKUP FUNCTIONS
+# ============================================================================
+
+func get_torque_at_rpm(rpm: float) -> float:
+	"""Get torque value at specified RPM using linear interpolation"""
+	if rpm <= 0.0:
 		return 0.0
+	if rpm >= max_rpm:
+		rpm = max_rpm
+		
+	# Linear interpolation through torque curve points
+	for i in range(_torque_curve_points.size() - 1):
+		var p1: Vector2 = _torque_curve_points[i]
+		var p2: Vector2 = _torque_curve_points[i + 1]
+		
+		if rpm >= p1.x and rpm <= p2.x:
+			var ratio: float = (rpm - p1.x) / (p2.x - p1.x)
+			return lerp(p1.y, p2.y, ratio)
 	
-	var gear_ratio = abs(gear_ratios[current_gear])
+	return _torque_curve_points.back().y
+
+func get_horsepower_at_rpm(rpm: float) -> float:
+	"""Get horsepower value at specified RPM using linear interpolation"""
+	if rpm <= 0.0:
+		return 0.0
+	if rpm >= max_rpm:
+		rpm = max_rpm
+	
+	for i in range(_horsepower_curve_points.size() - 1):
+		var p1: Vector2 = _horsepower_curve_points[i]
+		var p2: Vector2 = _horsepower_curve_points[i + 1]
+		
+		if rpm >= p1.x and rpm <= p2.x:
+			var ratio: float = (rpm - p1.x) / (p2.x - p1.x)
+			return lerp(p1.y, p2.y, ratio)
+	
+	return _horsepower_curve_points.back().y
+
+func get_optimal_shift_rpm() -> float:
+	"""Calculate optimal RPM for upshifting based on power band"""
+	return peak_power_rpm + (peak_power_rpm - idle_rpm) * 0.3
+
+func get_optimal_downshift_rpm() -> float:
+	"""Calculate optimal RPM for downshifting to maintain power"""
+	return peak_torque_rpm * 0.85
+
+# ============================================================================
+# GEAR RATIO CALCULATIONS
+# ============================================================================
+
+func get_current_gear_ratio() -> float:
+	"""Get the current gear ratio (including final drive)"""
+	if current_gear == 0:
+		return 0.0  # Neutral
+	
+	var gear_idx: int = current_gear - 1  # Convert 1-indexed to 0-indexed
+	var gear_ratio: float = gear_ratios[gear_idx] if gear_idx < gear_ratios.size() else gear_ratios.back()
+	
 	return gear_ratio * final_drive_ratio
 
-func calculate_acceleration(force_n: float) -> float:
-	"""Calculate acceleration from force using F=ma."""
-	return force_n / vehicle_mass_kg
-
-func calculate_force_from_power(power_watts: float, velocity_ms: float) -> float:
-	"""Calculate force available at given power and velocity."""
-	if velocity_ms <= 0.0:
-		return power_watts / 1.0  # Handle initial acceleration
-	return power_watts / velocity_ms
-
-func update_physics(dt: float) -> void:
-	"""Update engine physics state based on inputs."""
-	_update_rpm(dt)
-	_update_wheel_velocity()
-	_update_engine_temperature(dt)
-	_update_turbo(dt)
-
-func _update_rpm(dt: float) -> void:
-	"""Simulate engine RPM changes based on throttle, load, and gear."""
-	if current_gear == "n":
-		# Engine idles or revs freely
-		if _throttle_input > 0.0:
-			var target_rpm = idle_rpm + (_throttle_input * (max_rpm - idle_rpm))
-			_current_rpm = lerp(_current_rpm, target_rpm, dt * 5.0)
-		else:
-			_current_rpm = lerp(_current_rpm, idle_rpm, dt * 3.0)
-		return
-	
-	# Calculate target wheel RPM based on vehicle speed
-	var wheel_circumference = PI * wheel_diameter
-	var gear_ratio = get_gear_ratio()
-	var target_engine_rpm = (_vehicle_speed_ms * gear_ratio * final_drive_ratio) / (PI * wheel_radius)
-	
-	# Apply throttle effect
-	var engine_acceleration_rate = 1000.0 * _throttle_input  # RPM per second
-	var engine_deceleration_rate = 500.0 * (1.0 - _throttle_input)
-	
-	if _current_rpm < target_engine_rpm:
-		_current_rpm += engine_acceleration_rate * dt
-	else:
-		_current_rpm -= engine_deceleration_rate * dt
-	
-	# Limit to operational range
-	_current_rpm = clamp(_current_rpm, stall_rpm, max_rpm + 500.0)
-	
-	# Check for over-rev protection
-	if _current_rpm > redline_rpm:
-		_current_rpm = redline_rpm * 0.95  # Soft limit
-	
-	# Apply engine braking when throttle released
-	if _throttle_input <= 0.0 and _clutch_pedal < 0.1:
-		_current_rpm = lerp(_current_rpm, target_engine_rpm, dt * 8.0)
-	
-	rpm_changed.emit(_current_rpm)
-
-func _update_wheel_velocity() -> void:
-	"""Calculate wheel angular velocity from vehicle speed."""
-	if current_gear != "n" and _clutch_pedal < 0.1:
-		var gear_ratio = get_gear_ratio()
-		var total_ratio = gear_ratio * final_drive_ratio
-		_wheel_angular_velocity = (_vehicle_speed_ms / wheel_radius) / total_ratio
-	else:
-		_wheel_angular_velocity = 0.0
-
-func _update_engine_temperature(dt: float) -> void:
-	"""Simulate engine temperature changes."""
-	var heat_generation = _throttle_input * 0.3  # More throttle = more heat
-	var cooling_factor = 0.1  # Natural cooling rate
-	
-	# Turbo adds heat
-	heat_generation += _turbo_boost * 0.5
-	
-	_engine_temp += (heat_generation - cooling_factor) * dt
-	_engine_temp = clamp(_engine_temp, 60.0, 120.0)  # Normal operating range
-
-func _update_turbo(dt: float) -> void:
-	"""Simulate turbocharger spool and boost."""
-	var target_boost = _throttle_input * 1.5  # Max 1.5 bar boost
-	var spool_rate = 2.0  # Turbo spool speed
-	var bleed_rate = 1.0  # Boost bleed-off rate
-	
-	# Spool up
-	_turbo_spool_level = lerp(_turbo_spool_level, _throttle_input, dt * spool_rate)
-	_turbo_boost = lerp(_turbo_boost, _turbo_spool_level * target_boost, dt * spool_rate)
-	
-	# Bleed off when throttle released
-	if _throttle_input < 0.1:
-		_turbo_boost = max(0.0, _turbo_boost - dt * bleed_rate)
-		_turbo_spool_level = max(0.0, _turbo_spool_level - dt * bleed_rate)
-
-func calculate_aerodynamic_drag(velocity_ms: float) -> float:
-	"""Calculate aerodynamic drag force at given velocity."""
-	var dynamic_pressure = 0.5 * air_density * pow(velocity_ms, 2)
-	var drag_force = dynamic_pressure * drag_coefficient * frontal_area_m2
-	return drag_force
-
-func calculate_max_theoretical_speed() -> float:
-	"""Calculate theoretical maximum speed at peak horsepower."""
-	var peak_hp_watts = peak_horsepower * 745.7  # Convert HP to watts
-	var drag_at_max = calculate_aerodynamic_drag(0)  # Initial
-	# Simplified: max speed when power = drag
-	# P = F*v = (0.5*rho*Cd*A*v^2)*v = 0.5*rho*Cd*A*v^3
-	var v_cubed = peak_hp_watts / (0.5 * air_density * drag_coefficient * frontal_area_m2)
-	return pow(v_cubed, 1.0 / 3.0)
-
-func simulate_drift(lateral_force: float, grip_limit: float) -> float:
-	"""Calculate drift angle based on lateral forces vs available grip."""
-	if grip_limit <= 0.0:
+func get_wheel_rpm() -> float:
+	"""Calculate wheel RPM based on engine RPM and current gear"""
+	if current_gear == 0:
 		return 0.0
 	
-	var slip_angle = asin(clamp(lateral_force / grip_limit, -1.0, 1.0))
-	return rad_to_deg(slip_angle)
+	var total_ratio: float = get_current_gear_ratio()
+	return current_rpm / abs(total_ratio)
 
-func get_powerband_status() -> String:
-	"""Return current engine powerband status string."""
-	var normalized_rpm = (_current_rpm - idle_rpm) / (max_rpm - idle_rpm)
+func calculate_vehicle_speed_from_rpm() -> float:
+	"""Calculate vehicle speed based on engine RPM and gear"""
+	var wheel_rpm: float = get_wheel_rpm()
+	var wheel_circumference: float = PI * wheel_diameter_meters
+	var speed_m_per_min: float = wheel_rpm * wheel_circumference
+	var speed_m_per_sec: float = speed_m_per_min / 60.0
+	var speed_kmh: float = speed_m_per_sec * 3.6
 	
-	if normalized_rpm < 0.3:
-		return "low"
-	elif normalized_rpm < 0.6:
-		return "mid"
-	elif normalized_rpm < 0.85:
-		return "high"
-	else:
-		return "redline"
+	return speed_kmh
 
-func reset() -> void:
-	"""Reset powertrain to initial state."""
-	_current_rpm = idle_rpm
-	_throttle_input = 0.0
-	_clutch_pedal = 1.0
-	_brake_pressure = 0.0
-	_vehicle_speed_ms = 0.0
-	_wheel_angular_velocity = 0.0
-	_engine_temp = 90.0
-	_turbo_boost = 0.0
-	_turbo_spool_level = 0.0
+func rpm_for_speed(speed_kmh: float, gear: int) -> float:
+	"""Calculate required RPM for given speed in specific gear"""
+	if gear <= 0 or gear > number_of_gears:
+		return 0.0
+	
+	var gear_idx: int = gear - 1
+	var gear_ratio: float = gear_ratios[gear_idx] if gear_idx < gear_ratios.size() else gear_ratios.back()
+	
+	var wheel_rps: float = (speed_kmh / 3.6) / (PI * wheel_diameter_meters)
+	var wheel_rpm: float = wheel_rps * 60.0
+	
+	return wheel_rpm * abs(gear_ratio * final_drive_ratio)
+
+# ============================================================================
+# THROTTLE & BRAKE INPUT HANDLING
+# ============================================================================
+
+func set_throttle(input: float) -> void:
+	throttle_input = clamp(input, 0.0, 1.0)
+	throttle_change.emit(throttle_input)
+
+func set_brake(input: float) -> void:
+	brake_input = clamp(input, 0.0, 1.0)
+
+func update_physics(delta: float) -> void:
+	"""Update powertrain physics calculations each frame"""
+	_update_rpm(delta)
+	_apply_aerodynamic_effects()
+	_check_clutch_behavior()
+
+func _update_rpm(delta: float) -> void:
+	"""Simulate engine RPM changes based on throttle, load, and gear"""
+	if current_gear == 0:
+		# Neutral - engine freewheels
+		if throttle_input > 0.0:
+			current_rpm = lerp(current_rpm, throttle_input * max_rpm * 0.8, delta * 15.0)
+		else:
+			current_rpm = lerp(current_rpm, idle_rpm, delta * 5.0)
+		return
+	
+	# Calculate wheel speed from vehicle speed
+	var expected_rpm: float = rpm_for_speed(vehicle_speed_kmh, current_gear)
+	
+	if clutch_state == ClutchState.DISENGAGED:
+		# Clutch disengaged - engine goes to idle or throttle response
+		if throttle_input > 0.1:
+			current_rpm = lerp(current_rpm, throttle_input * max_rpm * 0.6, delta * 20.0)
+		else:
+			current_rpm = lerp(current_rpm, idle_rpm, delta * 8.0)
+	elif clutch_state == ClutchState.PARTIAL:
+		# Partial engagement - blend between engine and wheel speeds
+		var slip_factor: float = 0.5  # Tunable partial engagement
+		var target_rpm: float = lerp(expected_rpm, throttle_input * max_rpm, 0.7)
+		current_rpm = lerp(current_rpm, target_rpm, delta * (slip_factor + 0.3))
+	else:
+		# Fully engaged - connect engine to wheels
+		var engine_acceleration: float = _calculate_engine_acceleration(delta)
+		
+		# Apply acceleration or deceleration
+		if throttle_input > 0.1:
+			current_rpm += engine_acceleration * throttle_input * delta * 100.0
+		else:
+			# Engine braking when no throttle
+			current_rpm -= engine_acceleration * _engine_braking_factor * delta * 50.0
+		
+		# Prevent going below idle when moving
+		if current_rpm < idle_rpm and vehicle_speed_kmh > 1.0:
+			current_rpm = idle_rpm
+		
+		# Clamp within operational range
+		current_rpm = clamp(current_rpm, idle_rpm, rev_limit_rpm)
+	
+	# Emit signal
+	rpm_changed.emit(current_rpm)
+
+func _calculate_engine_acceleration(delta: float) -> float:
+	"""Calculate how fast the engine can accelerate based on torque"""
+	var current_torque: float = get_torque_at_rpm(current_rpm)
+	var effective_torque: float = current_torque * drivetrain_efficiency
+	
+	# Simplified rotational inertia model
+	var effective_inertia: float = 0.15  # kg*m^2 equivalent
+	var angular_acceleration: float = effective_torque / effective_inertia
+	
+	# Convert to RPM change per second
+	var rpm_per_second: float = angular_acceleration * 9.55
+	
+	return rpm_per_second
+
+# ============================================================================
+# CLUTCH BEHAVIOR
+# ============================================================================
+
+func engage_clutch() -> void:
+	clutch_state = ClutchState.ENGINE_BRKING
+	clutch_engaged.emit()
+
+func disengage_clutch() -> void:
+	clutch_state = ClutchState.DISENGAGED
+	clutch_disengaged.emit()
+
+func partial_engage_clutch(amount: float) -> void:
+	clutch_state = ClutchState.PARTIAL
+	# amount parameter controls engagement level
+
+func _check_clutch_behavior() -> void:
+	"""Handle clutch slip and heat buildup during engagement"""
+	if clutch_state == ClutchState.PARTIAL:
+		var rpm_difference: float = abs(current_rpm - get_wheel_rpm())
+		var slip_heat: float = rpm_difference * (1.0 - get_partial_engagement_amount())
+		# Could track clutch temperature here for wear simulation
+
+func get_partial_engagement_amount() -> float:
+	return 0.5  # Placeholder for actual clutch pedal position
+
+# ============================================================================
+# VEHICLE SPEED SIMULATION
+# ============================================================================
+
+func apply_vehicle_force(force_n: float, delta: float) -> void:
+	"""Apply external force to vehicle (from traction, drag, etc.)"""
+	var acceleration: float = force_n / vehicle_mass_kg
+	vehicle_speed_ms += acceleration * delta
+	vehicle_speed_kmh = vehicle_speed_ms * 3.6
+
+func apply_aerodynamic_effects() -> void:
+	"""Calculate and apply aerodynamic drag forces"""
+	var air_density: float = 1.225  # kg/m^3 at sea level
+	var drag_force: float = 0.5 * air_density * aerodynamic_drag_coefficient * frontal_area_m2 * vehicle_speed_ms * vehicle_speed_ms
+	
+	apply_vehicle_force(-drag_force, 1.0)
+
+func _apply_aerodynamic_effects() -> void:
+	apply_aerodynamic_effects()
+
+func calculate_downforce() -> float:
+	"""Calculate total downforce generated by aerodynamics"""
+	var air_density: float = 1.225
+	var dynamic_pressure: float = 0.5 * air_density * vehicle_speed_ms * vehicle_speed_ms
+	var total_downforce: float = downforce_coefficient * dynamic_pressure * frontal_area_m2
+	
+	return total_downforce
+
+func get_front_axle_load() -> float:
+	"""Calculate weight distribution on front axle"""
+	var base_weight: float = vehicle_mass_kg * 9.81 * front_downforce_ratio
+	var aero_downforce: float = calculate_downforce() * front_downforce_ratio
+	return base_weight + aero_downforce
+
+func get_rear_axle_load() -> float:
+	"""Calculate weight distribution on rear axle"""
+	var base_weight: float = vehicle_mass_kg * 9.81 * rear_downforce_ratio
+	var aero_downforce: float = calculate_downforce() * rear_downforce_ratio
+	return base_weight + aero_downforce
+
+# ============================================================================
+# SHIFT LOGIC
+# ============================================================================
+
+func shift_up() -> bool:
+	"""Attempt to shift up one gear"""
+	if current_gear < number_of_gears:
+		var old_gear: int = current_gear
+		current_gear += 1
+		gear_changed.emit(old_gear, current_gear)
+		return true
+	return false
+
+func shift_down() -> bool:
+	"""Attempt to shift down one gear"""
+	if current_gear > 1:
+		var old_gear: int = current_gear
+		current_gear -= 1
+		gear_changed.emit(old_gear, current_gear)
+		return true
+	return false
+
+func set_gear(gear: int) -> bool:
+	"""Set specific gear (with validation)"""
+	if gear < 0 or gear > number_of_gears:
+		return false
+	
+	if gear != current_gear:
+		var old_gear: int = current_gear
+		current_gear = gear
+		gear_changed.emit(old_gear, current_gear)
+	return true
+
+func neutral() -> void:
+	current_gear = 0
+
+func reverse() -> bool:
+	"""Engage reverse gear"""
+	if current_gear == 0 or current_gear == number_of_gears:
+		current_gear = -1  # Representing reverse
+		gear_changed.emit(0, -1)
+		return true
+	return false
+
+# ============================================================================
+# POWER OUTPUT CALCULATIONS
+# ============================================================================
+
+func get_wheel_torque() -> float:
+	"""Calculate torque delivered to the wheels"""
+	var engine_torque: float = get_torque_at_rpm(current_rpm)
+	var gear_ratio: float = get_current_gear_ratio()
+	
+	if gear_ratio == 0.0:
+		return 0.0
+	
+	return engine_torque * abs(gear_ratio) * drivetrain_efficiency
+
+func get_wheel_power() -> float:
+	"""Calculate power delivered to the wheels"""
+	var wheel_torque: float = get_wheel_torque()
+	var wheel_rps: float = get_wheel_rpm() / 60.0
+	
+	# Power = Torque * Angular Velocity
+	return wheel_torque * wheel_rps * 1.34102  # Convert to horsepower
+
+func get_available_traction_force() -> float:
+	"""Calculate maximum traction force available at wheels"""
+	var normal_force: float = get_rear_axle_load()  # Assume RWD for now
+	var max_traction: float = normal_force * tire_friction_coefficient
+	
+	return max_traction
+
+func calculate_acceleration() -> float:
+	"""Calculate vehicle acceleration in m/s^2"""
+	var wheel_torque: float = get_wheel_torque()
+	var driving_force: float = wheel_torque / wheel_radius_meters
+	var max_traction: float = get_available_traction_force()
+	
+	# Limit by available traction
+	driving_force = min(driving_force, max_traction)
+	
+	# Subtract aerodynamic drag
+	var drag_force: float = 0.5 * 1.225 * aerodynamic_drag_coefficient * frontal_area_m2 * vehicle_speed_ms * vehicle_speed_ms
+	driving_force -= drag_force
+	
+	# Calculate acceleration
+	var acceleration: float = driving_force / vehicle_mass_kg
+	
+	return acceleration
+
+# ============================================================================
+# CRASH & DAMAGE SIMULATION
+# ============================================================================
+
+var _engine_damage_level: float = 0.0
+var _transmission_damage_level: float = 0.0
+
+func take_impact(impact_force: float, impact_location: String) -> void:
+	"""Simulate damage from collision impact"""
+	match impact_location:
+		"front":
+			_engine_damage_level += impact_force * 0.01
+		"rear":
+			_transmission_damage_level += impact_force * 0.008
+		"side":
+			_engine_damage_level += impact_force * 0.005
+			_transmission_damage_level += impact_force * 0.005
+
+func get_performance_penalty() -> float:
+	"""Get performance reduction due to damage"""
+	return (_engine_damage_level + _transmission_damage_level) * 0.5
+
+func get_max_effective_rpm() -> float:
+	"""Get RPM limit after accounting for damage"""
+	return max_rpm * (1.0 - get_performance_penalty())
+
+func reset_damage() -> void:
+	_engine_damage_level = 0.0
+	_transmission_damage_level = 0.0
+
+# ============================================================================
+# FUEL CONSUMPTION (for ICE vehicles)
+# ============================================================================
+
+var fuel_remaining: float = 60.0  # Liters
+var fuel_consumption_rate: float = 0.0  # L/min
+
+func calculate_fuel_consumption() -> float:
+	"""Calculate fuel consumption based on throttle and RPM"""
+	if powertrain_type != PowertrainType.ICE:
+		return 0.0
+	
+	# Base consumption + throttle-dependent consumption
+	var base_consumption: float = 0.4  # L/h at idle
+	var throttle_consumption: float = throttle_input * 25.0  # Max 25 L/h at full throttle
+	
+	fuel_consumption_rate = base_consumption + throttle_consumption
+	
+	return fuel_consumption_rate
+
+func consume_fuel(delta: float) -> void:
+	"""Consume fuel over time"""
+	var consumption: float = calculate_fuel_consumption()
+	fuel_remaining -= consumption * delta / 60.0  # Convert to minutes
+	
+	fuel_remaining = max(fuel_remaining, 0.0)
+
+func is_out_of_fuel() -> bool:
+	return fuel_remaining <= 0.0
+
+# ============================================================================
+# TELEMETRY & DEBUG INFO
+# ============================================================================
+
+func get_telemetry_data() -> Dictionary:
+	"""Return comprehensive telemetry for debugging and UI display"""
+	return {
+		"rpm": current_rpm,
+		"max_rpm": max_rpm,
+		"current_gear": current_gear,
+		"throttle_input": throttle_input,
+		"brake_input": brake_input,
+		"vehicle_speed_kmh": vehicle_speed_kmh,
+		"vehicle_speed_ms": vehicle_speed_ms,
+		"wheel_torque_nm": get_wheel_torque(),
+		"wheel_power_hp": get_wheel_power(),
+		"acceleration_ms2": calculate_acceleration(),
+		"clutch_state": clutch_state,
+		"fuel_remaining_l": fuel_remaining if powertrain_type == PowertrainType.ICE else null,
+		"torque_at_rpm": get_torque_at_rpm(current_rpm),
+		"hp_at_rpm": get_horsepower_at_rpm(current_rpm),
+		"performance_penalty": get_performance_penalty(),
+		"aero_drag_n": 0.5 * 1.225 * aerodynamic_drag_coefficient * frontal_area_m2 * vehicle_speed_ms * vehicle_speed_ms,
+		"downforce_n": calculate_downforce(),
+		"front_axle_load_n": get_front_axle_load(),
+		"rear_axle_load_n": get_rear_axle_load()
+	}
+
+func dump_debug_info() -> void:
+	print("\n===== POWERTRAIN DEBUG =====")
+	print("RPM: %.1f / %d (redline: %d)" % [current_rpm, max_rpm, redline_rpm])
+	print("Gear: %d | Throttle: %.2f | Brake: %.2f" % [current_gear, throttle_input, brake_input])
+	print("Speed: %.1f km/h (%.2f m/s)" % [vehicle_speed_kmh, vehicle_speed_ms])
+	print("Wheel Torque: %.1f Nm | Wheel Power: %.1f hp" % [get_wheel_torque(), get_wheel_power()])
+	print("Acceleration: %.2f m/s²")
+	print("============================\n")
+
+</FILE "scripts/vehicles/Powertrain.gd">
