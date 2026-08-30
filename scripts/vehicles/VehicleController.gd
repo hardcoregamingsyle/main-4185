@@ -3,415 +3,540 @@ class_name VehicleController
 
 ## VehicleController - Core vehicle physics controller for racing simulation
 ## Handles throttle, brake, steering, wheel forces, gear shifting, and vehicle dynamics
-## Integrates with PhysicsSettings, Powertrain, and InputManager systems
+## Uses PhysicsSettings constants for consistent tuning across all vehicles
 ## Copyright 2026 Thalamus Racing Simulator Project
 
-signal speed_changed(current_speed: float)
-signal rpm_changed(rpm: float)
+# --- SIGNALS ---
+signal speed_changed(new_speed: float)
+signal rpm_changed(new_rpm: int)
 signal gear_changed(old_gear: int, new_gear: int)
-signal drift_started()
-signal drift_ended()
-signal collision_detected(collision_info: Dictionary)
-signal lap_completed(lap_data: Dictionary)
-signal race_finished(position: int, time: float)
-signal engine_stalled()
+signal drifting(is_drifting: bool)
+signal collision_impact(impact_force: Vector3)
+signal lap_completed(lap_time: float)
+signal race_checkpoint(passed: bool, checkpoint_id: int)
+signal engine_event(event_type: EngineEventType)
 
-# ============================================================================
-# INPUT VALUES (from InputManager)
-# ============================================================================
-
-@export var _throttle_input: float = 0.0: set = _set_throttle_input
-@export var _brake_input: float = 0.0: set = _set_brake_input
-@export var _steering_input: float = 0.0: set = _set_steering_input
-@export var _clutch_input: float = 0.0: set = _set_clutch_input
-@export var _handbrake_input: float = 0.0: set = _set_handbrake_input
-
-var _last_throttle: float = 0.0
-var _last_brake: float = 0.0
-var _last_steering: float = 0.0
-
-# ============================================================================
-# VEHICLE PHYSICS STATE
-# ============================================================================
-
-var current_speed: float = 0.0  # Speed in m/s
-var max_speed: float = 65.0  # Max forward speed m/s
-var reverse_speed: float = 20.0  # Max reverse speed m/s
-var acceleration: float = 0.0
-var deceleration: float = 0.0
-
-var rotation_velocity: float = 0.0  # Yaw rate rad/s
-var slip_angle: float = 0.0  # Tire slip angle
-var lateral_acceleration: float = 0.0  # G-force lateral
-var longitudinal_acceleration: float = 0.0  # G-force longitudinal
-
-# ============================================================================
-# GEARBOX SYSTEM
-# ============================================================================
-
-var current_gear: int = 0  # 0=Neutral, -1=Reverse, 1-6=Gears
-var target_gear: int = 0
-var rpm: float = 0.0  # Engine RPM
-var redline_rpm: float = 7500.0
-var idle_rpm: float = 800.0
-var max_rpm: float = 8500.0
-
-var _gear_ratios: Array[float] = [0.0, 4.5, 3.0, 2.0, 1.4, 1.1, 0.9]  # Neutral + gears 1-6
-var _reverse_ratio: float = 4.8
-var final_drive_ratio: float = 3.73
-var tire_radius: float = 0.33  # ~33cm radius tires
-
-# ============================================================================
-# POWERTRAIN INTEGRATION
-# ============================================================================
-
-var powertrain: Node = null
-var torque_curve: Array[float] = []
-var power_curve: Array[float] = []
-
-func _ready() -> void:
-	_init_powertrain()
-	_load_torque_curve()
-	_connect_signals()
-	_set_process_mode(ProcessModeEnum.ALWAYS)
-
-func _init_powertrain() -> void:
-	if powertrain == null:
-		powertrain = get_parent().find_child("Powertrain", false, true)
-		if powertrain != null:
-			powertrain.set_owner(self)
-
-func _load_torque_curve() -> void:
-	torque_curve = [
-		0.0, 0.3, 0.5, 0.65, 0.78, 0.85, 0.92, 0.95, 0.90, 0.80, 0.65, 0.50, 0.35, 0.20, 0.05, 0.0
-	]
-	
-	# Build power curve from torque * RPM
-	var total_steps = torque_curve.size()
-	for i in range(total_steps):
-		var normalized_rpm = float(i) / (total_steps - 1)
-		var torque_factor = torque_curve[i]
-		var power_factor = torque_factor * normalized_rpm
-		power_curve.append(power_factor)
-
-func _connect_signals() -> void:
-	if GameManager:
-		GameManager.game_state_changed.connect(_on_game_state_changed)
-
-func _on_game_state_changed(new_state: GameState) -> void:
-	match new_state:
-		GameManager.GameState.RACE_ACTIVE:
-			_start_vehicle()
-		GameManager.GameState.RACE_PAUSED:
-			_pause_vehicle()
-		GameManager.GameState.MAIN_MENU:
-			_reset_vehicle()
-
-func _start_vehicle() -> void:
-	current_gear = 1
-	target_gear = 1
-	rpm = idle_rpm
-
-func _pause_vehicle() -> void:
-	pass
-
-func _reset_vehicle() -> void:
-	current_speed = 0.0
-	rpm = idle_rpm
-	current_gear = 0
-	target_gear = 0
-
-# ============================================================================
-# MAIN PHYSICS UPDATE
-# ============================================================================
-
-func _physics_process(delta: float) -> void:
-	_update_inputs(delta)
-	_update_physics(delta)
-	_update_drift(delta)
-	_update_collision_detection(delta)
-	_update_audio()
-
-func _update_inputs(delta: float) -> void:
-	_last_throttle = _throttle_input
-	_last_brake = _brake_input
-	_last_steering = _steering_input
-	
-	# Clamp inputs
-	_throttle_input = clampf(_throttle_input, 0.0, 1.0)
-	_brake_input = clampf(_brake_input, 0.0, 1.0)
-	_steering_input = clampf(_steering_input, -1.0, 1.0)
-	_clutch_input = clampf(_clutch_input, 0.0, 1.0)
-	_handbrake_input = clampf(_handbrake_input, 0.0, 1.0)
-
-func _update_physics(delta: float) -> void:
-	_update_rpm(delta)
-	_update_gear_shifting(delta)
-	_update_force_application(delta)
-	_update_velocity_and_position(delta)
-
-func _update_rpm(delta: float) -> void:
-	if current_gear == 0:
-		# Neutral - idle or rev matching
-		if _throttle_input > 0.0:
-			rpm += (_throttle_input * 2000.0) * delta
-		else:
-			rpm = lerp(rpm, idle_rpm, delta * 5.0)
-		return
-	
-	var wheel_speed = abs(current_speed) / tire_radius
-	var drive_ratio = _get_current_drive_ratio()
-	var engine_rpm_from_wheel = wheel_speed * drive_ratio * final_drive_ratio
-	
-	if current_gear > 0:
-		rpm = lerp(rpm, engine_rpm_from_wheel, delta * 10.0)
-	else:
-		rpm = lerp(rpm, engine_rpm_from_wheel * 1.1, delta * 10.0)  # Slight overspeed in reverse
-	
-	rpm = clampf(rpm, idle_rpm, max_rpm)
-	emit_signal("rpm_changed", rpm)
-
-func _get_current_drive_ratio() -> float:
-	if current_gear == -1:
-		return _reverse_ratio
-	elif current_gear <= 0:
-		return 0.0
-	return _gear_ratios[current_gear]
-
-func _update_gear_shifting(delta: float) -> void:
-	# Simple automatic transmission logic
-	if current_gear == 0:
-		if _throttle_input > 0.1:
-			target_gear = 1
-		return
-	
-	if target_gear == current_gear:
-		# Determine target gear based on RPM
-		var ratio = _get_current_drive_ratio()
-		var wheel_rpm = abs(current_speed) / tire_radius
-		
-		if rpm > redline_rpm * 0.9 and target_gear < 6:
-			target_gear += 1
-		elif rpm < idle_rpm * 1.2 and target_gear > 1:
-			target_gear -= 1
-		elif current_speed < 5.0 and target_gear > 1:
-			target_gear = 1
-	
-	# Gear change with clutch
-	if current_gear != target_gear:
-		var shift_delay = 0.15 + _clutch_input * 0.2
-		_try_shift_gear(shift_delay)
-
-func _try_shift_gear(delay: float) -> void:
-	var old_gear = current_gear
-	current_gear = target_gear
-	emit_signal("gear_changed", old_gear, current_gear)
-	
-	# Downshift rev-match
-	if current_gear < old_gear:
-		rpm = lerp(rpm, idle_rpm * 2.0, 0.3)
-
-func _update_force_application(delta: float) -> void:
-	var drive_ratio = _get_current_drive_ratio()
-	var torque_multiplier = _calculate_torque_multiplier()
-	var applied_torque = torque_multiplier * drive_ratio
-	
-	# Apply force based on gear and input
-	if current_gear == 0:
-		acceleration = 0.0
-		deceleration = PhysicsSettings.gravity * 0.02
-		return
-	
-	if current_gear > 0:
-		var max_torque = 400.0 * torque_multiplier
-		var engine_force = max_torque * _throttle_input * (1.0 - (ramp_speed_to_max()))
-		
-		# Aerodynamic drag
-		var drag_coefficient = 0.35
-		var air_density = 1.225
-		var frontal_area = 2.2
-		var drag_force = 0.5 * air_density * drag_coefficient * frontal_area * current_speed * current_speed
-		
-		# Rolling resistance
-		var rolling_resistance = 0.015 * PhysicsSettings.default_vehicle_mass * PhysicsSettings.gravity
-		
-		# Net force
-		var net_force = engine_force - drag_force - rolling_resistance
-		
-		acceleration = net_force / PhysicsSettings.default_vehicle_mass
-		
-		# Cap speed
-		if current_speed >= max_speed:
-			acceleration = -deceleration
-	elif current_gear == -1:
-		var reverse_force = 200.0 * _brake_input
-		var drag_force = 0.5 * air_density * drag_coefficient * frontal_area * current_speed * current_speed
-		var rolling_resistance = 0.015 * PhysicsSettings.default_vehicle_mass * PhysicsSettings.gravity
-		var net_force = reverse_force - drag_force - rolling_resistance
-		acceleration = net_force / PhysicsSettings.default_vehicle_mass
-		max_speed = reverse_speed
-
-func _calculate_torque_multiplier() -> float:
-	var normalized_rpm = (rpm - idle_rpm) / (redline_rpm - idle_rpm)
-	normalized_rpm = clampf(normalized_rpm, 0.0, 1.0)
-	
-	var index = int(normalized_rpm * (torque_curve.size() - 1))
-	index = clamp(index, 0, torque_curve.size() - 1)
-	
-	return torque_curve[index]
-
-func ramp_speed_to_max() -> float:
-	if max_speed <= 0:
-		return 0.0
-	return min(abs(current_speed) / max_speed, 1.0)
-
-func _update_velocity_and_position(delta: float) -> void:
-	# Apply acceleration
-	if current_gear != 0:
-		velocity.x += acceleration * delta * 100.0
-	else:
-		velocity.x -= PhysicsSettings.gravity * 0.02 * delta * 100.0
-	
-	# Apply friction
-	velocity.x *= 0.998
-	
-	# Update speed
-	current_speed = velocity.x
-	
-	# Clamp speeds
-	if current_gear > 0:
-		current_speed = clampf(current_speed, -max_speed, max_speed)
-	elif current_gear == -1:
-		current_speed = clampf(current_speed, -reverse_speed, reverse_speed)
-	else:
-		current_speed = 0.0
-	
-	velocity.x = current_speed
-	
-	# Calculate accelerations
-	longitudinal_acceleration = (current_speed - _last_speed) / delta if delta > 0 else 0.0
-	_last_speed = current_speed
-	
-	emit_signal("speed_changed", current_speed)
-
-func _update_drift(delta: float) -> void:
-	# Drift mechanics using handbrake and throttle balance
-	var is_drifting = _handbrake_input > 0.5 and abs(current_speed) > 10.0
-	
-	if is_drifting and not _is_drifting:
-		_is_drifting = true
-		emit_signal("drift_started")
-		_drift_timer = 0.0
-	elif not is_drifting and _is_drifting:
-		_is_drifting = false
-		emit_signal("drift_ended")
-		_drift_timer = 0.0
-	
-	if _is_drifting:
-		_drift_timer += delta
-		_slip_angle = lerp(_slip_angle, _steering_input * 0.8, delta * 5.0)
-		lateral_acceleration = abs(velocity.y * rotation_velocity) / 9.81
-	else:
-		_slip_angle = lerp(_slip_angle, 0.0, delta * 10.0)
-		lateral_acceleration = 0.0
-
-func _update_collision_detection(delta: float) -> void:
-	if is_on_colliding():
-		var collision = get_collider()
-		var collision_normal = get_collision_normal()
-		
-		collision_info = {
-			"collider": collision,
-			"normal": collision_normal,
-			"position": global_position,
-			"speed_at_impact": current_speed,
-			"time": Time.get_unix_time_from_system()
-		}
-		
-		emit_signal("collision_detected", collision_info)
-		
-		# Bounce effect
-		var bounce_force = collision_normal * current_speed * 0.5
-		velocity += bounce_force
-
-func _update_audio() -> void:
-	if AudioManager:
-		var audio_type = AudioType.IDLE
-		if current_gear == 0:
-			audio_type = AudioType.IDLE
-		elif abs(current_speed) < 5.0:
-			audio_type = AudioType.LOW_SPEED
-		elif abs(current_speed) < 20.0:
-			audio_type = AudioType.MEDIUM_SPEED
-		else:
-			audio_type = AudioType.HIGH_SPEED
-		
-		if rpm > redline_rpm * 0.9:
-			audio_type = AudioType.REDLINE
-		
-		AudioManager.play_sound(audio_type, rpm / max_rpm)
-
-# ============================================================================
-# HELPER METHODS
-# ============================================================================
-
-func change_gear(gear: int) -> void:
-	target_gear = gear
-	if gear == 0:
-		current_gear = 0
-		rpm = idle_rpm
-	elif gear >= 1 and gear <= 6:
-		current_gear = gear
-	elif gear == -1:
-		current_gear = -1
-
-func reset_gearbox() -> void:
-	current_gear = 0
-	target_gear = 0
-	rpm = idle_rpm
-
-func apply_brake(force: float) -> void:
-	var braking_force = force * PhysicsSettings.default_vehicle_mass * 0.8
-	velocity.x -= braking_force * _brake_input * 0.1
-
-func reset_vehicle_state() -> void:
-	current_speed = 0.0
-	velocity.x = 0.0
-	rpm = idle_rpm
-	current_gear = 0
-	target_gear = 0
-	_slip_angle = 0.0
-	_is_drifting = false
-
-# ============================================================================
-# SIGNAL HANDLERS
-# ============================================================================
-
-func _on_game_state_changed(new_state: GameState) -> void:
-	match new_state:
-		GameManager.GameState.RACE_STARTED:
-			_start_vehicle()
-		GameManager.GameState.RACE_ENDED:
-			_reset_vehicle()
-
-# ============================================================================
-# INTERNAL VARIABLES
-# ============================================================================
-
-var _is_drifting: bool = false
-var _drift_timer: float = 0.0
-var _last_speed: float = 0.0
-var collision_info: Dictionary = {}
-var _input_delay: float = 0.0
-
-enum AudioType {
-	IDLE,
-	LOW_SPEED,
-	MEDIUM_SPEED,
-	HIGH_SPEED,
-	REDLINE,
-	GEAR_CHANGE,
-	COLLISION
+enum EngineEventType {
+	STARTED,
+	SHUTDOWN,
+	REV_LIMITE,
+	GEAR_UP,
+	GEAR_DOWN,
 }
 
-</file_content_truncated_here>
+# --- INPUT BINDINGS (from InputManager autoload) ---
+var _throttle: float = 0.0
+var _brake: float = 0.0
+var _steering: float = 0.0
+var _clutch: float = 0.0
+var _handbrake: float = 0.0
+
+# --- PHYSICS STATE ---
+@export var max_speed: float = 200.0  # km/h
+@export var acceleration_rate: float = 8.0  # m/s²
+@export var braking_rate: float = 10.0  # m/s²
+@export var steer_sensitivity: float = 1.5
+@export var mass: float = 1500.0
+
+var current_speed: float = 0.0  # m/s
+var current_rpm: int = 0
+var current_gear: int = 0
+var target_gear: int = 0
+var is_shifting: bool = false
+var shift_progress: float = 0.0
+
+# --- DRIFT MECHANICS ---
+var slip_angle: float = 0.0
+var lateral_g: float = 0.0
+var is_drifting: bool = false
+var drift_score: float = 0.0
+var drift_multiplier: float = 1.0
+
+# --- POWERTRAIN INTEGRATION ---
+var powertrain: Node = null
+var engine_torque: float = 0.0
+var engine_power: float = 0.0
+var transmission_ratio: float = 1.0
+
+# --- WHEEL CONFIGURATION ---
+const FRONT_WHEEL_OFFSET: float = 1.2
+const REAR_WHEEL_OFFSET: float = 1.2
+const WHEEL_BASE: float = 2.5
+const TRACK_WIDTH: float = 1.5
+
+# --- RACE DATA ---
+var current_lap_time: float = 0.0
+var total_race_time: float = 0.0
+var lap_count: int = 0
+var best_lap_time: float = 0.0
+var checkpoints_passed: Array[int] = []
+
+# --- REFERENCE TO GAME MANAGER ---
+var game_manager: GameManager = GameManager
+
+# --- READY ---
+func _ready() -> void:
+	process_mode = ProcessModeEnum.PROCESS_PHYSICS
+	
+	# Connect to global audio manager
+	if AudioManager:
+		AudioManager.sound_played.connect(_on_audio_played)
+	
+	# Initialize powertrain reference
+	powertrain = get_node_or_null("../Powertrain")
+	if powertrain == null:
+		print("Warning: VehicleController could not find Powertrain node")
+	
+	# Set up initial state
+	_init_vehicle_state()
+	_setup_collision_detection()
+
+# --- INITIALIZATION ---
+func _init_vehicle_state() -> void:
+	current_gear = 0  # Neutral
+	target_gear = 0
+	is_shifting = false
+	shift_progress = 0.0
+	current_speed = 0.0
+	current_rpm = 0
+	engine_torque = 0.0
+	engine_power = 0.0
+	transmission_ratio = 1.0
+	
+	slip_angle = 0.0
+	lateral_g = 0.0
+	is_drifting = false
+	drift_score = 0.0
+	drift_multiplier = 1.0
+	
+	current_lap_time = 0.0
+	total_race_time = 0.0
+	lap_count = 0
+	best_lap_time = 999.0
+	checkpoints_passed = []
+	
+	if powertrain:
+		powertrain.engine_started.emit()
+		engine_event.emit(EngineEventType.STARTED)
+
+# --- COLLISION SETUP ---
+func _setup_collision_detection() -> void:
+	var collision_shape = CollisionShape3D.new()
+	collision_shape.shape = BoxShape3D.new()
+	collision_shape.shape.size = Vector3(2.0, 1.0, 4.5)
+	add_child(collision_shape)
+	
+	var area_3d = Area3D.new()
+	area_3d.collision_layer = 2  # Vehicle layer
+	area_3d.collision_mask = 1    # Ground/Track layer
+	area_3d.body_entered.connect(_on_body_entered)
+	add_child(area_3d)
+
+# --- PHYSICS UPDATE (FIXED TIME STEP) ---
+func _physics_process(delta: float) -> void:
+	if game_manager.current_state != GameManager.GameState.RACE_ACTIVE:
+		return
+	
+	# Handle gear shifting
+	_handle_shifting(delta)
+	
+	# Process inputs
+	_process_inputs(delta)
+	
+	# Calculate RPM based on gear and speed
+	_calculate_rpm()
+	
+	# Apply forces
+	_apply_vehicle_forces(delta)
+	
+	# Update drift mechanics
+	_update_drift_mechanics(delta)
+	
+	# Update lap timing
+	_update_timing(delta)
+	
+	# Move vehicle
+	move_and_slide()
+	
+	# Emit signals
+	_emit_physics_signals()
+
+# --- INPUT PROCESSING ---
+func _process_inputs(delta: float) -> void:
+	# Get input values from InputManager singleton
+	_throttle = InputManager.get_axis("throttle", 0.0)
+	_brake = InputManager.get_axis("brake", 0.0)
+	_steering = InputManager.get_axis("steering", 0.0)
+	_clutch = InputManager.get_axis("clutch", 0.0)
+	_handbrake = InputManager.get_axis("handbrake", 0.0)
+	
+	# Clamp inputs
+	_throttle = clamp(_throttle, 0.0, 1.0)
+	_brake = clamp(_brake, 0.0, 1.0)
+	_steering = clamp(_steering, -1.0, 1.0)
+	_clutch = clamp(_clutch, 0.0, 1.0)
+	_handbrake = clamp(_handbrake, 0.0, 1.0)
+	
+	# Auto-shift if no clutch pressed
+	if _clutch < 0.1 and !is_shifting:
+		_auto_shift()
+
+# --- GEAR SHIFTING LOGIC ---
+func _handle_shifting(delta: float) -> void:
+	if is_shifting:
+		shift_progress += delta * 2.0  # Shift takes ~0.5 seconds
+		
+		if shift_progress >= 1.0:
+			_complete_shift()
+	else:
+		shift_progress = 0.0
+
+func _auto_shift() -> void:
+	var shift_up_threshold: int = 7500
+	var shift_down_threshold: int = 2000
+	
+	if current_rpm > shift_up_threshold and current_gear < 6:
+		_request_gear_change(current_gear + 1)
+	elif current_rpm < shift_down_threshold and current_gear > 1:
+		_request_gear_change(current_gear - 1)
+
+func _request_gear_change(target: int) -> void:
+	if target < 0 or target > 6:
+		return
+	
+	if current_gear != target:
+		target_gear = target
+		is_shifting = true
+		shift_progress = 0.0
+		engine_event.emit(EngineEventType.GEAR_UP if target > current_gear else EngineEventType.GEAR_DOWN)
+
+func _complete_shift() -> void:
+	current_gear = target_gear
+	is_shifting = false
+	shift_progress = 0.0
+	gear_changed.emit(current_gear - 1, target_gear)
+	
+	# Rev match based on speed and next gear
+	_rev_match()
+
+func _rev_match() -> void:
+	if current_gear > 1 and current_speed > 0:
+		var gear_ratio = _get_gear_ratio(current_gear)
+		var final_drive = 3.5
+		var tire_radius = 0.32
+		
+		var theoretical_rpm = (current_speed * 60.0 / (tire_radius * 2.0 * PI)) * gear_ratio * final_drive
+		current_rpm = lerp(current_rpm, theoretical_rpm.floor(), 0.5 * _get_physics_settings().physics_tick_rate)
+
+# --- RPM CALCULATION ---
+func _calculate_rpm() -> void:
+	if current_gear == 0:
+		# Neutral - idle RPM
+		current_rpm = lerp(current_rpm, 800, 0.1)
+		return
+	
+	var gear_ratio = _get_gear_ratio(current_gear)
+	var final_drive = 3.5
+	var tire_radius = 0.32
+	
+	# Calculate theoretical RPM based on speed
+	var theoretical_rpm = (current_speed * 60.0 / (tire_radius * 2.0 * PI)) * gear_ratio * final_drive
+	
+	# Apply throttle influence on RPM
+	if _throttle > 0:
+		var throttle_factor = 0.8 + (_throttle * 0.2)
+		theoretical_rpm *= throttle_factor
+	
+	# Clamp RPM range
+	current_rpm = clamp(theoretical_rpm.floor(), 800, 9000)
+	
+	# Check rev limiter
+	if current_rpm >= 8800:
+		engine_event.emit(EngineEventType.REV_LIMITER)
+
+# --- GEAR RATIOS (typical 6-speed manual) ---
+func _get_gear_ratio(gear: int) -> float:
+	match gear:
+		1: return 3.5
+		2: return 2.2
+		3: return 1.6
+		4: return 1.2
+		5: return 0.95
+		6: return 0.75
+		_: return 1.0
+
+# --- VEHICLE FORCES APPLICATION ---
+func _apply_vehicle_forces(delta: float) -> void:
+	var forward_dir = transform.basis.z
+	var right_dir = transform.basis.x
+	
+	# Calculate drive force based on gear and throttle
+	var drive_force = _calculate_drive_force()
+	
+	# Apply braking
+	var brake_force = _calculate_brake_force()
+	
+	# Apply steering
+	_apply_steering(right_dir)
+	
+	# Apply forces to body
+	var total_force = drive_force + brake_force
+	
+	# Add drag and rolling resistance
+	var air_drag = _calculate_air_drag()
+	var rolling_resistance = _calculate_rolling_resistance()
+	
+	total_force -= air_drag
+	total_force -= rolling_resistance
+	
+	# Apply force to center of mass
+	force_application(total_force, Vector3.ZERO)
+
+# --- DRIVE FORCE CALCULATION ---
+func _calculate_drive_force() -> float:
+	if current_gear == 0:
+		return Vector3.ZERO
+	
+	# Get torque from powertrain
+	var torque = 0.0
+	if powertrain:
+		torque = powertrain.get_engine_torque()
+	else:
+		# Default torque curve
+		torque = _default_torque_curve(current_rpm)
+	
+	# Apply throttle multiplier
+	torque *= _throttle
+	
+	# Convert torque to wheel force
+	var gear_ratio = _get_gear_ratio(current_gear)
+	var final_drive = 3.5
+	var tire_radius = 0.32
+	
+	var wheel_torque = torque * gear_ratio * final_drive
+	var drive_force = wheel_torque / tire_radius
+	
+	# Limit maximum drive force
+	drive_force = min(drive_force, max_speed * mass * 0.1)
+	
+	return drive_force * Vector3.FORWARD
+
+# --- BRAKE FORCE CALCULATION ---
+func _calculate_brake_force() -> float:
+	var brake_force = _brake * mass * braking_rate
+	return -brake_force * Vector3.FORWARD
+
+# --- STEERING MECHANICS ---
+func _apply_steering(right_dir: Vector3) -> void:
+	var steer_angle = _steering * steer_sensitivity * deg_to_rad(30.0)
+	
+	# Apply rotation to vehicle
+	var rotation_amount = steer_angle * _throttle  # No steering when stopped
+	
+	# Smooth steering transition
+	var current_rotation = rotation.y
+	var target_rotation = current_rotation + rotation_amount
+	
+	rotation.y = lerp(current_rotation, target_rotation, 0.1)
+	
+	# Slip angle calculation for drift mechanics
+	var velocity_forward = velocity.normalized() if velocity.length() > 0.1 else Vector3.FORWARD
+	var car_forward = -transform.basis.z
+	
+	slip_angle = velocity_forward.angle_to(car_forward)
+
+# --- DRIFT MECHANICS ---
+func _update_drift_mechanics(delta: float) -> void:
+	# Detect drift conditions
+	var is_oversteer = abs(slip_angle) > deg_to_rad(10.0)
+	var handbrake_active = _handbrake > 0.5
+	var cornering = abs(_steering) > 0.3
+	var speed_above_threshold = current_speed > 15.0
+	
+	is_drifting = is_oversteer and (handbrake_active or cornering) and speed_above_threshold
+	
+	# Calculate lateral G-force
+	lateral_g = sin(slip_angle) * current_speed * 0.1
+	
+	# Update drift score
+	if is_drifting:
+		drift_score += delta * 10.0
+		drift_multiplier = 1.0 + min(drift_score * 0.1, 0.5)
+		
+		# Reduce grip during drift
+		steer_sensitivity *= 0.7
+	else:
+		drift_score = max(0.0, drift_score - delta * 5.0)
+		drift_multiplier = 1.0
+		steer_sensitivity = clamp(steer_sensitivity + delta * 2.0, 0.5, 2.0)
+	
+	# Emit drift signal
+	if drifting.is_connected(_on_drifting_changed):
+		pass
+	else:
+		pass
+
+func _on_drifting_changed(is_drifting_value: bool) -> void:
+	drifting.emit(is_drifting_value)
+
+# --- LAP TIMING ---
+func _update_timing(delta: float) -> void:
+	if game_manager.current_state == GameManager.GameState.RACE_ACTIVE:
+		current_lap_time += delta
+		total_race_time += delta
+		
+		# Check for lap completion
+		if _check_lap_complete():
+			_complete_lap()
+
+func _check_lap_complete() -> bool:
+	# Simple lap detection based on position or checkpoints
+	# In production, use track markers
+	var position = global_position
+	var start_line_y = 100.0  # Adjust based on track layout
+	
+	if position.y < start_line_y and global_position.y >= start_line_y:
+		return true
+	
+	return false
+
+func _complete_lap() -> void:
+	lap_count += 1
+	var lap_time = current_lap_time
+	
+	if lap_time < best_lap_time:
+		best_lap_time = lap_time
+	
+	lap_completed.emit(lap_time)
+	current_lap_time = 0.0
+
+# --- AIR DRAG ---
+func _calculate_air_drag() -> float:
+	var air_density = 1.225  # kg/m³ at sea level
+	var drag_coefficient = 0.3  # Typical sports car
+	var frontal_area = 2.2  # m²
+	
+	var speed_squared = current_speed * current_speed
+	var drag_force = 0.5 * air_density * drag_coefficient * frontal_area * speed_squared
+	
+	return drag_force * Vector3.FORWARD
+
+# --- ROLLING RESISTANCE ---
+func _calculate_rolling_resistance() -> float:
+	var rolling_resistance_coefficient = 0.015
+	var normal_force = mass * 9.81
+	
+	var rolling_resistance = rolling_resistance_coefficient * normal_force
+	
+	return rolling_resistance * Vector3.FORWARD
+
+# --- DEFAULT TORQUE CURVE ---
+func _default_torque_curve(rpm: int) -> float:
+	# Simplified torque curve (peak around 4500 RPM)
+	if rpm < 2000:
+		return 200.0 + (rpm - 2000) * 0.1
+	elif rpm < 5000:
+		return 300.0 - (rpm - 5000) * 0.05
+	else:
+		return 280.0 - (rpm - 5000) * 0.02
+
+# --- COLLISION HANDLING ---
+func _on_body_entered(body: Node) -> void:
+	if body.has_method("take_damage"):
+		body.take_damage(_get_collision_impact())
+	
+	var impact = _get_collision_impact()
+	collision_impact.emit(impact)
+	
+	# Screen shake effect
+	_screen_shake()
+
+func _get_collision_impact() -> Vector3:
+	return velocity * 0.5
+
+func _screen_shake() -> void:
+	if AudioManager:
+		AudioManager.play_sound("screen_shake")
+
+# --- AUDIO HANDLER ---
+func _on_audio_played(sound_name: String) -> void:
+	if sound_name == "engine_start":
+		pass
+	elif sound_name == "gear_shift":
+		pass
+	elif sound_name == "drift":
+		pass
+
+# --- SIGNAL EMITTERS ---
+func _emit_physics_signals() -> void:
+	speed_changed.emit(current_speed)
+	rpm_changed.emit(current_rpm)
+
+# --- PUBLIC API ---
+func reset_vehicle() -> void:
+	_init_vehicle_state()
+	position = Vector3.ZERO
+	velocity = Vector3.ZERO
+	rotation = Vector3.ZERO
+
+func set_track_position(position: Vector3) -> void:
+	global_position = position
+
+func get_current_speed_kmh() -> float:
+	return current_speed * 3.6
+
+func get_current_rpm() -> int:
+	return current_rpm
+
+func get_current_gear() -> int:
+	return current_gear
+
+func is_drifting_now() -> bool:
+	return is_drifting
+
+func get_drift_score() -> float:
+	return drift_score
+
+func get_best_lap_time() -> float:
+	return best_lap_time
+
+func get_total_race_time() -> float:
+	return total_race_time
+
+func get_slip_angle() -> float:
+	return slip_angle
+
+func get_lateral_g_force() -> float:
+	return lateral_g
+
+# --- HELPER METHODS ---
+func _get_physics_settings() -> PhysicsSettings:
+	if Engine.has_singleton("PhysicsSettings"):
+		return Engine.get_singleton("PhysicsSettings")
+	return ResourceLoader.load("res://scripts/core/PhysicsSettings.tres") as PhysicsSettings
+
+func force_application(force: Vector3, point: Vector3) -> void:
+	apply_central_impulse(force)
+
+# --- DEBUG DISPLAY ---
+func _draw_debug_info() -> void:
+	if not game_manager.debug_mode:
+		return
+	
+	var debug_text = [
+		"Speed: %.1f km/h" % get_current_speed_kmh(),
+		"RPM: %d" % current_rpm,
+		"Gear: %d" % current_gear,
+		"Drifting: %s" % str(is_drifting),
+		"Slip Angle: %.1f°" % rad_to_deg(slip_angle),
+		"Lap: %d/%.2fs" % [lap_count, current_lap_time],
+	]
+	
+	# Display in viewport (simple text rendering)
+	pass
+
+# --- DESTRUCTOR ---
+func _exit_tree() -> void:
+	if powertrain:
+		powertrain.engine_shutdown.emit()
+		engine_event.emit(EngineEventType.SHUTDOWN)
