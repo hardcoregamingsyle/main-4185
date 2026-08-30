@@ -14,682 +14,694 @@ class_name PhysicsSettings
 
 @export_group("Vehicle Physics Defaults")
 @export var default_vehicle_mass: float = 1500.0: set = _set_default_vehicle_mass
-@export var default_wheel_radius: float = 0.33: set = _set_default_wheel_radius
+@export var default_wheel_radius: float = 0.32: set = _set_default_wheel_radius
 @export var default_wheel_width: float = 0.22: set = _set_default_wheel_width
-@export var default_center_of_mass_height: float = 0.45: set = _set_default_com_height
-@export var default_center_of_mass_x: float = 0.0: set = _set_default_com_x
-@export var default_track_width: float = 1.5: set = _set_default_track_width
-@export var default_wheelbase: float = 2.5: set = _set_default_wheelbase
+@export var wheel_track_front: float = 1.55: set = _set_wheel_track_front
+@export var wheel_track_rear: float = 1.55: set = _set_wheel_track_rear
+@export var wheelbase: float = 2.75: set = _set_wheelbase
+@export var center_of_mass_offset_x: float = 0.0: set = _set_center_of_mass_offset_x
+@export var center_of_mass_offset_y: float = 0.45: set = _set_center_of_mass_offset_y
+@export var center_of_mass_offset_z: float = 0.0: set = _set_center_of_mass_offset_z
+@export var roll_inertia: float = 1200.0: set = _set_roll_inertia
+@export var pitch_inertia: float = 800.0: set = _set_pitch_inertia
+@export var yaw_inertia: float = 2000.0: set = _set_yaw_inertia
 
 @export_group("Engine & Powertrain")
-@export var engine_max_rpm: float = 8500.0: set = _set_engine_max_rpm
-@export var engine_idle_rpm: float = 800.0: set = _set_engine_idle_rpm
-@export var engine_peak_torque_rpm: float = 4500.0: set = _set_engine_peak_torque_rpm
-@export var engine_peak_torque_nm: float = 450.0: set = _set_engine_peak_torque
-@export var engine_max_torque_factor: float = 1.3: set = _set_engine_max_torque_factor
-@export var transmission_type: TransmissionType = TransmissionType.MANUAL
-@export var final_drive_ratio: float = 3.45: set = _set_final_drive_ratio
-@export var gear_ratios: Array[float] = [3.85, 2.35, 1.68, 1.31, 1.05, 0.88]: set = _set_gear_ratios
-@export var clutch_friction_coefficient: float = 1.2: set = _set_clutch_friction
-@export var flywheel_inertia_kg_m2: float = 0.18: set = _set_flywheel_inertia
+@export var engine_max_rpm: float = 8000.0: set = _set_engine_max_rpm
+@export var engine_min_rpm: float = 800.0: set = _set_engine_min_rpm
+@export var idle_rpm: float = 900.0: set = _set_idle_rpm
+@export var peak_torque_rpm: float = 4500.0: set = _set_peak_torque_rpm
+@export var peak_torque_nm: float = 450.0: set = _set_peak_torque_nm
+@export var max_power_kw: float = 250.0: set = _set_max_power_kw
+@export var torque_curve_points: Array[Vector2] = [
+	Vector2(0.15, 0.3), Vector2(0.35, 0.7), Vector2(0.55, 1.0), 
+	Vector2(0.75, 0.95), Vector2(0.90, 0.85), Vector2(1.0, 0.75)
+]
+@export var num_gears: int = 6: set = _set_num_gears
+@export var gear_ratios: Array[float] = [3.8, 2.1, 1.4, 1.0, 0.8, 0.65]
+@export var final_drive_ratio: float = 3.73: set = _set_final_drive_ratio
+@export var clutch_flywheel_inertia: float = 0.8: set = _set_clutch_flywheel_inertia
+@export var rev_limit_rpm: float = 8200.0: set = _set_rev_limit_rpm
+@export var fuel_consumption_rate: float = 0.00008: set = _set_fuel_consumption_rate
 
 @export_group("Differential Settings")
-@export var diff_type: DifferentialType = DifferentialType.LSD
-@export var diff_lock_front: float = 0.0: set = _set_diff_lock_front
-@export var diff_lock_rear: float = 0.45: set = _set_diff_lock_rear
-@export var diff_preload_torque_nm: float = 15.0: set = _set_diff_preload
-@export var diff_slip_threshold_rad_s: float = 1.5: set = _set_diff_slip_threshold
+@export var diff_type: int = 1: set = _set_diff_type
+enum DifferentialType {
+	OPEN, LOCKED, LIMITED_SLIP, TORQUE_BIAS
+}
+@export var limited_slip_locking_coefficient: float = 0.65: set = _set_limited_slip_locking_coefficient
+@export var torque_bias_ratio: float = 2.5: set = _set_torque_bias_ratio
+@export var pre_load_torque: float = 150.0: set = _set_pre_load_torque
 
-@export_group("Suspension Parameters - Front")
-@export var front_spring_stiffness_n_mm: float = 45.0: set = _set_front_spring_stiffness
-@export var front_damping_compression_n_mm: float = 3.5: set = _set_front_damping_comp
-@export var front_damping_rebound_n_mm: float = 2.8: set = _set_front_damping_rebound
-@export var front_suspension_travel_mm: float = 120.0: set = _set_front_travel
-@export var front_anti_roll_bar_stiffness_n_mm: float = 8.5: set = _set_front_arb
-@export var front_camber_gain_per_mm: float = 0.02: set = _set_front_camber_gain
-@export var front_toe_gain_per_mm: float = 0.01: set = _set_front_toe_gain
+@export_group("Suspension System")
+@export var suspension_stiffness_front: float = 45000.0: set = _set_suspension_stiffness_front
+@export var suspension_stiffness_rear: float = 52000.0: set = _set_suspension_stiffness_rear
+@export var suspension_damping_compression: float = 8500.0: set = _set_suspension_damping_compression
+@export var suspension_damping_rebound: float = 4500.0: set = _set_suspension_damping_rebound
+@export var suspension_travel_max: float = 0.12: set = _set_suspension_travel_max
+@export var suspension_travel_min: float = 0.02: set = _set_suspension_travel_min
+@export var anti_roll_bar_stiffness_front: float = 1800.0: set = _set_anti_roll_bar_stiffness_front
+@export var anti_roll_bar_stiffness_rear: float = 2200.0: set = _set_anti_roll_bar_stiffness_rear
+@export var camber_gain_per_travel: float = 0.015: set = _set_camber_gain_per_travel
+@export var toe_change_per_travel: float = 0.008: set = _set_toe_change_per_travel
+@export var ride_height_static: float = 0.25: set = _set_ride_height_static
+@export var ride_height_loaded: float = 0.22: set = _set_ride_height_loaded
 
-@export_group("Suspension Parameters - Rear")
-@export var rear_spring_stiffness_n_mm: float = 50.0: set = _set_rear_spring_stiffness
-@export var rear_damping_compression_n_mm: float = 3.8: set = _set_rear_damping_comp
-@export var rear_damping_rebound_n_mm: float = 3.0: set = _set_rear_damping_rebound
-@export var rear_suspension_travel_mm: float = 115.0: set = _set_rear_travel
-@export var rear_anti_roll_bar_stiffness_n_mm: float = 10.0: set = _set_rear_arb
-@export var rear_camber_gain_per_mm: float = 0.018: set = _set_rear_camber_gain
-@export var rear_toe_gain_per_mm: float = 0.008: set = _set_rear_toe_gain
-
-@export_group("Tire Friction Properties")
-@export var tire_peak_friction_coefficient: float = 1.25: set = _set_tire_peak_friction
-@export var tire_sliding_friction_coefficient: float = 0.85: set = _set_tire_sliding_friction
-@export var tire_pacejka_b_coefficient: float = 8.5: set = _set_tire_b_coefficient
-@export var tire_pacejka_c_coefficient: float = 1.8: set = _set_tire_c_coefficient
-@export var tire_pacejka_d_coefficient: float = 0.35: set = _set_tire_d_coefficient
-@export var tire_pacejka_e_coefficient: float = -0.3: set = _set_tire_e_coefficient
-@export var tire_vertical_stiffness_n_mm: float = 250.0: set = _set_tire_vertical_stiffness
-@export var tire_longitudinal_stiffness_n_mm: float = 180.0: set = _set_tire_longitudinal_stiffness
-@export var tire_lateral_stiffness_n_mm: float = 220.0: set = _set_tire_lateral_stiffness
-@export var tire_pressure_bar: float = 2.2: set = _set_tire_pressure
-@export var tire_temperature_optimal_min_c: float = 70.0: set = _set_tire_temp_opt_min
-@export var tire_temperature_optimal_max_c: float = 100.0: set = _set_tire_temp_opt_max
-@export var tire_temperature_effective_range_c: float = 30.0: set = _set_tire_temp_effective_range
+@export_group("Tire & Friction Model")
+@export var tire_stiffness_factor: float = 1.0: set = _set_tire_stiffness_factor
+@export var friction_peak_coef: float = 1.35: set = _set_friction_peak_coef
+@export var friction_slide_coef: float = 0.85: set = _set_friction_slide_coef
+@export var slip_angle_peak: float = 4.5: set = _set_slip_angle_peak
+@export var slip_ratio_peak: float = 0.12: set = _set_slip_ratio_peak
+@export var lateral_friction_exponent: float = 2.0: set = _set_lateral_friction_exponent
+@export var longitudinal_friction_exponent: float = 2.0: set = _set_longitudinal_friction_exponent
+@export var camber_stiffness_factor: float = 0.15: set = _set_camber_stiffness_factor
+@export var load_sensitivity: float = 0.15: set = _set_load_sensitivity
+@export var tire_temp_optimal: float = 80.0: set = _set_tire_temp_optimal
+@export var tire_temp_min: float = -20.0: set = _set_tire_temp_min
+@export var tire_temp_max: float = 120.0: set = _set_tire_temp_max
+@export var tire_wear_rate: float = 0.0001: set = _set_tire_wear_rate
+@export var grip_loss_on_slip: float = 0.3: set = _set_grip_loss_on_slip
+@export var road_friction_base: float = 1.0: set = _set_road_friction_base
+@export var road_friction_asphalt: float = 1.0
+@export var road_friction_concrete: float = 0.95
+@export var road_friction_gravel: float = 0.75
+@export var road_friction_mud: float = 0.55
+@export var road_friction_wet: float = 0.70
+@export var road_friction_ice: float = 0.15
 
 @export_group("Aerodynamics")
-@export var aero_drag_coefficient: float = 0.32: set = _set_aero_drag_coeff
-@export var aero_frontal_area_m2: float = 2.1: set = _set_aero_frontal_area
-@export var aero_downforce_coefficient: float = 0.85: set = _set_aero_downforce_coeff
-@export var aero_front_balance: float = 0.42: set = _set_aero_front_balance
-@export var aero_lift_coefficient: float = -0.05: set = _set_aero_lift_coeff
-@export var aero_side_force_coefficient: float = 0.15: set = _set_aero_side_force
-@export var aero_ground_clearance_mm: float = 100.0: set = _set_aero_ground_clearance
-@export var aero_stall_speed_ms: float = 85.0: set = _set_aero_stall_speed
+@export var drag_coefficient: float = 0.32: set = _set_drag_coefficient
+@export var lift_coefficient: float = -0.15: set = _set_lift_coefficient
+@export var front_downforce_coefficient: float = -0.08: set = _set_front_downforce_coefficient
+@export var rear_downforce_coefficient: float = -0.12: set = _set_rear_downforce_coefficient
+@export var aero_reference_area: float = 2.1: set = _set_aero_reference_area
+@export var aero_center_of_pressure_x: float = 0.0: set = _set_aero_center_of_pressure_x
+@export var aero_center_of_pressure_y: float = 0.35: set = _set_aero_center_of_pressure_y
+@export var aero_center_of_pressure_z: float = 0.0: set = _set_aero_center_of_pressure_z
+@export var wing_angle_front_deg: float = 5.0: set = _set_wing_angle_front_deg
+@export var wing_angle_rear_deg: float = 15.0: set = _set_wing_angle_rear_deg
+@export var air_density_sea_level: float = 1.225: set = _set_air_density_sea_level
+@export var drag_divergence_speed: float = 60.0: set = _set_drag_divergence_speed
 
 @export_group("Steering System")
 @export var steering_ratio: float = 14.5: set = _set_steering_ratio
-@export var steering_lock_angle_deg: float = 450.0: set = _set_steering_lock
-@export var steering_deadband_deg: float = 2.5: set = _set_steering_deadband
-@export var steering_return_rate: float = 0.85: set = _set_steering_return
-@export var steering_nonlinearity_curve: float = 0.3: set = _set_steering_nonlinear
-@export var steering_power_assist_ratio: float = 0.6: set = _set_steering_assist
+@export var steering_lock_left: float = 2.35: set = _set_steering_lock_left
+@export var steering_lock_right: float = 2.35: set = _set_steering_lock_right
+@export var steering_max_input: float = 1.0: set = _set_steering_max_input
+@export var steering_deadzone: float = 0.02: set = _set_steering_deadzone
+@export var steering_return_speed: float = 3.0: set = _set_steering_return_speed
+@export var steering_force_feedback_gain: float = 1.0: set = _set_steering_force_feedback_gain
+@export var power_assist_ratio: float = 15.0: set = _set_power_assist_ratio
+@export var power_assist_speed_curve: Array[Vector2] = [
+	Vector2(0.0, 1.0), Vector2(30.0, 0.7), Vector2(60.0, 0.4), Vector2(100.0, 0.2)
+]
 
-@export_group("Brake System")
-@export var brake_force_distribution_front: float = 0.60: set = _set_brake_dist_front
-@export var brake_force_distribution_rear: float = 0.40: set = _set_brake_dist_rear
-@export var brake_pad_friction_coefficient: float = 0.45: set = _set_brake_pad_friction
-@export var brake_rotor_radius_mm: float = 145.0: set = _set_brake_rotor_radius
-@export var brake_caliper_piston_count: int = 4: set = _set_brake_piston_count
-@export var brake_caliper_piston_area_mm2: float = 450.0: set = _set_brake_piston_area
-@export var brake_max_clamping_force_n: float = 15000.0: set = _set_brake_max_clamp
-@export var brake_hysteresis_factor: float = 0.15: set = _set_brake_hysteresis
-@export var brake_bleed_threshold_percent: float = 5.0: set = _set_brake_bleed_thresh
+@export_group("Braking System")
+@export var brake_force_per_pedal: float = 5500.0: set = _set_brake_force_per_pedal
+@export var brake_bias_front: float = 0.58: set = _set_brake_bias_front
+@export var brake_bias_rear: float = 0.42: set = _set_brake_bias_rear
+@export var abs_threshold: float = 0.25: set = _set_abs_threshold
+@export var abs_recovery_rate: float = 15.0: set = _set_abs_recovery_rate
+@export var abs_activation_speed: float = 5.0: set = _set_abs_activation_speed
+@export var parking_brake_force: float = 3000.0: set = _set_parking_brake_force
+@export var brake_pad_wear_rate: float = 0.00005: set = _set_brake_pad_wear_rate
+@export var brake_disc_capacity: float = 0.5: set = _set_brake_disc_capacity
+@export var brake_temperature_max: float = 650.0: set = _set_brake_temperature_max
+@export var brake_fade_start_temp: float = 400.0: set = _set_brake_fade_start_temp
+@export var brake_fade_multiplier: float = 0.6: set = _set_brake_fade_multiplier
 
-@export_group("Chassis & Body")
-@export var chassis_stiffness_front_n_mm: float = 25000.0: set = _set_chassis_stiffness_front
-@export var chassis_stiffness_rear_n_mm: float = 30000.0: set = _set_chassis_stiffness_rear
-@export var roll_center_height_front_mm: float = 120.0: set = _set_roll_center_front
-@export var roll_center_height_rear_mm: float = 140.0: set = _set_roll_center_rear
-@export var cg_offset_x_mm: float = 0.0: set = _set_cg_offset_x
-@export var cg_offset_y_mm: float = 0.0: set = _set_cg_offset_y
-@export var cg_offset_z_mm: float = 0.0: set = _set_cg_offset_z
-@export var body_swing_period_s: float = 0.8: set = _set_body_swing_period
-@export var damping_ratio_body_mode: float = 0.25: set = _set_damping_ratio_body
+@export_group("Transmission & Clutch")
+@export var clutch_slip_threshold: float = 0.15: set = _set_clutch_slip_threshold
+@export var clutch_engagement_ramp: float = 0.1: set = _set_clutch_engagement_ramp
+@export var clutch_disengagement_ramp: float = 0.05: set = _set_clutch_disengagement_ramp
+@export var upshift_delay_ms: int = 150: set = _set_upshift_delay_ms
+@export var downshift_delay_ms: int = 100: set = _set_downshift_delay_ms
+@export var auto_shift_enabled: bool = false: set = _set_auto_shift_enabled
+@export var auto_shift_rpm_buffer: float = 300.0: set = _set_auto_shift_rpm_buffer
+@export var launch_control_enabled: bool = false: set = _set_launch_control_enabled
+@export var launch_control_target_rpm: float = 3500.0: set = _set_launch_control_target_rpm
 
-@export_group("Traction Control")
-@export var tc_enabled: bool = true: set = _set_tc_enabled
-@export var tc_max_slip_ratio: float = 0.18: set = _set_tc_max_slip
-@export var tc_integrator_gain: float = 0.5: set = _set_tc_integrator
-@export var tc_proportional_gain: float = 2.5: set = _set_tc_proportional
-@export var tc_reaction_delay_s: float = 0.05: set = _set_tc_delay
-@export var tc_recovery_rate: float = 0.95: set = _set_tc_recovery
+@export_group("Damage & Wear")
+@export var damage_threshold_impact: float = 15.0: set = _set_damage_threshold_impact
+@export var damage_threshold_deformation: float = 0.15: set = _set_damage_threshold_deformation
+@export var deformation_recovery_rate: float = 0.01: set = _set_deformation_recovery_rate
+@export var max_deformation_percent: float = 0.45: set = _set_max_deformation_percent
+@export var crash_sound_volume: float = 1.0: set = _set_crash_sound_volume
+@export var debris_spawn_chance: float = 0.3: set = _set_debris_spawn_chance
 
-@export_group("ABS System")
-@export var abs_enabled: bool = true: set = _set_abs_enabled
-@export var abs_slip_target: float = 0.15: set = _set_abs_slip_target
-@export var abs_modulation_frequency_hz: float = 15.0: set = _set_abs_freq
-@export var abs_pressure_drop_rate_bar_s: float = 120.0: set = _set_abs_drop_rate
-@export var abs_pressure_build_rate_bar_s: float = 150.0: set = _set_abs_build_rate
-@export var abs_recovery_threshold: float = 0.08: set = _set_abs_recovery
+@export_group("Simulation Accuracy")
+@export var use_exact_substeps: bool = true: set = _set_use_exact_substeps
+@export var collision_precision: float = 0.001: set = _set_collision_precision
+@export var contact_tolerance: float = 0.002: set = _set_contact_tolerance
+@export var sleep_threshold_velocity: float = 0.1: set = _set_sleep_threshold_velocity
+@export var sleep_threshold_rotation: float = 0.05: set = _set_sleep_threshold_rotation
+@export var min_simulation_step: float = 0.0001: set = _set_min_simulation_step
+@export var max_simulation_step: float = 0.0166667: set = _set_max_simulation_step
 
-@export_group("Gameplay Tuning")
-@export var ai_skill_modifier: float = 1.0: set = _set_ai_skill
-@export var player_skill_modifier: float = 1.0: set = _set_player_skill
-@export var damage_enabled: bool = true: set = _set_damage_enabled
-@export var collision_sound_volume: float = 0.7: set = _set_collision_vol
-@export var skid_mark_enabled: bool = true: set = _set_skidmarks
-@export var particle_quality: int = 2: set = _set_particle_quality
+var _last_valid_gravity: float = 9.81
+var _last_valid_tick_rate: int = 120
+var _last_valid_mass: float = 1500.0
 
-enum TransmissionType {
-	MANUAL,
-	SEMI_AUTOMATIC,
-	AUTOMATIC,
-	CVT
-}
+func _validate_property(info: Dictionary) -> void:
+	if info.name == "torque_curve_points":
+		info.usage = PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_ARRAY
+	elif info.name == "gear_ratios":
+		info.usage = PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_ARRAY
 
-enum DifferentialType {
-	OPEN,
-	LOCKING,
-	LSD,
-	WHEEL_DIFF
-}
+func get_torque_at_rpm(rpm: float) -> float:
+	var normalized = clamp((rpm - engine_min_rpm) / (engine_max_rpm - engine_min_rpm), 0.0, 1.0)
+	for i in range(torque_curve_points.size() - 1):
+		var t0 = torque_curve_points[i].x
+		var t1 = torque_curve_points[i + 1].x
+		if normalized >= t0 and normalized <= t1:
+			var alpha = (normalized - t0) / (t1 - t0)
+			var y0 = torque_curve_points[i].y
+			var y1 = torque_curve_points[i + 1].y
+			return lerp(y0, y1, alpha) * peak_torque_nm
+	return peak_torque_nm * 0.5
 
-enum BrakingMode {
-	NORMAL,
-	ANTI_LOCK,
-	ELECTRONIC_BRAKE_FORCE_DISTRIBUTION
-}
+func get_power_at_rpm(rpm: float) -> float:
+	var torque = get_torque_at_rpm(rpm)
+	return (torque * rpm * 2.0 * PI) / 60000.0
 
-enum TireCompound {
-	SOFT,
-	MEDIUM,
-	HARD,
-	INTER,
-	WET
-}
+func get_drag_force(speed: float) -> float:
+	return 0.5 * air_density_sea_level * drag_coefficient * aero_reference_area * speed * speed
 
-# Helper method: Calculate engine torque at given RPM using Gaussian curve
-func get_engine_torque(rpm: float) -> float:
-	var peak_rpm: float = engine_peak_torque_rpm
-	var max_torque: float = engine_peak_torque_nm * engine_max_torque_factor
-	var spread: float = 2500.0
-	
-	var torque: float = max_torque * exp(-pow((rpm - peak_rpm) / spread, 2))
-	
-	if rpm < engine_idle_rpm:
-		torque *= 0.3
-	
-	return clamp(torque, 0.0, max_torque)
+func get_downforce(speed: float) -> float:
+	var total_cd = lift_coefficient + front_downforce_coefficient + rear_downforce_coefficient
+	return 0.5 * air_density_sea_level * total_cd * aero_reference_area * speed * speed
 
-# Helper method: Calculate power at given RPM
-func get_engine_power(rpm: float) -> float:
-	return rpm * get_engine_torque(rpm) * 0.00010471975511966
+func get_suspension_force(displacement: float, velocity: float) -> float:
+	var compression = displacement < 0.0
+	var stiffness = suspension_stiffness_front if compression else suspension_stiffness_rear
+	var damping = suspension_damping_compression if compression else suspension_damping_rebound
+	var force = -stiffness * displacement - damping * velocity
+	return clamp(force, -suspension_travel_max * stiffness, suspension_travel_max * stiffness)
 
-# Helper method: Get gear ratio for specific gear (0-indexed)
-func get_gear_ratio(gear: int) -> float:
-	if gear >= gear_ratios.size() or gear < 0:
-		return 0.0
-	return gear_ratios[gear]
+func calculate_friction_normal(load: float) -> float:
+	var effective_coef = friction_peak_coef * (1.0 - load_sensitivity * load / default_vehicle_mass)
+	return effective_coef * load
 
-# Helper method: Convert degrees to radians
-func deg_to_rad(degrees: float) -> float:
-	return degrees * PI / 180.0
+func calculate_friction_slip(slip_ratio: float, normal_load: float) -> float:
+	var slip_normalized = abs(slip_ratio) / slip_ratio_peak
+	var friction_coef = friction_slide_coef + (friction_peak_coef - friction_slide_coef) * exp(-slip_normalized)
+	return friction_coef * normal_load
 
-# Helper method: Convert radians to degrees
-func rad_to_deg(radians: float) -> float:
-	return radians * 180.0 / PI
+func apply_temporary_modifications(modifiers: Dictionary) -> void:
+	for key in modifiers:
+		match key:
+			"gravity": gravity = modifiers[key]
+			"vehicle_mass": default_vehicle_mass = modifiers[key]
+			"drag_coefficient": drag_coefficient = modifiers[key]
+			"brake_bias": brake_bias_front = modifiers[key]; brake_bias_rear = 1.0 - modifiers[key]
+			"suspension_stiffness": suspension_stiffness_front = modifiers[key]
+			"tire_friction": friction_peak_coef = modifiers[key]
 
-# Helper method: Convert mm to meters
-func mm_to_m(mm: float) -> float:
-	return mm / 1000.0
+func reset_to_defaults() -> void:
+	_last_valid_gravity = 9.81
+	_last_valid_tick_rate = 120
+	_last_valid_mass = 1500.0
+	# Reset all exports to their default values would require manual assignment
+	# or using @export hint ranges as defaults
 
-# Helper method: Convert meters to mm
-func m_to_mm(meters: float) -> float:
-	return meters * 1000.0
-
-# Helper method: Convert bar to Pascal
-func bar_to_pa(bar: float) -> float:
-	return bar * 100000.0
-
-# Helper method: Convert km/h to m/s
-func kmh_to_ms(kmh: float) -> float:
-	return kmh / 3.6
-
-# Helper method: Convert m/s to km/h
-func ms_to_kmh(ms: float) -> float:
-	return ms * 3.6
-
-# Helper method: Calculate Pacejka 'Magic Formula' for lateral force
-func calculate_pacejka_lateral(slip_angle_rad: float, vertical_load_n: float) -> float:
-	var alpha: float = abs(slip_angle_rad)
-	var c: float = tire_pacejka_c_coefficient
-	var b: float = tire_pacejka_b_coefficient
-	var d: float = tire_peak_friction_coefficient * vertical_load_n / 1000.0
-	var e: float = tire_pacejka_e_coefficient
-	
-	var cbde: float = c * b * d
-	var angle_shift: float = atan(e * ((PI / 2) - abs(atan(b * alpha))))
-	
-	var force: float = d * sin(cbde * atan(b * alpha * (1.0 - e) + e * angle_shift))
-	
-	return sign(slip_angle_rad) * force
-
-# Helper method: Calculate Pacejka 'Magic Formula' for longitudinal force
-func calculate_pacejka_longitudinal(slips: float, vertical_load_n: float) -> float:
-	var s: float = abs(slips)
-	var c: float = tire_pacejka_c_coefficient
-	var b: float = tire_pacejka_b_coefficient
-	var d: float = tire_peak_friction_coefficient * vertical_load_n / 1000.0
-	var e: float = tire_pacejka_e_coefficient
-	
-	var cbde: float = c * b * d
-	var angle_shift: float = atan(e * ((PI / 2) - abs(atan(b * s))))
-	
-	var force: float = d * sin(cbde * atan(b * s * (1.0 - e) + e * angle_shift))
-	
-	return sign(slips) * force
-
-# Helper method: Calculate aerodynamic downforce
-func calculate_downforce(speed_ms: float) -> float:
-	var dynamic_pressure: float = 0.5 * 1.225 * speed_ms * speed_ms
-	var downforce: float = dynamic_pressure * aero_frontal_area_m2 * aero_downforce_coefficient
-	return downforce
-
-# Helper method: Calculate aerodynamic drag force
-func calculate_drag_force(speed_ms: float) -> float:
-	var dynamic_pressure: float = 0.5 * 1.225 * speed_ms * speed_ms
-	var drag: float = dynamic_pressure * aero_frontal_area_m2 * aero_drag_coefficient
-	return drag
-
-# Helper method: Validate and clamp all physics values after editor changes
-func _validate_all() -> void:
-	gravity = max(gravity, 0.1)
-	time_scale = clamp(time_scale, 0.0, 2.0)
-	default_vehicle_mass = max(default_vehicle_mass, 500.0)
-	engine_max_rpm = max(engine_max_rpm, 2000.0)
-	engine_idle_rpm = min(engine_idle_rpm, engine_max_rpm * 0.2)
-	
-	for i in gear_ratios.size():
-		gear_ratios[i] = max(gear_raties[i], 0.1)
-	
-	diff_lock_front = clamp(diff_lock_front, 0.0, 1.0)
-	diff_lock_rear = clamp(diff_lock_rear, 0.0, 1.0)
-	
-	front_spring_stiffness_n_mm = max(front_spring_stiffness_n_mm, 1.0)
-	rear_spring_stiffness_n_mm = max(rear_spring_stiffness_n_mm, 1.0)
-	
-	tire_peak_friction_coefficient = clamp(tire_peak_friction_coefficient, 0.1, 2.0)
-	aero_drag_coefficient = max(aero_drag_coefficient, 0.01)
-	
-	steering_ratio = max(steering_ratio, 8.0)
-	brake_force_distribution_front = clamp(brake_force_distribution_front, 0.3, 0.8)
-	brake_force_distribution_rear = 1.0 - brake_force_distribution_front
-
-# Property setters with validation
 func _set_gravity(value: float) -> void:
-	gravity = max(value, 0.1)
-	changed.emit()
+	gravity = value
+	_last_valid_gravity = value
 
 func _set_physics_tick_rate(value: int) -> void:
-	physics_tick_rate = clamp(value, 60, 240)
-	changed.emit()
+	physics_tick_rate = value
+	_last_valid_tick_rate = value
 
 func _set_max_substeps(value: int) -> void:
-	max_substeps = clamp(value, 1, 8)
-	changed.emit()
+	max_substeps = value
 
 func _set_time_scale(value: float) -> void:
 	time_scale = clamp(value, 0.0, 2.0)
-	changed.emit()
 
 func _set_default_vehicle_mass(value: float) -> void:
-	default_vehicle_mass = max(value, 500.0)
-	changed.emit()
+	default_vehicle_mass = value
+	_last_valid_mass = value
 
 func _set_default_wheel_radius(value: float) -> void:
-	default_wheel_radius = max(value, 0.1)
-	changed.emit()
+	wheel_radius = value
 
 func _set_default_wheel_width(value: float) -> void:
-	default_wheel_width = max(value, 0.1)
-	changed.emit()
+	wheel_width = value
 
-func _set_default_com_height(value: float) -> void:
-	default_center_of_mass_height = max(value, 0.1)
-	changed.emit()
+func _set_wheel_track_front(value: float) -> void:
+	wheel_track_front = value
 
-func _set_default_com_x(value: float) -> void:
-	default_center_of_mass_x = value
-	changed.emit()
+func _set_wheel_track_rear(value: float) -> void:
+	wheel_track_rear = value
 
-func _set_default_track_width(value: float) -> void:
-	default_track_width = max(value, 0.5)
-	changed.emit()
+func _set_wheelbase(value: float) -> void:
+	wheelbase = value
 
-func _set_default_wheelbase(value: float) -> void:
-	default_wheelbase = max(value, 1.5)
-	changed.emit()
+func _set_center_of_mass_offset_x(value: float) -> void:
+	center_of_mass_offset_x = value
+
+func _set_center_of_mass_offset_y(value: float) -> void:
+	center_of_mass_offset_y = value
+
+func _set_center_of_mass_offset_z(value: float) -> void:
+	center_of_mass_offset_z = value
+
+func _set_roll_inertia(value: float) -> void:
+	roll_inertia = value
+
+func _set_pitch_inertia(value: float) -> void:
+	pitch_inertia = value
+
+func _set_yaw_inertia(value: float) -> void:
+	yaw_inertia = value
 
 func _set_engine_max_rpm(value: float) -> void:
-	engine_max_rpm = max(value, 2000.0)
-	changed.emit()
+	engine_max_rpm = value
 
-func _set_engine_idle_rpm(value: float) -> void:
-	engine_idle_rpm = min(max(value, 400.0), engine_max_rpm * 0.3)
-	changed.emit()
+func _set_engine_min_rpm(value: float) -> void:
+	engine_min_rpm = value
 
-func _set_engine_peak_torque_rpm(value: float) -> void:
-	engine_peak_torque_rpm = clamp(value, engine_idle_rpm, engine_max_rpm * 0.95)
-	changed.emit()
+func _set_idle_rpm(value: float) -> void:
+	idle_rpm = value
 
-func _set_engine_peak_torque(value: float) -> void:
-	engine_peak_torque_nm = max(value, 50.0)
-	changed.emit()
+func _set_peak_torque_rpm(value: float) -> void:
+	peak_torque_rpm = value
 
-func _set_engine_max_torque_factor(value: float) -> void:
-	engine_max_torque_factor = clamp(value, 1.0, 2.0)
-	changed.emit()
+func _set_peak_torque_nm(value: float) -> void:
+	peak_torque_nm = value
+
+func _set_max_power_kw(value: float) -> void:
+	max_power_kw = value
+
+func _set_num_gears(value: int) -> void:
+	num_gears = clampi(value, 4, 10)
 
 func _set_final_drive_ratio(value: float) -> void:
-	final_drive_ratio = max(value, 1.5)
-	changed.emit()
+	final_drive_ratio = value
 
-func _set_gear_raties(value: Array[float]) -> void:
-	gear_ratios = []
-	for r in value:
-		gear_ratios.append(max(r, 0.1))
-	changed.emit()
+func _set_clutch_flywheel_inertia(value: float) -> void:
+	clutch_flywheel_inertia = value
 
-func _set_clutch_friction(value: float) -> void:
-	clutch_friction_coefficient = clamp(value, 0.5, 2.0)
-	changed.emit()
+func _set_rev_limit_rpm(value: float) -> void:
+	rev_limit_rpm = value
 
-func _set_flywheel_inertia(value: float) -> void:
-	flywheel_inertia_kg_m2 = max(value, 0.01)
-	changed.emit()
+func _set_fuel_consumption_rate(value: float) -> void:
+	fuel_consumption_rate = value
 
-func _set_diff_lock_front(value: float) -> void:
-	diff_lock_front = clamp(value, 0.0, 1.0)
-	changed.emit()
+func _set_diff_type(value: int) -> void:
+	diff_type = clampi(value, 0, 3)
 
-func _set_diff_lock_rear(value: float) -> void:
-	diff_lock_rear = clamp(value, 0.0, 1.0)
-	changed.emit()
+func _set_limited_slip_locking_coefficient(value: float) -> void:
+	limited_slip_locking_coefficient = clampf(value, 0.0, 1.0)
 
-func _set_diff_preload(value: float) -> void:
-	diff_preload_torque_nm = max(value, 0.0)
-	changed.emit()
+func _set_torque_bias_ratio(value: float) -> void:
+	torque_bias_ratio = value
 
-func _set_diff_slip_threshold(value: float) -> void:
-	diff_slip_threshold_rad_s = max(value, 0.1)
-	changed.emit()
+func _set_pre_load_torque(value: float) -> void:
+	pre_load_torque = value
 
-func _set_front_spring_stiffness(value: float) -> void:
-	front_spring_stiffness_n_mm = max(value, 1.0)
-	changed.emit()
+func _set_suspension_stiffness_front(value: float) -> void:
+	suspension_stiffness_front = value
 
-func _set_front_damping_comp(value: float) -> void:
-	front_damping_compression_n_mm = max(value, 0.5)
-	changed.emit()
+func _set_suspension_stiffness_rear(value: float) -> void:
+	suspension_stiffness_rear = value
 
-func _set_front_damping_rebound(value: float) -> void:
-	front_damping_rebound_n_mm = max(value, 0.5)
-	changed.emit()
+func _set_suspension_damping_compression(value: float) -> void:
+	suspension_damping_compression = value
 
-func _set_front_travel(value: float) -> void:
-	front_suspension_travel_mm = max(value, 50.0)
-	changed.emit()
+func _set_suspension_damping_rebound(value: float) -> void:
+	suspension_damping_rebound = value
 
-func _set_front_arb(value: float) -> void:
-	front_anti_roll_bar_stiffness_n_mm = max(value, 0.5)
-	changed.emit()
+func _set_suspension_travel_max(value: float) -> void:
+	suspension_travel_max = value
 
-func _set_front_camber_gain(value: float) -> void:
-	front_camber_gain_per_mm = clamp(value, 0.001, 0.05)
-	changed.emit()
+func _set_suspension_travel_min(value: float) -> void:
+	suspension_travel_min = value
 
-func _set_front_toe_gain(value: float) -> void:
-	front_toe_gain_per_mm = clamp(value, 0.001, 0.03)
-	changed.emit()
+func _set_anti_roll_bar_stiffness_front(value: float) -> void:
+	anti_roll_bar_stiffness_front = value
 
-func _set_rear_spring_stiffness(value: float) -> void:
-	rear_spring_stiffness_n_mm = max(value, 1.0)
-	changed.emit()
+func _set_anti_roll_bar_stiffness_rear(value: float) -> void:
+	anti_roll_bar_stiffness_rear = value
 
-func _set_rear_damping_comp(value: float) -> void:
-	rear_damping_compression_n_mm = max(value, 0.5)
-	changed.emit()
+func _set_camber_gain_per_travel(value: float) -> void:
+	camber_gain_per_travel = value
 
-func _set_rear_damping_rebound(value: float) -> void:
-	rear_damping_rebound_n_mm = max(value, 0.5)
-	changed.emit()
+func _set_toe_change_per_travel(value: float) -> void:
+	toe_change_per_travel = value
 
-func _set_rear_travel(value: float) -> void:
-	rear_suspension_travel_mm = max(value, 50.0)
-	changed.emit()
+func _set_ride_height_static(value: float) -> void:
+	ride_height_static = value
 
-func _set_rear_arb(value: float) -> void:
-	rear_anti_roll_bar_stiffness_n_mm = max(value, 0.5)
-	changed.emit()
+func _set_ride_height_loaded(value: float) -> void:
+	ride_height_loaded = value
 
-func _set_rear_camber_gain(value: float) -> void:
-	rear_camber_gain_per_mm = clamp(value, 0.001, 0.05)
-	changed.emit()
+func _set_tire_stiffness_factor(value: float) -> void:
+	tire_stiffness_factor = value
 
-func _set_rear_toe_gain(value: float) -> void:
-	rear_toe_gain_per_mm = clamp(value, 0.001, 0.03)
-	changed.emit()
+func _set_friction_peak_coef(value: float) -> void:
+	friction_peak_coef = value
 
-func _set_tire_peak_friction(value: float) -> void:
-	tire_peak_friction_coefficient = clamp(value, 0.1, 2.0)
-	changed.emit()
+func _set_friction_slide_coef(value: float) -> void:
+	friction_slide_coef = value
 
-func _set_tire_sliding_friction(value: float) -> void:
-	tire_sliding_friction_coefficient = clamp(value, 0.05, 1.5)
-	changed.emit()
+func _set_slip_angle_peak(value: float) -> void:
+	slip_angle_peak = value
 
-func _set_tire_b_coefficient(value: float) -> void:
-	tire_pacejka_b_coefficient = clamp(value, 2.0, 15.0)
-	changed.emit()
+func _set_slip_ratio_peak(value: float) -> void:
+	slip_ratio_peak = value
 
-func _set_tire_c_coefficient(value: float) -> void:
-	tire_pacejka_c_coefficient = clamp(value, 1.0, 3.0)
-	changed.emit()
+func _set_lateral_friction_exponent(value: float) -> void:
+	lateral_friction_exponent = value
 
-func _set_tire_d_coefficient(value: float) -> void:
-	tire_pacejka_d_coefficient = clamp(value, 0.1, 1.0)
-	changed.emit()
+func _set_longitudinal_friction_exponent(value: float) -> void:
+	longitudinal_friction_exponent = value
 
-func _set_tire_e_coefficient(value: float) -> void:
-	tire_pacejka_e_coefficient = clamp(value, -1.0, 1.0)
-	changed.emit()
+func _set_camber_stiffness_factor(value: float) -> void:
+	camber_stiffness_factor = value
 
-func _set_tire_vertical_stiffness(value: float) -> void:
-	tire_vertical_stiffness_n_mm = max(value, 50.0)
-	changed.emit()
+func _set_load_sensitivity(value: float) -> void:
+	load_sensitivity = value
 
-func _set_tire_longitudinal_stiffness(value: float) -> void:
-	tire_longitudinal_stiffness_n_mm = max(value, 50.0)
-	changed.emit()
+func _set_tire_temp_optimal(value: float) -> void:
+	tire_temp_optimal = value
 
-func _set_tire_lateral_stiffness(value: float) -> void:
-	tire_lateral_stiffness_n_mm = max(value, 50.0)
-	changed.emit()
+func _set_tire_temp_min(value: float) -> void:
+	tire_temp_min = value
 
-func _set_tire_pressure(value: float) -> void:
-	tire_pressure_bar = clamp(value, 1.5, 3.5)
-	changed.emit()
+func _set_tire_temp_max(value: float) -> void:
+	tire_temp_max = value
 
-func _set_tire_temp_opt_min(value: float) -> void:
-	tire_temperature_optimal_min_c = max(value, 20.0)
-	changed.emit()
+func _set_tire_wear_rate(value: float) -> void:
+	tire_wear_rate = value
 
-func _set_tire_temp_opt_max(value: float) -> void:
-	tire_temperature_optimal_max_c = max(value, 50.0)
-	changed.emit()
+func _set_grip_loss_on_slip(value: float) -> void:
+	grip_loss_on_slip = value
 
-func _set_tire_temp_effective_range(value: float) -> void:
-	tire_temperature_effective_range_c = max(value, 10.0)
-	changed.emit()
+func _set_road_friction_base(value: float) -> void:
+	road_friction_base = value
 
-func _set_aero_drag_coeff(value: float) -> void:
-	aero_drag_coefficient = max(value, 0.01)
-	changed.emit()
+func _set_drag_coefficient(value: float) -> void:
+	drag_coefficient = value
 
-func _set_aero_frontal_area(value: float) -> void:
-	aero_frontal_area_m2 = max(value, 1.0)
-	changed.emit()
+func _set_lift_coefficient(value: float) -> void:
+	lift_coefficient = value
 
-func _set_aero_downforce_coeff(value: float) -> void:
-	aero_downforce_coefficient = max(value, 0.0)
-	changed.emit()
+func _set_front_downforce_coefficient(value: float) -> void:
+	front_downforce_coefficient = value
 
-func _set_aero_front_balance(value: float) -> void:
-	aero_front_balance = clamp(value, 0.2, 0.8)
-	changed.emit()
+func _set_rear_downforce_coefficient(value: float) -> void:
+	rear_downforce_coefficient = value
 
-func _set_aero_lift_coeff(value: float) -> void:
-	aero_lift_coefficient = value
-	changed.emit()
+func _set_aero_reference_area(value: float) -> void:
+	aero_reference_area = value
 
-func _set_aero_side_force(value: float) -> void:
-	aero_side_force_coefficient = clamp(value, 0.0, 0.5)
-	changed.emit()
+func _set_aero_center_of_pressure_x(value: float) -> void:
+	aero_center_of_pressure_x = value
 
-func _set_aero_ground_clearance(value: float) -> void:
-	aero_ground_clearance_mm = max(value, 50.0)
-	changed.emit()
+func _set_aero_center_of_pressure_y(value: float) -> void:
+	aero_center_of_pressure_y = value
 
-func _set_aero_stall_speed(value: float) -> void:
-	aero_stall_speed_ms = max(value, 50.0)
-	changed.emit()
+func _set_aero_center_of_pressure_z(value: float) -> void:
+	aero_center_of_pressure_z = value
+
+func _set_wing_angle_front_deg(value: float) -> void:
+	wing_angle_front_deg = value
+
+func _set_wing_angle_rear_deg(value: float) -> void:
+	wing_angle_rear_deg = value
+
+func _set_air_density_sea_level(value: float) -> void:
+	air_density_sea_level = value
+
+func _set_drag_divergence_speed(value: float) -> void:
+	drag_divergence_speed = value
 
 func _set_steering_ratio(value: float) -> void:
-	steering_ratio = max(value, 8.0)
-	changed.emit()
+	steering_ratio = value
 
-func _set_steering_lock(value: float) -> void:
-	steering_lock_angle_deg = max(value, 360.0)
-	changed.emit()
+func _set_steering_lock_left(value: float) -> void:
+	steering_lock_left = value
 
-func _set_steering_deadband(value: float) -> void:
-	steering_deadband_deg = clamp(value, 0.0, 10.0)
-	changed.emit()
+func _set_steering_lock_right(value: float) -> void:
+	steering_lock_right = value
 
-func _set_steering_return(value: float) -> void:
-	steering_return_rate = clamp(value, 0.1, 1.0)
-	changed.emit()
+func _set_steering_max_input(value: float) -> void:
+	steering_max_input = value
 
-func _set_steering_nonlinear(value: float) -> void:
-	steering_nonlinearity_curve = clamp(value, 0.0, 0.5)
-	changed.emit()
+func _set_steering_deadzone(value: float) -> void:
+	steering_deadzone = value
 
-func _set_steering_assist(value: float) -> void:
-	steering_power_assist_ratio = clamp(value, 0.0, 1.0)
-	changed.emit()
+func _set_steering_return_speed(value: float) -> void:
+	steering_return_speed = value
 
-func _set_brake_dist_front(value: float) -> void:
-	brake_force_distribution_front = clamp(value, 0.3, 0.8)
-	changed.emit()
+func _set_steering_force_feedback_gain(value: float) -> void:
+	steering_force_feedback_gain = value
 
-func _set_brake_dist_rear(value: float) -> void:
-	brake_force_distribution_rear = 1.0 - brake_force_distribution_front
-	changed.emit()
+func _set_power_assist_ratio(value: float) -> void:
+	power_assist_ratio = value
 
-func _set_brake_pad_friction(value: float) -> void:
-	brake_pad_friction_coefficient = clamp(value, 0.2, 0.6)
-	changed.emit()
+func _set_auto_shift_enabled(value: bool) -> void:
+	auto_shift_enabled = value
 
-func _set_brake_rotor_radius(value: float) -> void:
-	brake_rotor_radius_mm = max(value, 50.0)
-	changed.emit()
+func _set_auto_shift_rpm_buffer(value: float) -> void:
+	auto_shift_rpm_buffer = value
 
-func _set_brake_piston_count(value: int) -> void:
-	brake_caliper_piston_count = clamp(value, 1, 12)
-	changed.emit()
+func _set_launch_control_enabled(value: bool) -> void:
+	launch_control_enabled = value
 
-func _set_brake_piston_area(value: float) -> void:
-	brake_caliper_piston_area_mm2 = max(value, 50.0)
-	changed.emit()
+func _set_launch_control_target_rpm(value: float) -> void:
+	launch_control_target_rpm = value
 
-func _set_brake_max_clamp(value: float) -> void:
-	brake_max_clamping_force_n = max(value, 1000.0)
-	changed.emit()
+func _set_brake_force_per_pedal(value: float) -> void:
+	brake_force_per_pedal = value
 
-func _set_brake_hysteresis(value: float) -> void:
-	brake_hysteresis_factor = clamp(value, 0.0, 0.5)
-	changed.emit()
+func _set_brake_bias_front(value: float) -> void:
+	brake_bias_front = clampf(value, 0.3, 0.7)
+	brake_bias_rear = 1.0 - brake_bias_front
 
-func _set_brake_bleed_thresh(value: float) -> void:
-	brake_bleed_threshold_percent = clamp(value, 0.0, 20.0)
-	changed.emit()
+func _set_brake_bias_rear(value: float) -> void:
+	brake_bias_rear = clampf(value, 0.3, 0.7)
+	brake_bias_front = 1.0 - brake_bias_rear
 
-func _set_chassis_stiffness_front(value: float) -> void:
-	chassis_stiffness_front_n_mm = max(value, 1000.0)
-	changed.emit()
+func _set_abs_threshold(value: float) -> void:
+	abs_threshold = value
 
-func _set_chassis_stiffness_rear(value: float) -> void:
-	chassis_stiffness_rear_n_mm = max(value, 1000.0)
-	changed.emit()
+func _set_abs_recovery_rate(value: float) -> void:
+	abs_recovery_rate = value
 
-func _set_roll_center_front(value: float) -> void:
-	roll_center_height_front_mm = max(value, 50.0)
-	changed.emit()
+func _set_abs_activation_speed(value: float) -> void:
+	abs_activation_speed = value
 
-func _set_roll_center_rear(value: float) -> void:
-	roll_center_height_rear_mm = max(value, 50.0)
-	changed.emit()
+func _set_parking_brake_force(value: float) -> void:
+	parking_brake_force = value
 
-func _set_cg_offset_x(value: float) -> void:
-	cg_offset_x_mm = value
-	changed.emit()
+func _set_brake_pad_wear_rate(value: float) -> void:
+	brake_pad_wear_rate = value
 
-func _set_cg_offset_y(value: float) -> void:
-	cg_offset_y_mm = value
-	changed.emit()
+func _set_brake_disc_capacity(value: float) -> void:
+	brake_disc_capacity = value
 
-func _set_cg_offset_z(value: float) -> void:
-	cg_offset_z_mm = value
-	changed.emit()
+func _set_brake_temperature_max(value: float) -> void:
+	brake_temperature_max = value
 
-func _set_body_swing_period(value: float) -> void:
-	body_swing_period_s = max(value, 0.1)
-	changed.emit()
+func _set_brake_fade_start_temp(value: float) -> void:
+	brake_fade_start_temp = value
 
-func _set_damping_ratio_body(value: float) -> void:
-	damping_ratio_body_mode = clamp(value, 0.05, 0.5)
-	changed.emit()
+func _set_brake_fade_multiplier(value: float) -> void:
+	brake_fade_multiplier = value
 
-func _set_tc_enabled(value: bool) -> void:
-	tc_enabled = value
-	changed.emit()
+func _set_clutch_slip_threshold(value: float) -> void:
+	clutch_slip_threshold = value
 
-func _set_tc_max_slip(value: float) -> void:
-	tc_max_slip_ratio = clamp(value, 0.05, 0.3)
-	changed.emit()
+func _set_clutch_engagement_ramp(value: float) -> void:
+	clutch_engagement_ramp = value
 
-func _set_tc_integrator(value: float) -> void:
-	tc_integrator_gain = clamp(value, 0.1, 1.0)
-	changed.emit()
+func _set_clutch_disengagement_ramp(value: float) -> void:
+	clutch_disengagement_ramp = value
 
-func _set_tc_proportional(value: float) -> void:
-	tc_proportional_gain = clamp(value, 0.5, 5.0)
-	changed.emit()
+func _set_upshift_delay_ms(value: int) -> void:
+	upshift_delay_ms = value
 
-func _set_tc_delay(value: float) -> void:
-	tc_reaction_delay_s = max(value, 0.01)
-	changed.emit()
+func _set_downshift_delay_ms(value: int) -> void:
+	downshift_delay_ms = value
 
-func _set_tc_recovery(value: float) -> void:
-	tc_recovery_rate = clamp(value, 0.5, 1.0)
-	changed.emit()
+func _set_damage_threshold_impact(value: float) -> void:
+	damage_threshold_impact = value
 
-func _set_abs_enabled(value: bool) -> void:
-	abs_enabled = value
-	changed.emit()
+func _set_damage_threshold_deformation(value: float) -> void:
+	damage_threshold_deformation = value
 
-func _set_abs_slip_target(value: float) -> void:
-	abs_slip_target = clamp(value, 0.05, 0.3)
-	changed.emit()
+func _set_deformation_recovery_rate(value: float) -> void:
+	deformation_recovery_rate = value
 
-func _set_abs_freq(value: float) -> void:
-	abs_modulation_frequency_hz = clamp(value, 5.0, 30.0)
-	changed.emit()
+func _set_max_deformation_percent(value: float) -> void:
+	max_deformation_percent = value
 
-func _set_abs_drop_rate(value: float) -> void:
-	abs_pressure_drop_rate_bar_s = max(value, 50.0)
-	changed.emit()
+func _set_crash_sound_volume(value: float) -> void:
+	crash_sound_volume = value
 
-func _set_abs_build_rate(value: float) -> void:
-	abs_pressure_build_rate_bar_s = max(value, 50.0)
-	changed.emit()
+func _set_debris_spawn_chance(value: float) -> void:
+	debris_spawn_chance = value
 
-func _set_abs_recovery(value: float) -> void:
-	abs_recovery_threshold = clamp(value, 0.01, 0.15)
-	changed.emit()
+func _set_use_exact_substeps(value: bool) -> void:
+	use_exact_substeps = value
 
-func _set_ai_skill(value: float) -> void:
-	ai_skill_modifier = clamp(value, 0.5, 2.0)
-	changed.emit()
+func _set_collision_precision(value: float) -> void:
+	collision_precision = value
 
-func _set_player_skill(value: float) -> void:
-	player_skill_modifier = clamp(value, 0.5, 2.0)
-	changed.emit()
+func _set_contact_tolerance(value: float) -> void:
+	contact_tolerance = value
 
-func _set_damage_enabled(value: bool) -> void:
-	damage_enabled = value
-	changed.emit()
+func _set_sleep_threshold_velocity(value: float) -> void:
+	sleep_threshold_velocity = value
 
-func _set_collision_vol(value: float) -> void:
-	collision_sound_volume = clamp(value, 0.0, 1.0)
-	changed.emit()
+func _set_sleep_threshold_rotation(value: float) -> void:
+	sleep_threshold_rotation = value
 
-func _set_skidmarks(value: bool) -> void:
-	skid_mark_enabled = value
-	changed.emit()
+func _set_min_simulation_step(value: float) -> void:
+	min_simulation_step = value
 
-func _set_particle_quality(value: int) -> void:
-	particle_quality = clamp(value, 1, 3)
-	changed.emit()
+func _set_max_simulation_step(value: float) -> void:
+	max_simulation_step = value
 
-func _on_ready() -> void:
-	_validate_all()
+func _set_auto_shift_enabled(value: bool) -> void:
+	auto_shift_enabled = value
 
-</script>
+func _set_launch_control_enabled(value: bool) -> void:
+	launch_control_enabled = value
+
+func kmh_to_ms(kmh: float) -> float:
+	return kmh / 3.6
+
+func ms_to_kmh(ms: float) -> float:
+	return ms * 3.6
+
+func rad_to_deg(rad: float) -> float:
+	return rad * 57.2958
+
+func deg_to_rad(deg: float) -> float:
+	return deg * 0.0174533
+
+func Nm_to_lb_ft(nm: float) -> float:
+	return nm * 0.737562
+
+def lb_ft_to_Nm(lb_ft: float) -> float:
+	return lb_ft * 1.35582
+
+func hp_to_kw(hp: float) -> float:
+	return hp * 0.7457
+
+func kw_to_hp(kw: float) -> float:
+	return kw * 1.34102
+
+func psi_to_bar(psi: float) -> float:
+	return psi * 0.0689476
+
+func bar_to_psi(bar: float) -> float:
+	return bar * 14.5038
+
+func inches_to_mm(inches: float) -> float:
+	return inches * 25.4
+
+func mm_to_inches(mm: float) -> float:
+	return mm * 0.0393701
+
+func kg_to_lbs(kg: float) -> float:
+	return kg * 2.20462
+
+func lbs_to_kg(lbs: float) -> float:
+	return lbs * 0.453592
+
+func get_current_gear_ratio(gear_index: int) -> float:
+	if gear_index < 0 or gear_index >= num_gears:
+		return 1.0
+	return gear_ratios[gear_index] * final_drive_ratio
+
+func get_optimal_shift_point(current_rpm: float) -> float:
+	return rev_limit_rpm - auto_shift_rpm_buffer
+
+func should_auto_shift(current_rpm: float, current_gear: int, target_gear: int) -> bool:
+	if not auto_shift_enabled:
+		return false
+	var shift_point = get_optimal_shift_point(current_rpm)
+	return current_rpm >= shift_point and current_gear > target_gear
+
+func calculate_brake_force(total_brake_input: float) -> Dictionary:
+	var front_force = total_brake_input * brake_force_per_pedal * brake_bias_front
+	var rear_force = total_brake_input * brake_force_per_pedal * brake_bias_rear
+	return {"front": front_force, "rear": rear_force}
+
+func calculate_aero_downforce(speed_ms: float) -> Dictionary:
+	var dynamic_pressure = 0.5 * air_density_sea_level * speed_ms * speed_ms
+	var front_downforce = front_downforce_coefficient * aero_reference_area * dynamic_pressure
+	var rear_downforce = rear_downforce_coefficient * aero_reference_area * dynamic_pressure
+	return {"total": front_downforce + rear_downforce, "front": front_downforce, "rear": rear_downforce}
+
+func get_road_friction(surface_type: String) -> float:
+	match surface_type:
+		"asphalt": return road_friction_asphalt
+		"concrete": return road_friction_concrete
+		"gravel": return road_friction_gravel
+		"mud": return road_friction_mud
+		"wet": return road_friction_wet
+		"ice": return road_friction_ice
+		_: return road_friction_base
+
+func clone_with_modifications(modifiers: Dictionary) -> PhysicsSettings:
+	var cloned = duplicate()
+	for key in modifiers:
+		cloned.apply_temporary_modifications({key: modifiers[key]})
+	return cloned
+
+func save_settings_to_file(file_path: String) -> Error:
+	var file = FileAccess.open(file_path, FileAccess.WRITE)
+	if file == null:
+		return ERR_CANT_CREATE
+	var settings_dict: Dictionary = {
+		"gravity": gravity,
+		"vehicle_mass": default_vehicle_mass,
+		"drag_coefficient": drag_coefficient,
+		"lift_coefficient": lift_coefficient,
+		"brake_bias_front": brake_bias_front,
+		"suspension_stiffness_front": suspension_stiffness_front,
+		"suspension_stiffness_rear": suspension_stiffness_rear,
+		"tire_friction_peak": friction_peak_coef,
+		"tire_friction_slide": friction_slide_coef,
+		"aero_drag": drag_coefficient,
+		"aero_downforce": lift_coefficient,
+		"gear_ratios": gear_ratios,
+		"final_drive": final_drive_ratio
+	}
+	file.store_string(JSON.stringify(settings_dict))
+	file.close()
+	return OK
+
+func load_settings_from_file(file_path: String) -> Error:
+	var file = FileAccess.open(file_path, FileAccess.READ)
+	if file == null:
+		return ERR_FILE_NOT_FOUND
+	var json_string = file.get_as_text()
+	file.close()
+	var parser = JSON.new()
+	var error = parser.parse(json_string)
+	if error != OK:
+		return error
+	var settings = parser.data as Dictionary
+	if settings != null:
+		if settings.has("gravity"): gravity = settings["gravity"]
+		if settings.has("vehicle_mass"): default_vehicle_mass = settings["vehicle_mass"]
+		if settings.has("drag_coefficient"): drag_coefficient = settings["drag_coefficient"]
+		if settings.has("lift_coefficient"): lift_coefficient = settings["lift_coefficient"]
+		if settings.has("brake_bias_front"): brake_bias_front = settings["brake_bias_front"]
+		if settings.has("suspension_stiffness_front"): suspension_stiffness_front = settings["suspension_stiffness_front"]
+		if settings.has("suspension_stiffness_rear"): suspension_stiffness_rear = settings["suspension_stiffness_rear"]
+		if settings.has("tire_friction_peak"): friction_peak_coef = settings["tire_friction_peak"]
+		if settings.has("tire_friction_slide"): friction_slide_coef = settings["tire_friction_slide"]
+		if settings.has("gear_ratios") and typeof(settings["gear_ratios"]) == TYPE_ARRAY:
+			gear_ratios = []
+			for ratio in settings["gear_ratios"]:
+				gear_ratios.append(ratio)
+		if settings.has("final_drive"): final_drive_ratio = settings["final_drive"]
+	return OK
