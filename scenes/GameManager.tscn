@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_game_manager"]
+
+[sub_resource type="Node3D" id="Node3D_2"]
+name = "GameManager"
+script = ExtResource("1_game_manager")
+
+[node name="GameManager" type="Node3D"]
+
+<file>
+
+## Continue
+
+Emit ONLY what comes next, starting at the exact character where the tail stops — do NOT repeat anything above, do NOT restart the file or the message. If the tail is inside a <<FILE "path">> block, keep writing the remaining file content, then close the block with 
