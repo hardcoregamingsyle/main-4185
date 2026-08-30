@@ -51,142 +51,206 @@ func _init_default_inputs() -> void:
 		"steering_left": Key.KEY_A,
 		"steering_right": Key.KEY_D,
 		"brake": Key.KEY_SPACE,
-		"gear_up": Key.KEY_E,
-		"gear_down": Key.KEY_Q,
-		"action_jump": Key.KEY_Z,
-		"action_restart": Key.KEY_R,
-		"action_pause": Key.KEY_ESCAPE,
-		"action_debug": Key.KEY_F1,
-		"action_hud": Key.KEY_TAB
+		"handbrake": Key.KEY_SHIFT,
+		"reverse": Key.KEY_Q,
+		"next_gear": Key.KEY_E,
+		"pause": Key.KEY_ESCAPE,
+		"restart": Key.KEY_R,
+		"debug": Key.KEY_Tilde,
+		"mute": Key.KEY_M,
+		"hud": Key.KEY_H
 	}
 
 func _update_input_map() -> void:
-	"""Update Godot input map with custom bindings"""
+	"""Update Godot input map from config"""
 	InputMap.clear_actions()
 	
-	for action in _input_config.values():
-		if not InputMap.has_action(str(action)):
-			InputMap.add_action(str(action))
+	var mapping = [
+		["throttle_up", ["throttle_up"]],
+		["throttle_down", ["throttle_down"]],
+		["steering_left", ["steering_left"]],
+		["steering_right", ["steering_right"]],
+		["brake", ["brake"]],
+		["handbrake", ["handbrake"]],
+		["reverse", ["reverse"]],
+		["next_gear", ["next_gear"]],
+		["pause", ["pause"]],
+		["restart", ["restart"]],
+		["debug", ["debug"]],
+		["mute", ["mute"]],
+		["hud", ["hud"]]
+	]
 	
-	InputMap.action_add_key("Throttle", _input_config["throttle_up"])
-	InputMap.action_add_key("ThrottleReverse", _input_config["throttle_down"])
-	InputMap.action_add_key("SteerLeft", _input_config["steering_left"])
-	InputMap.action_add_key("SteerRight", _input_config["steering_right"])
-	InputMap.action_add_key("Brake", _input_config["brake"])
-	InputMap.action_add_key("GearUp", _input_config["gear_up"])
-	InputMap.action_add_key("GearDown", _input_config["gear_down"])
-	InputMap.action_add_key("ActionJump", _input_config["action_jump"])
-	InputMap.action_add_key("ActionRestart", _input_config["action_restart"])
-	InputMap.action_add_key("ActionPause", _input_config["action_pause"])
-	InputMap.action_add_key("ActionDebug", _input_config["action_debug"])
-	InputMap.action_add_key("ActionHud", _input_config["action_hud"])
+	for action in mapping:
+		if not InputMap.has_action(action[0]):
+			InputMap.add_action(action[0])
+			InputMap.action_add_event(action[0], InputEventKey.new())
+		
+		var key = _input_config.get(action[0], Key.KEY_NULL)
+		if key != Key.KEY_NULL:
+			var event = InputEventKey.new()
+			event.pressed = true
+			event.keycode = key
+			InputMap.action_add_event(action[0], event)
 
-func get_throttle() -> float:
-	"""Get normalized throttle input with deadzone"""
-	var raw_input: float = 0.0
+func _process(_delta: float) -> void:
+	"""Process input each frame"""
+	_process_vehicle_controls()
+
+func _process_vehicle_controls() -> void:
+	"""Process vehicle control inputs"""
+	_calculate_throttle()
+	_calculate_brake()
+	_calculate_steering()
+	_check_gear_changes()
+	_trigger_game_actions()
+
+func _calculate_throttle() -> void:
+	"""Calculate throttle input value"""
+	var up = Input.is_action_pressed("throttle_up")
+	var down = Input.is_action_pressed("throttle_down")
 	
-	if Input.is_action_pressed("Throttle"):
-		raw_input += 1.0
-	if Input.is_action_pressed("ThrottleReverse"):
-		raw_input -= 1.0
+	var raw_value: float = 0.0
+	
+	if up:
+		raw_value += 1.0
+	if down:
+		raw_value -= 1.0
 	
 	# Apply deadzone
-	if abs(raw_input) < throttle_deadzone:
-		raw_input = 0.0
+	if abs(raw_value) < throttle_deadzone:
+		raw_value = 0.0
 	
 	# Apply sensitivity
-	return clampf(raw_input * throttle_sensitivity, -1.0, 1.0)
-
-func get_brake() -> float:
-	"""Get normalized brake input with deadzone"""
-	var raw_input: float = 0.0
+	raw_value *= throttle_sensitivity
 	
-	if Input.is_action_pressed("Brake"):
-		raw_input = 1.0
+	# Clamp to valid range
+	_throttle_input = clamp(raw_value, -1.0, 1.0)
+	
+	if _is_changed(throttle_deadzone):
+		throttle_changed.emit(_throttle_input)
+
+func _calculate_brake() -> void:
+	"""Calculate brake input value"""
+	var brake_pressed = Input.is_action_pressed("brake")
+	var handbrake_pressed = Input.is_action_pressed("handbrake")
+	
+	var raw_value: float = 0.0
+	
+	if brake_pressed:
+		raw_value += 0.5
+	if handbrake_pressed:
+		raw_value += 0.5
 	
 	# Apply deadzone
-	if abs(raw_input) < brake_deadzone:
-		raw_input = 0.0
+	if raw_value > brake_deadzone:
+		raw_value = 1.0
+	else:
+		raw_value = 0.0
 	
 	# Apply sensitivity
-	return clampf(raw_input * brake_sensitivity, 0.0, 1.0)
-
-func get_steering() -> float:
-	"""Get normalized steering input with deadzone"""
-	var raw_input: float = 0.0
+	raw_value *= brake_sensitivity
 	
-	if Input.is_action_pressed("SteerLeft"):
-		raw_input -= 1.0
-	if Input.is_action_pressed("SteerRight"):
-		raw_input += 1.0
+	_brake_input = raw_value
+	
+	if _is_changed(brake_deadzone):
+		brake_changed.emit(_brake_input)
+
+func _calculate_steering() -> void:
+	"""Calculate steering input value"""
+	var left = Input.is_action_pressed("steering_left")
+	var right = Input.is_action_pressed("steering_right")
+	
+	var raw_value: float = 0.0
+	
+	if left:
+		raw_value -= 1.0
+	if right:
+		raw_value += 1.0
 	
 	# Apply deadzone
-	if abs(raw_input) < steering_deadzone:
-		raw_input = 0.0
+	if abs(raw_value) < steering_deadzone:
+		raw_value = 0.0
 	
 	# Apply sensitivity
-	return clampf(raw_input * steering_sensitivity, -1.0, 1.0)
+	raw_value *= steering_sensitivity
+	
+	# Clamp to valid range
+	_steering_input = clamp(raw_value, -1.0, 1.0)
+	
+	if _is_changed(steering_deadzone):
+		steering_changed.emit(_steering_input)
+
+func _check_gear_changes() -> void:
+	"""Check for gear change inputs"""
+	if Input.is_action_just_pressed("next_gear"):
+		_current_gear = min(_current_gear + 1, 6)
+		gear_changed.emit(_current_gear)
+	
+	if Input.is_action_just_pressed("reverse"):
+		if _current_gear == 1:
+			_current_gear = -1
+		elif _current_gear < 0:
+			_current_gear = 1
+		gear_changed.emit(_current_gear)
+
+func _trigger_game_actions() -> void:
+	"""Check for game action triggers"""
+	if Input.is_action_just_pressed("pause"):
+		action_triggered.emit(Action.PAUSE)
+	
+	if Input.is_action_just_pressed("restart"):
+		action_triggered.emit(Action.RESTART)
+	
+	if Input.is_action_just_pressed("debug"):
+		action_triggered.emit(Action.TOGGLE_DEBUG)
+	
+	if Input.is_action_just_pressed("mute"):
+		action_triggered.emit(Action.MUTE_AUDIO)
+	
+	if Input.is_action_just_pressed("hud"):
+		action_triggered.emit(Action.SHOW_HUD)
+
+func _is_changed(threshold: float) -> bool:
+	"""Check if input changed significantly"""
+	return abs(_throttle_input) > threshold or abs(_brake_input) > threshold or abs(_steering_input) > threshold
+
+func get_throttle_input() -> float:
+	return _throttle_input
+
+func get_brake_input() -> float:
+	return _brake_input
+
+func get_steering_input() -> float:
+	return _steering_input
 
 func get_current_gear() -> int:
 	return _current_gear
 
-func shift_up() -> void:
-	"""Shift transmission up one gear"""
-	if _current_gear < 6:
-		_current_gear += 1
-		gear_changed.emit(_current_gear)
+func set_input_config(config: Dictionary) -> void:
+	"""Set custom input configuration"""
+	_input_config.merge(config, true)
+	_update_input_map()
 
-func shift_down() -> void:
-	"""Shift transmission down one gear"""
-	if _current_gear > -1:  # -1 = reverse
-		_current_gear -= 1
-		gear_changed.emit(_current_gear)
+func reset_to_defaults() -> void:
+	"""Reset all inputs to default configuration"""
+	_init_default_inputs()
+	_update_input_map()
 
-func trigger_action(action: Action) -> bool:
-	"""Check if action was triggered this frame"""
-	match action:
-		Action.JUMP:
-			return Input.is_action_just_pressed("ActionJump")
-		Action.RESTART:
-			return Input.is_action_just_pressed("ActionRestart")
-		Action.PAUSE:
-			return Input.is_action_just_pressed("ActionPause")
-		Action.SKIP_LAP:
-			return Input.is_action_just_pressed("SkipLap")
-		Action.TOGGLE_DEBUG:
-			return Input.is_action_just_pressed("ActionDebug")
-		Action.MUTE_AUDIO:
-			return Input.is_action_just_pressed("MuteAudio")
-		Action.SHOW_HUD:
-			return Input.is_action_just_pressed("ActionHud")
-	return false
+func is_debug_active() -> bool:
+	return Input.is_key_pressed(KEY_MASK_DEBUG)
 
-func set_input_binding(action: String, key_code: int) -> void:
-	"""Set custom input binding"""
-	if _input_config.has(action):
-		_input_config[action] = key_code
-		_update_input_map()
+func toggle_debug_mode() -> void:
+	pass  # Handled by GameManager
 
-func get_input_binding(action: String) -> int:
-	"""Get current input binding for an action"""
-	if _input_config.has(action):
-		return _input_config[action]
-	return -1
-
-func _process(_delta: float) -> void:
-	"""Update input state each frame"""
-	var old_throttle = _throttle_input
-	var old_brake = _brake_input
-	var old_steering = _steering_input
-	
-	_throttle_input = get_throttle()
-	_brake_input = get_brake()
-	_steering_input = get_steering()
-	
-	# Emit signals only when values change significantly
-	if abs(_throttle_input - old_throttle) > 0.01:
-		throttle_changed.emit(_throttle_input)
-	if abs(_brake_input - old_brake) > 0.01:
-		brake_changed.emit(_brake_input)
-	if abs(_steering_input - old_steering) > 0.01:
-		steering_changed.emit(_steering_input)
+func get_all_input_values() -> Dictionary:
+	"""Get all current input values as a dictionary"""
+	return {
+		"throttle": _throttle_input,
+		"brake": _brake_input,
+		"steering": _steering_input,
+		"gear": _current_gear,
+		"handbrake": Input.is_action_pressed("handbrake"),
+		"pause": Input.is_action_just_pressed("pause"),
+		"restart": Input.is_action_just_pressed("restart")
+	}
