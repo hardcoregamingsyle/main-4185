@@ -1,37 +1,40 @@
-[gd_scene load_steps=2 format=3 uid="uid://test_runner"]
+[gd_scene load_steps=2 format=3 uid="uid://test_runner_001"]
 
-[ext_resource type="Script" path="res://tests/core/GameManager.test.gd" id="1_test_gamemanager"]
-[ext_resource type="Script" path="res://tests/core/PhysicsSettings.test.gd" id="2_test_physicssettings"]
-[ext_resource type="Script" path="res://tests/core/AudioManager.test.gd" id="3_test_audiomanager"]
-[ext_resource type="Script" path="res://tests/core/InputManager.test.gd" id="4_test_inputmanager"]
-[ext_resource type="Script" path="res://tests/integration/MainScene.test.gd" id="5_test_mainscene"]
-[ext_resource type="Script" path="res://tests/integration/VehicleController.test.gd" id="6_test_vehiclecontroller"]
-[ext_resource type="Script" path="res://tests/edge_cases/EdgeCases.test.gd" id="7_test_edgecases"]
-[ext_resource type="Script" path="res://tests/security/SecurityTests.test.gd" id="8_test_security"]
+[ext_resource type="Script" path="res://tests/core/GameManager.test.gd" id="1_game_manager"]
+[ext_resource type="Script" path="res://tests/core/PhysicsSettings.test.gd" id="2_physics_settings"]
+[ext_resource type="Script" path="res://tests/core/AudioManager.test.gd" id="3_audio_manager"]
+[ext_resource type="Script" path="res://tests/core/InputManager.test.gd" id="4_input_manager"]
+[ext_resource type="Script" path="res://tests/integration/MainScene.test.gd" id="5_main_scene"]
+[ext_resource type="Script" path="res://tests/integration/VehicleController.test.gd" id="6_vehicle_controller"]
+[ext_resource type="Script" path="res://tests/edge_cases/EdgeCases.test.gd" id="7_edge_cases"]
+[ext_resource type="Script" path="res://tests/security/SecurityTests.test.gd" id="8_security"]
 
 [node name="TestRunner" type="Node"]
-script = ExtResource("1_test_gamemanager")
+script = ExtResource("1_game_manager")
 
-[node name="GameManagerTests" type="Node"]
-script = ExtResource("2_test_physicssettings")
+[node name="GameManager" type="Node"]
+script = ExtResource("1_game_manager")
 
-[node name="PhysicsSettingsTests" type="Node"]
-script = ExtResource("3_test_audiomanager")
+[node name="AudioManager" type="Node"]
+script = ExtResource("3_audio_manager")
 
-[node name="AudioManagerTests" type="Node"]
-script = ExtResource("4_test_inputmanager")
+[node name="InputManager" type="Node"]
+script = ExtResource("4_input_manager")
 
-[node name="InputManagerTests" type="Node"]
-script = ExtResource("5_test_mainscene")
+[node name="PhysicsSettings" type="Node"]
+script = ExtResource("2_physics_settings")
 
-[node name="MainSceneTests" type="Node"]
-script = ExtResource("6_test_vehiclecontroller")
+[node name="MainScene" type="Node"]
+script = ExtResource("5_main_scene")
 
-[node name="VehicleControllerTests" type="Node"]
-script = ExtResource("7_test_edgecases")
+[node name="VehicleController" type="Node"]
+script = ExtResource("6_vehicle_controller")
 
-[node name="EdgeCasesTests" type="Node"]
-script = ExtResource("8_test_security")
+[node name="EdgeCases" type="Node"]
+script = ExtResource("7_edge_cases")
 
 [node name="SecurityTests" type="Node"]
-script = ExtResource("1_test_gamemanager")
+script = ExtResource("8_security")
+
+[connection signal="ready" from="TestRunner" to="." method="_on_ready"]
+[connection signal="tree_entered" from="TestRunner" to="." method="_on_tree_entered"]
