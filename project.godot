@@ -20,6 +20,7 @@ icon="res://icon.svg"
 run/main_scene="res://scenes/main/Main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/preset_name="Default PC"
+config/release/exe_icon="res://icon.svg"
 
 [autoload]
 
@@ -32,6 +33,7 @@ PhysicsSettings="*res://scripts/core/PhysicsSettings.gd"
 
 gdscript/warnings/unused_variable=1
 gdscript/warnings/unused_parameter=1
+gdscript/warnings/deprecated_declarations=1
 
 [display]
 
@@ -41,6 +43,8 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/size/viewport_resizable=true
 window/resizable=true
+window/fullscreen/windowed=true
+window/exclusive_fullscreen=false
 
 [input]
 
@@ -68,131 +72,289 @@ accelerate={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null)]
 }
-pause={
+steer_left={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":80,"key_label":0,"unicode":112,"echo":false,"script":null)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)]
+}
+steer_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null)]
+}
+pause_game={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":16,"key_label":0,"unicode":0,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":13,"key_label":0,"unicode":0,"echo":false,"script":null)]
 }
 restart_race={
 "deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"echo":false,"script":null)]
+}
+camera_switch={
+"deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)]
 }
-
-[navigation]
-
-navigation/navigation_agent_0_enabled=true
-navigation/navigation_agent_0_layer_mask=15
-navigation/navigation_agent_0_radius=1.0
-navigation/navigation_agent_0_speed=15.0
-navigation/navigation_agent_0_vertical_offset=2.0
-navigation/navigation_agent_0_max_acceleration=10.0
-navigation/navigation_agent_0_max_velocity=-1.0
-navigation/navigation_agent_0_collision_mask=0
-navigation/navigation_agent_0_debug_enabled=false
+turbo_boost={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null)]
+}
 
 [rendering]
 
 renderer/rendering_method="forward_plus"
-renderer/rendering_method_mobile="gl_compatibility"
-renderer/max_world_space_vertices=65535
-renderer/supports_vr=true
-renderer/shaders/use_standard_materials=true
-renderer/quality/use_filters=false
-renderer/environment/background_mode=2
-renderer/environment/default_sky=Environment/Sky
-renderer/environment/default_environment="res://default_env.tres"
-renderer/environment/default_background_color=R(0.0, 0.0, 0.0, 1.0)
-renderer/environment/fog_enabled=true
-renderer/environment/fog_sky_as_atmosphere=false
-renderer/environment/fog_density=0.1
-renderer/environment/fog_color=R(0.8, 0.8, 0.8, 1.0)
-renderer/environment/atmosphere_fog_mix_mode=1
-renderer/environment/atmosphere_fog_mix_factor=0.0
-renderer/environment/atmosphere_fog_top=100.0
-renderer/environment/atmosphere_fog_bottom=0.0
-renderer/environment/ambient_light_source=0
-renderer/environment/ambient_light_energy=0.5
-renderer/environment/default_diffuse_map="res://environment/lightmaps/default_diffuse.png"
-renderer/environment/default_specular_map="res://environment/lightmaps/default_specular.png"
-renderer/environment/reflection_cubemap_size=256
-renderer/environment/camera_effect_antialiasing=1
-renderer/environment/camera_effect_antialiasing_quality=1
-renderer/environment/camera_effect_motion_blur_amount=0.0
-renderer/environment/camera_effect_motion_blur_type=0
-renderer/environment/camera_effect_depth_of_field_focus_distance=10.0
-renderer/environment/camera_effect_depth_of_field_f_stop=2.8
-renderer/environment/camera_effect_depth_of_field_aperture_blade_count=0
-renderer/environment/camera_effect_depth_of_field_aperture_rotation=0.0
-renderer/environment/camera_effect_bloom_amount=0.5
-renderer/environment/camera_effect_bloom_threshold=0.8
-renderer/environment/camera_effect_bloom_scale=1.0
-renderer/environment/camera_effect_hdr_use_linear_contrast=true
-renderer/environment/camera_effect_hdr_contrast=1.0
-renderer/environment/camera_effect_hdr_auto_exposure=true
-renderer/environment/camera_effect_hdr_auto_exposure_min=-2.0
-renderer/environment/camera_effect_hdr_auto_exposure_max=2.0
-renderer/environment/camera_effect_hdr_auto_exposure_speed=0.5
-renderer/environment/camera_effect_chromatic_aberration_amount=0.0
-renderer/environment/camera_effect_chromatic_aberration_ramp_time=0.0
-renderer/environment/camera_effect_grain_amount=0.0
-renderer/environment/camera_effect_grain_ramp_time=0.0
-renderer/environment/camera_effect_vignette_amount=0.0
-renderer/environment/camera_effect_vignette_alpha=0.0
-renderer/environment/camera_effect_vignette_color=R(0.0, 0.0, 0.0, 1.0)
-renderer/environment/camera_effect_vignette_curve=1.0
-renderer/environment/camera_effect_vignette_border=0.0
-renderer/environment/camera_effect_ao_intensity=1.0
-renderer/environment/camera_effect_ao_attenuation=1.0
-renderer/environment/camera_effect_ao_hemisphere_only=true
-renderer/environment/camera_effect_ao_luminance_multiplier=1.0
-renderer/environment/camera_effect_ao_far_distance=1000.0
-renderer/environment/camera_effect_ao_max_rays_per_pixel=8
-renderer/environment/camera_effect_ao_samples=4
-renderer/environment/camera_effect_ao_max_steps=128
-renderer/environment/camera_effect_ao_step_length=1.0
-renderer/environment/camera_effect_ao_step_length_anisotropic=1.0
-renderer/environment/camera_effect_ao_normal_bias=0.1
-renderer/environment/camera_effect_ao_normal_bias_scale=1.0
+renderer/rendering_method_debug/view_mode="wireframe"
+renderer/rendering_method_debug/debug_views/background_color=BColor(0, 0, 0, 1)
+renderer/rendering_method_debug/debug_views/show_fps=true
+renderer/rendering_method_debug/debug_views/show_light_info=false
+renderer/rendering_method_debug/debug_views/show_occlusion_culling=false
+renderer/rendering_method_debug/debug_views/show_physics_collision_shape=false
+renderer/rendering_method_debug/debug_views/show_viewport_as_texture=false
+renderer/environment/default_environment/atmosphere_enabled=true
+renderer/environment/default_environment/fog_enabled=true
+renderer/environment/default_environment/glow_enabled=true
+renderer/environment/default_environment/ambient_light_color=BColor(0.2, 0.2, 0.2, 1)
+renderer/environment/default_environment/ambient_light_energy=0.5
+renderer/environment/default_environment/sky_enabled=true
+renderer/environment/default_environment/use_ambient_occlusion=true
+renderer/environment/default_environment/use_reflection_probe=true
+renderer/rendering_quality/buffer_cache/max_size_mb=256
+renderer/rendering_quality/shadows/enabled=true
+renderer/rendering_quality/shadows/cascade_count=4
+renderer/rendering_quality/shadows/cascade_first_split=0.05
+renderer/rendering_quality/shadows/cascade_second_split=0.15
+renderer/rendering_quality/shadows/cascade_third_split=0.35
+renderer/rendering_quality/shadows/cascade_fourth_split=1.0
+renderer/rendering_quality/meshes/instancing_enabled=true
+renderer/rendering_quality/meshes/lods_enabled=true
+renderer/rendering_quality/meshes/lod_distance_multiplier=1.0
+renderer/rendering_quality/textures/compression_quality=0.9
+renderer/rendering_quality/textures/filtering_quality=1
+renderer/rendering_quality/post_processing/tone_mapping_enabled=true
+renderer/rendering_quality/post_processing/bloom_enabled=true
+renderer/rendering_quality/post_processing/bloom_threshold=0.5
+renderer/rendering_quality/post_processing/bloom_intensity=1.0
+renderer/rendering_quality/anti_aliasing/msaa_2d=2
+renderer/rendering_quality/anti_aliasing/msaa_3d=4
+renderer/rendering_quality/anti_aliasing/anisotropic_filtering=4
 
-[physics_3d]
+[physics]
 
-physics_3d/default_gravity=9.8
-physics_3d/default_gravity_vector=Vector3(0,-9.8,0)
-physics_3d/constraints/default_solver_iterations=10
-physics_3d/constraints/joints_default_friction=0.1
-physics_3d/constraints/joints_default_max_force=1000000000.0
+common/physics_ticks_per_second=120
+common/max_substeps=4
+common/substep_clamp=true
+common/substep_max_clamp=0.1
+common/continuous_cd_detection=true
+common/optimization_mode=performance
 
-[performance]
+[network]
 
-general/limit_fps=60
-general/framerate_smoothing_enabled=true
-general/framerate_smoothing_target=60
-animation/use_physics_frames=true
-light/local_update_range=20.0
-light/enabled_in_build=true
-light/force_optimization_enabled=true
-light/force_optimization_layers=1
-light/force_optimization_shadow_maps=1
-light/force_optimization_decals=0
-light/force_optimization_gizmos=0
-light/force_optimization_post_processing=0
-mesh/merge_duplicates_enabled=true
-mesh/bake_on_load_enabled=true
-mesh/lod/auto_adjustment_enabled=true
-mesh/lod/minimum_screen_size=0.05
-mesh/lod/maximum_screen_size=1.0
-mesh/geometry_instance_enable_occlusion_culling=true
-mesh/instance_enable_occlusion_culling=true
-collision/collision_threads_enabled=true
-collision/collision_threads_count=0
-resources/deferred_loading_enabled=true
-resources/resource_preloading_enabled=true
-resources/loading_max_batch=10
-resources/loading_max_batch_bytes=104857600
-audio/doppler_tracking_enabled=true
-audio/low_latency_audio_enabled=false
-audio/low_latency_output_latency_ms=32
-audio/good_enough_soundtracks_enabled=true
-audio/good_enough_music_tracks_enabled=true
-audio/speech_enabled=true
+limits/debugger/connection_timeout=60
+limits/debugger/frame_timeout=10
 
-{end}
+[shader]
+
+cache/always_use_binary=false
+cache/enable_read_write_cache=true
+
+[locale]
+
+translations/editor_locale="en"
+translations/export_locale="en"
+
+[hot_reload]
+
+auto_save_before_reloading=true
+save_external_data_on_reload=true
+
+[script]
+
+language/type_checks/strict_types=false
+language/type_checks/type_check_level=1
+
+[export]
+
+include_pck=false
+filter_files_only=false
+exclude_patterns=PackedStringArray(".git/", ".gitignore", "*.md", "tests/")
+use_spaces=false
+
+[platform:Android]
+
+permission/use_permissions_dialog=true
+
+[platform:iOS]
+
+xcode/release/code_sign_identity="iPhone Developer"
+xcode/release/provisioning_profile_type="Automatic"
+xcode/debug/code_sign_identity="iPhone Developer"
+xcode/debug/provisioning_profile_type="Automatic"
+
+[plugins]
+
+disable_all_plugins=true
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[external_scenes]
+
+main_menu.tscn={"path":"res://scenes/main/Main.tscn","instances":PackedStringArray()}
+
+[vdb]
+
+enabled=false
+
+<END>>disabled=PackedStringArray()
+export/preset_count=1
+
+[debug]
+
+gdscript/warnings/unused_variable_in_assignment=false
+gdscript/warnings/missing_return_statement=false
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[input]
+
+move_up={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null)]
+}
+move_down={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)]
+}
+steer_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)]
+}
+steer_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null)]
+}
+pause_game={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":16,"key_label":0,"unicode":0,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":13,"key_label":0,"unicode":0,"echo":false,"script":null)]
+}
+restart_race={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"echo":false,"script":null)]
+}
+camera_switch={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)]
+}
+turbo_boost={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null)]
+}
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
+renderer/rendering_method_debug/view_mode="wireframe"
+renderer/rendering_method_debug/debug_views/background_color=BColor(0, 0, 0, 1)
+renderer/rendering_method_debug/debug_views/show_fps=true
+renderer/rendering_method_debug/debug_views/show_light_info=false
+renderer/rendering_method_debug/debug_views/show_occlusion_culling=false
+renderer/rendering_method_debug/debug_views/show_physics_collision_shape=false
+renderer/rendering_method_debug/debug_views/show_viewport_as_texture=false
+renderer/environment/default_environment/atmosphere_enabled=true
+renderer/environment/default_environment/fog_enabled=true
+renderer/environment/default_environment/glow_enabled=true
+renderer/environment/default_environment/ambient_light_color=BColor(0.2, 0.2, 0.2, 1)
+renderer/environment/default_environment/ambient_light_energy=0.5
+renderer/environment/default_environment/sky_enabled=true
+renderer/environment/default_environment/use_ambient_occlusion=true
+renderer/environment/default_environment/use_reflection_probe=true
+renderer/rendering_quality/buffer_cache/max_size_mb=256
+renderer/rendering_quality/shadows/enabled=true
+renderer/rendering_quality/shadows/cascade_count=4
+renderer/rendering_quality/shadows/cascade_first_split=0.05
+renderer/rendering_quality/shadows/cascade_second_split=0.15
+renderer/rendering_quality/shadows/cascade_third_split=0.35
+renderer/rendering_quality/shadows/cascade_fourth_split=1.0
+renderer/rendering_quality/meshes/instancing_enabled=true
+renderer/rendering_quality/meshes/lods_enabled=true
+renderer/rendering_quality/meshes/lod_distance_multiplier=1.0
+renderer/rendering_quality/textures/compression_quality=0.9
+renderer/rendering_quality/textures/filtering_quality=1
+renderer/rendering_quality/post_processing/tone_mapping_enabled=true
+renderer/rendering_quality/post_processing/bloom_enabled=true
+renderer/rendering_quality/post_processing/bloom_threshold=0.5
+renderer/rendering_quality/post_processing/bloom_intensity=1.0
+renderer/rendering_quality/anti_aliasing/msaa_2d=2
+renderer/rendering_quality/anti_aliasing/msaa_3d=4
+renderer/rendering_quality/anti_aliasing/anisotropic_filtering=4
+
+[physics]
+
+common/physics_ticks_per_second=120
+common/max_substeps=4
+common/substep_clamp=true
+common/substep_max_clamp=0.1
+common/continuous_cd_detection=true
+common/optimization_mode=performance
+
+[network]
+
+limits/debugger/connection_timeout=60
+limits/debugger/frame_timeout=10
+
+[shader]
+
+cache/always_use_binary=false
+cache/enable_read_write_cache=true
+
+[locale]
+
+translations/editor_locale="en"
+translations/export_locale="en"
+
+[hot_reload]
+
+auto_save_before_reloading=true
+save_external_data_on_reload=true
+
+[script]
+
+language/type_checks/strict_types=false
+language/type_checks/type_check_level=1
+
+[export]
+
+include_pck=false
+filter_files_only=false
+exclude_patterns=PackedStringArray(".git/", ".gitignore", "*.md", "tests/")
+use_spaces=false
+
+[platform:Android]
+
+permission/use_permissions_dialog=true
+
+[platform:iOS]
+
+xcode/release/code_sign_identity="iPhone Developer"
+xcode/release/provisioning_profile_type="Automatic"
+xcode/debug/code_sign_identity="iPhone Developer"
+xcode/debug/provisioning_profile_type="Automatic"
+
+[plugins]
+
+disable_all_plugins=true
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[external_scenes]
+
+main_menu.tscn={"path":"res://scenes/main/Main.tscn","instances":PackedStringArray()}
+
+[vdb]
+
+enabled=false
