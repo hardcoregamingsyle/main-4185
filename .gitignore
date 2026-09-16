@@ -1,100 +1,85 @@
-# Godot Engine 4.x .gitignore
-# https://docs.godotengine.org/en/stable/contributing/development/git.html
+# Godot Engine Project Files
+.project
+.editordata
+*.tscn.backup
+*.res
+*.import/
+addons/godot-jolt/.godot/
+addons/godot-jolt/build/
+addons/sokol-gfx-implot/.godot/
+addons/sokol-gfx-implot/build/
+addons/godot-cpp/.godot/
+addons/godot-cpp/build/
 
-# Compiled files
-*.compiled
-*.remap
-*.import
-*.cfg
-*.tw
-
-# Editor autosaves
-*~
-*/.*
-
-# OS generated files
+# OS-specific files
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Local editor settings
-.project_files
-.global_script_class_cache.cfg
-.editordata
-
-# Build/export directories
+# Build output
+bin/
+dist/
+export/
 build/
-exports/
-res://exports/*
 
-# IDE specific
-.vscode/
+# Editor backups
+*.backup
+*.bak
+*~
+
+# IDE files
 .idea/
-*.sublime-project
-*.sublime-workspace
+.vscode/
+*.swp
+*.swo
+*~
 
-# Godot editor backups
-backup/
-*_backup/
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Temporary files
-temp/
-tmp/
-
-# Cache directories
-.cache/
-.cache-gdscript/
-
-# Test results
-test_results/
-
-# Environment variables and secrets
+# Environment variables
 .env
 .env.local
-.env.production
-.env.staging
-*.env
+.env.*.local
 
-# Logs
-*.log
-logs/
-
-# Platform specific
-Thumbnails/
-thumbnail/
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# macOS
-Spotlight永不索引
-._*
-.DS_Store
-
-# Linux
-.Spotlight-V100
-.Trashes
-
-# Node.js (if using web build tools)
-node_modules/
-package-lock.json
-yarn.lock
-
-# Coverage reports
+# Testing
 coverage/
-*.lcov
+.nyc_output/
 
-# CI/CD artifacts
-.github/artifacts/
+# Temporary files
+tmp/
+temp/
+*.tmp
 
-# Backup exports
-_*/
-*_/
+# Cache
+.cache/
+.npm/
+.yarn/
+
+# Documentation
+*.pdf
+docs/_build/
+
+# Secrets (ALWAYS)
+*.pem
+*.key
+*.crt
+secrets/
+credentials/
+
+# Compiled shaders
+shaders/*.glsl*
+shaders/*.hlsl*
 
 # Godot 4 specific
-.user_data/
-.sconsign.dblite
-.conan/
+user://
+project.lock
+project.metadata
+
+# Test coverage
+test-results/
+coverage.xml
+codecov.json
