@@ -1,85 +1,118 @@
-# Godot Engine Project Files
-.project
-.editordata
-*.tscn.backup
-*.res
-*.import/
-addons/godot-jolt/.godot/
-addons/godot-jolt/build/
-addons/sokol-gfx-implot/.godot/
-addons/sokol-gfx-implot/build/
-addons/godot-cpp/.godot/
-addons/godot-cpp/build/
-
-# OS-specific files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Build output
-bin/
-dist/
-export/
-build/
-
-# Editor backups
-*.backup
-*.bak
-*~
-
-# IDE files
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
-# Log files
-*.log
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment variables
+# Build output
+dist/
+build/
+*.log
+
+# Environment files
 .env
 .env.local
-.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Testing
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Testing coverage
 coverage/
 .nyc_output/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
 
 # Temporary files
 tmp/
 temp/
 *.tmp
 
+# Logs
+logs/
+*.log
+
 # Cache
 .cache/
-.npm/
-.yarn/
+.next/
+.cache-loader/
 
-# Documentation
-*.pdf
-docs/_build/
+# Misc
+*.bak
+*.backup
+*.old
 
-# Secrets (ALWAYS)
-*.pem
-*.key
-*.crt
-secrets/
-credentials/
+{"op":"continue"}{ "op": "continue" }
 
-# Compiled shaders
-shaders/*.glsl*
-shaders/*.hlsl*
+Now I'll create the `.gitignore` file for proper version control exclusions.
 
-# Godot 4 specific
-user://
-project.lock
-project.metadata
+<<FILE ".gitignore">>
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Test coverage
-test-results/
-coverage.xml
-codecov.json
+# Build output
+dist/
+build/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Testing coverage
+coverage/
+.nyc_output/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+.next/
+.cache-loader/
+
+# Misc
+*.bak
+*.backup
+*.old

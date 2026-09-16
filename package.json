@@ -1,0 +1,24 @@
+{
+  "name": "pixel-platformer",
+  "version": "1.0.0",
+  "description": "A browser-based platformer game with procedural graphics",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000 --cors",
+    "build": "echo 'No build step required'",
+    "test": "echo 'Running tests...'"
+  },
+  "keywords": [
+    "game",
+    "platformer",
+    "html5",
+    "canvas"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
