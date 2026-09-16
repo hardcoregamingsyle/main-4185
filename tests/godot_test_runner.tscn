@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://test_runner"]
+
+[node name="TestRunner" type="Node"]
+script = {
+instance = SubResource("Script"),
+resource_name = "TestRunner"
+}
+
+[sub_resource type="Script" id="Script1"]
+source_code = """extends Node
+class_name TestRunner
+
+func _ready() -> void:
+	print("[TestRunner] Initializing test environment...")
+	# Auto-run tests when in debug mode
+	if Engine.is_editor_hint():
+		push_error("Tests should run from command line or test framework")
+	else:
+		run_tests()
+
+func run_tests() -> void:
+	print("\\n=== GODOT RACING SIMULATOR TEST SUITE ===")
+	# This will be replaced by GDUnit4 integration
+	pass
+"""
+constant_scripts = Array()
+language = "GDScript"
