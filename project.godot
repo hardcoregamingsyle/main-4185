@@ -1,15 +1,16 @@
 ;==============================================================================
 ; Godot Project Configuration File
 ; Version: 4.3.0-stable
-; Description: Cross-platform game project configuration
+; Description: Thalamus Racing Simulator - Cross-platform racing game
+; Copyright 2026 Thalamus Racing Simulator Project
 ;==============================================================================
 
 [application]
-config/name="Pixel Adventure"
-config/description="A cross-platform pixel art adventure game built with Godot 4.3"
+config/name="Thalamus Racing"
+config/description="Professional racing simulator built with Godot 4.3"
 config/icon="res://icon.svg"
-config/run/main_scene="res://scenes/main.tscn"
-config/pack/paths=["res://", "res://assets/"]
+config/run/main_scene="res://scenes/main/Main.tscn"
+config/pack/paths=["res://", "res://assets/", "res://data/"]
 config/version={"major":1,"minor":0,"patch":0}
 config/recommended_display_scale=1.0
 config/use_fullscreen_mode=true
@@ -25,7 +26,7 @@ display/window/stretch/aspect="keep"
 display/fullscreen/enable=false
 display/window/sizing_policy="horizontal"
 display/window/transparency_support=true
-display/window/title="Pixel Adventure v1.0"
+display/window/title="Thalamus Racing v1.0"
 display/window/position="centered"
 
 [rendering]
@@ -45,9 +46,9 @@ rendering/rendering_method/environment/default_env/background_mode=2
 physics/common/default_linear_damp=0.1
 physics/common/default_angular_damp=0.1
 physics/3d/fixed_fps=60
-physics/3d/substeps=3
+physics/3d/substeps=4
 physics/2d/fixed_fps=60
-physics/2d/substeps=3
+physics/2d/substeps=4
 
 [input]
 map/action/jump={"type":"button","code":32}
@@ -60,12 +61,14 @@ map/action/sprint={"type":"key","code":Shift}
 map/action/interact={"type":"key","code":E}
 map/action/pause={"type":"key","code":Escape}
 map/action/screenshot={"type":"key","code":PrintScreen}
+map/action/brake={"type":"key","code":Down}
+map/action/handbrake={"type":"key","code":Space}
 
 [autoload]
-GameManager="res://scripts/managers/game_manager.gd"
-InputManager="res://scripts/managers/input_manager.gd"
-SoundManager="res://scripts/managers/sound_manager.gd"
-AssetManager="res://scripts/managers/asset_manager.gd"
+GameManager="res://scripts/core/GameManager.gd"
+InputManager="res://scripts/core/InputManager.gd"
+AudioManager="res://scripts/core/AudioManager.gd"
+PhysicsSettings="res://scripts/core/PhysicsSettings.gd"
 
 [rendering/texture_filters]
 filter/2d="linear"
@@ -74,34 +77,14 @@ filter/cubemap="linear"
 allow_variants=false
 
 [rendering/anti_aliasing]
-anti_aliasing/multisampling/enabled=false
+anti_aliasing/multisampling/enabled=true
 anti_aliasing/multisampling/sample_count=4
-anti_aliasing/msaa/3d=disabled
-anti_aliasing/msaa/2d=disabled
-anti_aliasing/taa/antialiasing_quality=1.0
-anti_aliasing/taa/end_fade_distance=1000.0
-anti_aliasing/taa/end_fade_far=1000.0
-anti_aliasing/taa/end_fade_near=0.0
-anti_aliasing/taa/motion_blur_amount=0.0
-anti_aliasing/taa/motion_blur_max_steps=64
-anti_aliasing/taa/motion_blur_sample_count=8
+anti_aliasing/msaa/3d=enabled
 
-[rendering/vs]
-vs/hlsl_version=160
-vs/glsl_version=330
-
-[debug]
-debug/gizmos/show_all_gizmos=true
-debug/gizmos/default_colors/primitive=Color(0.86, 0.86, 0.86, 1)
-debug/gizmos/default_colors/selected=Color(0.28, 0.55, 0.86, 1)
-debug/gizmos/default_colors/help=Color(0.86, 0.86, 0.86, 1)
-debug/gizmos/default_colors/confirmation=Color(0.28, 0.86, 0.28, 1)
+[rendering/post_processing]
+post_processing/bloom/enabled=true
+post_processing/bloom/intensity=0.5
+post_processing/bloom/threshold=1.0
 
 [editor_plugins]
 enabled=[]
-
-[shader_cache]
-mode="disk"
-path="res://.godot/project_metadata.cfg"
-version="4.3.0"
-</file>
