@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Pixel Platformer</title>
     <style>
         * {
@@ -12,7 +12,7 @@
         }
         
         body {
-            background: #1a1a2e;
+            background-color: #1a1a2e;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,14 +25,13 @@
             position: relative;
             width: 800px;
             height: 600px;
-            border: 4px solid #4a4a6a;
-            border-radius: 8px;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 100%);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
         }
         
-        canvas {
+        #gameCanvas {
             display: block;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            image-rendering: pixelated;
         }
         
         #ui-layer {
@@ -44,42 +43,34 @@
             pointer-events: none;
         }
         
-        .hud {
+        .hud-element {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-size: 20px;
+            color: #fff;
             text-shadow: 2px 2px 0 #000;
+            font-weight: bold;
+            font-size: 18px;
         }
         
-        .health-bar {
-            position: absolute;
+        #score-display {
+            top: 10px;
+            left: 10px;
+        }
+        
+        #health-display {
             top: 10px;
             right: 10px;
-            width: 200px;
-            height: 20px;
-            background: #333;
-            border: 2px solid #fff;
-            border-radius: 10px;
-            overflow: hidden;
         }
         
-        .health-fill {
-            height: 100%;
-            background: linear-gradient(to right, #ff4444, #ff8844);
-            transition: width 0.3s ease;
-        }
-        
-        .controls-hint {
-            position: absolute;
+        #controls-hint {
             bottom: 10px;
-            left: 10px;
-            color: rgba(255, 255, 255, 0.7);
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 14px;
+            opacity: 0.7;
+            text-align: center;
         }
         
-        .overlay {
+        #overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -90,8 +81,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
             pointer-events: auto;
+            z-index: 100;
         }
         
         .hidden {
@@ -99,68 +90,63 @@
         }
         
         h1 {
+            color: #00ffcc;
             font-size: 48px;
             margin-bottom: 20px;
-            text-shadow: 3px 3px 0 #000;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        
+        p {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
         
         button {
+            background: linear-gradient(to bottom, #00ffcc, #0099aa);
+            border: none;
             padding: 15px 40px;
             font-size: 20px;
-            font-family: inherit;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #000;
             cursor: pointer;
-            transition: transform 0.1s;
+            margin: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
         
         button:hover {
+            background: linear-gradient(to bottom, #00ffee, #00bbdd);
             transform: scale(1.05);
-            background: #45a049;
         }
         
-        button:active {
-            transform: scale(0.95);
+        .key {
+            display: inline-block;
+            background: #333;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin: 0 2px;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <canvas id="game-canvas" width="800" height="600"></canvas>
-        
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="ui-layer">
-            <div class="hud">
-                Score: <span id="score">0</span> | Coins: <span id="coins">0</span>
+            <div id="score-display" class="hud-element">Score: 0</div>
+            <div id="health-display" class="hud-element">Health: ♥♥♥♥♥</div>
+            <div id="controls-hint" class="hud-element">
+                Move: <span class="key">←</span><span class="key">→</span> or <span class="key">A</span><span class="key">D</span> | 
+                Jump: <span class="key">↑</span> or <span class="key">W</span> or <span class="key">Space</span>
             </div>
-            
-            <div class="health-bar">
-                <div class="health-fill" id="health-fill" style="width: 100%;"></div>
-            </div>
-            
-            <div class="controls-hint">
-                WASD/Arrows: Move | Space/Jump: Jump | R: Restart
-            </div>
-            
-            <div id="start-screen" class="overlay">
-                <h1>PIXEL PLATFORMER</h1>
-                <button id="start-btn">Start Game</button>
-            </div>
-            
-            <div id="game-over-screen" class="overlay hidden">
-                <h1>GAME OVER</h1>
-                <p>Score: <span id="final-score">0</span></p>
-                <br>
-                <button id="restart-btn">Try Again</button>
-            </div>
-            
-            <div id="win-screen" class="overlay hidden">
-                <h1>YOU WIN!</h1>
-                <p>Final Score: <span id="win-score">0</span></p>
-                <br>
-                <button id="play-again-btn">Play Again</button>
-            </div>
+        </div>
+        <div id="overlay">
+            <h1>PIXEL PLATFORMER</h1>
+            <p>Navigate through dangerous platforms, collect coins, and survive!</p>
+            <p>Avoid enemies and reach the exit portal.</p>
+            <button id="start-btn">START GAME</button>
+            <button id="how-to-play-btn">HOW TO PLAY</button>
         </div>
     </div>
     
