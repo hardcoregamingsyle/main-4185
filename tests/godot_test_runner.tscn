@@ -1,27 +1,37 @@
 [gd_scene load_steps=2 format=3 uid="uid://test_runner"]
 
+[ext_resource type="Script" path="res://tests/core/GameManager.test.gd" id="1_test_gamemanager"]
+[ext_resource type="Script" path="res://tests/core/PhysicsSettings.test.gd" id="2_test_physicssettings"]
+[ext_resource type="Script" path="res://tests/core/AudioManager.test.gd" id="3_test_audiomanager"]
+[ext_resource type="Script" path="res://tests/core/InputManager.test.gd" id="4_test_inputmanager"]
+[ext_resource type="Script" path="res://tests/integration/MainScene.test.gd" id="5_test_mainscene"]
+[ext_resource type="Script" path="res://tests/integration/VehicleController.test.gd" id="6_test_vehiclecontroller"]
+[ext_resource type="Script" path="res://tests/edge_cases/EdgeCases.test.gd" id="7_test_edgecases"]
+[ext_resource type="Script" path="res://tests/security/SecurityTests.test.gd" id="8_test_security"]
+
 [node name="TestRunner" type="Node"]
-script = {
-instance = SubResource("Script"),
-resource_name = "TestRunner"
-}
+script = ExtResource("1_test_gamemanager")
 
-[sub_resource type="Script" id="Script1"]
-source_code = """extends Node
-class_name TestRunner
+[node name="GameManagerTests" type="Node"]
+script = ExtResource("2_test_physicssettings")
 
-func _ready() -> void:
-	print("[TestRunner] Initializing test environment...")
-	# Auto-run tests when in debug mode
-	if Engine.is_editor_hint():
-		push_error("Tests should run from command line or test framework")
-	else:
-		run_tests()
+[node name="PhysicsSettingsTests" type="Node"]
+script = ExtResource("3_test_audiomanager")
 
-func run_tests() -> void:
-	print("\\n=== GODOT RACING SIMULATOR TEST SUITE ===")
-	# This will be replaced by GDUnit4 integration
-	pass
-"""
-constant_scripts = Array()
-language = "GDScript"
+[node name="AudioManagerTests" type="Node"]
+script = ExtResource("4_test_inputmanager")
+
+[node name="InputManagerTests" type="Node"]
+script = ExtResource("5_test_mainscene")
+
+[node name="MainSceneTests" type="Node"]
+script = ExtResource("6_test_vehiclecontroller")
+
+[node name="VehicleControllerTests" type="Node"]
+script = ExtResource("7_test_edgecases")
+
+[node name="EdgeCasesTests" type="Node"]
+script = ExtResource("8_test_security")
+
+[node name="SecurityTests" type="Node"]
+script = ExtResource("1_test_gamemanager")
