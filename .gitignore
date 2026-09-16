@@ -1,0 +1,100 @@
+# Godot Engine 4.x .gitignore
+# https://docs.godotengine.org/en/stable/contributing/development/git.html
+
+# Compiled files
+*.compiled
+*.remap
+*.import
+*.cfg
+*.tw
+
+# Editor autosaves
+*~
+*/.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local editor settings
+.project_files
+.global_script_class_cache.cfg
+.editordata
+
+# Build/export directories
+build/
+exports/
+res://exports/*
+
+# IDE specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Godot editor backups
+backup/
+*_backup/
+
+# Temporary files
+temp/
+tmp/
+
+# Cache directories
+.cache/
+.cache-gdscript/
+
+# Test results
+test_results/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+.env.staging
+*.env
+
+# Logs
+*.log
+logs/
+
+# Platform specific
+Thumbnails/
+thumbnail/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+Spotlight永不索引
+._*
+.DS_Store
+
+# Linux
+.Spotlight-V100
+.Trashes
+
+# Node.js (if using web build tools)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Coverage reports
+coverage/
+*.lcov
+
+# CI/CD artifacts
+.github/artifacts/
+
+# Backup exports
+_*/
+*_/
+
+# Godot 4 specific
+.user_data/
+.sconsign.dblite
+.conan/
