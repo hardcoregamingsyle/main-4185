@@ -1,6 +1,5 @@
-# Thalamus Racing Simulator - EditorConfig
-# Ensures consistent code formatting across all editors and IDEs
-# Copyright 2026 Thalamus Racing Simulator Project
+# EditorConfig - Consistent formatting for Thalamus Racing Simulator
+# https://editorconfig.org
 
 root = true
 
@@ -10,32 +9,36 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
-indent_size = 4
+indent_size = 2
+final_newline = true
 
 [*.gd]
 # GDScript specific settings
-indent_size = 4
-tab_width = 4
+indent_size = 2
+tab_width = 2
+max_line_length = 0  # No hard limit for GDScript
 
 [*.tscn]
-# Scene files
+# Godot scene files
 indent_size = 2
 
 [*.cfg]
-# Configuration files
-indent_size = 4
+# Godot config files
+indent_size = 2
 
 [Makefile]
 indent_style = tab
 
-[*.md]
-# Markdown files
-trim_trailing_whitespace = false
-
 [*.json]
-# JSON files
+indent_style = space
 indent_size = 2
 
-[*.svg]
-# Vector graphics
+[*.xml]
+indent_style = space
 indent_size = 2
+
+[*.{svg,png,jpg,jpeg,gif,webp}]
+binary = true
+
+[*.{md,rst,tex}]
+trim_trailing_whitespace = false

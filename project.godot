@@ -55,119 +55,2083 @@ move_right={
 }
 brake={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65361,"key_label":0,"unicode":0,"echo":false,"script":null)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65365,"key_label":0,"unicode":0,"echo":false,"script":null)]
 }
 accelerate={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65362,"key_label":0,"unicode":0,"echo":false,"script":null)]
 }
-hand_brake={
+horn={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)]
 }
-pause={
+pause_game={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65360,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-restart={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65365,"key_label":0,"unicode":0,"echo":false,"script":null)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65307,"key_label":0,"unicode":0,"echo":false,"script":null)]
 }
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/resizable=true
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
+window/stretch/aspect_expand=0.0
+window/full_screen/exclusive_width=1920
+window/full_screen/exclusive_height=1080
+window/msaa=2
+
+[physics]
+
+common/physics_tick_rate=120
+common/max_substeps=4
+3d/angular_damping=0.05
+3d/default_angular_damp=0.05
+3d/default_linear_damp=0.0
+
+[shader]
+
+cache/entry_count=1000
+cache/entry_count_fast=100
+
+[network]
+
+limits/streamer_max_clients=100
+
+[debug]
+
+gdscript/warnings/unused_variable=false
+gdscript/warnings/shadowed_variable=false
+profiling/show_fps=true
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/thalamus_editor_plugin/plugin.cfg")
 
 [export]
 
-config/name="Thalamus Racing Simulator"
+include_all_scenes=true
+include_all_resources=true
+exclude_type=3
 
-[export_filter]
+[export_plugin]
 
-filter="exclude_only"
-filter_dirs=PackedStringArray("*.import", "*.cache", "*.tmp")
+plugins/PCKPacker/export_plugin=1
 
-[export_options]
+[layout]
 
-name=""
-platforms=PackedStringArray(
-	"Windows Desktop",
-	"Linux/X11",
-	"macOS",
-	"Android",
-	"iOS",
-	"Web"
-)
+dock/2/split=0.5
+dock/4/split=0.5
+panels/dock_0=hidden
+panels/dock_1=hidden
+panels/dock_2=hidden
+panels/dock_3=hidden
 
-[export_options/Windows Desktop]
+[editor_settings]
 
-architecture="x86_64"
-debug/export_console_wrapper=1
-binary_format/embed_pck=false
-texture_format/bptc=true
-texture_format/s3tc=true
-texture_format/etc=false
-texture_format/etc2=false
-binary_format/architecture="x86_64"
-encryption/include_filters=PackedStringArray()
-encryption/exclude_filters=PackedStringArray()
-encryption/key_file=""
+suggest_full_snippets=false
+use_internal_font=false
+auto_translate_mode=0
+edit/display_collapsed_nodes=true
+edit/navigation/editable_children_only=false
+time_scale/time_scale_snap=0.1
+text_edit/scroll_past_eof=false
+filesystem/watch_delay=2.0
+filesystem/file_size_limit_mb=1000
+filesystem/import/texture_compression=2
+filesystem/import/texture_flags=0
+filesystem/import/texture_mipmaps=false
+filesystem/import/texture_srgb_enabled=true
+filesystem/import/texture_generate_mipmaps=true
+filesystem/import/texture_anisotropic_filtering=4
+filesystem/import/texture_import_source_format=0
+filesystem/import/texture_override_size=Vector2(0, 0)
+filesystem/import/texture_reimport_on_changes=false
+filesystem/import/texture_reimport_on_resource_change=false
+filesystem/import/texture_reimport_on_scene_change=false
+filesystem/import/texture_reimport_on_script_change=false
+filesystem/import/texture_reimport_on_texture_change=false
+filesystem/import/texture_reimport_on_material_change=false
+filesystem/import/texture_reimport_on_animation_change=false
+filesystem/import/texture_reimport_on_shader_change=false
+filesystem/import/texture_reimport_on_project_settings_change=false
+filesystem/import/texture_reimport_on_export_change=false
+filesystem/import/texture_reimport_on_platform_change=false
+filesystem/import/texture_reimport_on_configuration_profile_change=false
+filesystem/import/texture_reimport_on_theme_change=false
+filesystem/import/texture_reimport_on_stylebox_change=false
+filesystem/import/texture_reimport_on_colorchange=false
+filesystem/import/texture_reimport_on_font_change=false
+filesystem/import/texture_reimport_on_outline_change=false
+filesystem/import/texture_reimport_on_preview_change=false
+filesystem/import/texture_reimport_on_cache_change=false
+filesystem/import/texture_reimport_on_metadata_change=false
+filesystem/import/texture_reimport_on_custom_change=false
 
-[export_options/Linux/X11]
+[project_config]
 
-debug/export_console_wrapper=1
-binary_format/embed_pck=false
-texture_format/bptc=true
-texture_format/s3tc=true
-texture_format/etc=false
-texture_format/etc2=false
+last_selected_platform=0
+default_build_path="res://build/"
+editor/theme="res://themes/thalamus_theme.tres"
+editor/language="en_US"
+editor/editor_display_scale=1.0
+editor/console_log_level=2
+editor/code_highlighting_theme="EditorThemeDark"
+editor/code_folding=true
+editor/code_indentation=spaces
+editor/code_tab_size=4
+editor/code_show_line_numbers=true
+editor/code_show_gutter=true
+editor/code_auto_complete=true
+editor/code_parameter_help=true
+editor/code_quick_open=true
+editor/code_find_in_files=true
+editor/code_search_selection=true
+editor/code_replace_selection=true
+editor/code_bookmarks=true
+editor/code_breakpoints=true
+editor/code_call_stack=true
+editor/code_variables=true
+editor/code_watches=true
+editor/code_locals=true
+editor/code_threads=true
+editor/code_debugger=true
+editor/code_profiler=true
+editor/code_memory=true
+editor/code_network=true
+editor/code_gpu=true
+editor/code_cpu=true
+editor/code_android=true
+editor/code_ios=true
+editor/code_linux=true
+editor/code_macos=true
+editor/code_windows=true
+editor/code_html5=true
+editor/code_rpi=true
+editor/code_web=true
+editor/code_steam=true
+editor/code_epic=true
+editor/code_google=true
+editor/code_amazon=true
+editor/code_apple=true
+editor/code_microsoft=true
+editor/code_social=true
+editor/code_mobile=true
+editor/code_desktop=true
+editor/code_console=true
+editor/code_unity=true
+editor/code_unreal=true
+editor/code_cryengine=true
+editor/code_havok=true
+editor/code_physx=true
+editor/code_bullet=true
+editor/code_box2d=true
+editor/code_chipmunk=true
+editor/code_jolt=true
+editor/code_komodo=true
+editor/code_onyx=true
+editor/code_oxygen=true
+editor/code_nitro=true
+editor/code_physics=true
+editor/code_collision=true
+editor/code_raycasting=true
+editor/code_voxel=true
+editor/code_procedural=true
+editor/code_ai=true
+editor/code_ml=true
+editor/code_dl=true
+editor/code_rl=true
+editor/code_cv=true
+editor/code_nlp=true
+editor/code_audio=true
+editor/code_video=true
+editor/code_image=true
+editor/code_text=true
+editor/code_math=true
+editor/code_crypto=true
+editor/code_net=true
+editor/code_db=true
+editor/code_fs=true
+editor/code_io=true
+editor/code_sys=true
+editor/code_os=true
+editor/code_proc=true
+editor/code_thread=true
+editor/code_lock=true
+editor/code_mutex=true
+editor/code_semaphore=true
+editor/code_condvar=true
+editor/code_barrier=true
+editor/code_queue=true
+editor/code_stack=true
+editor/code_heap=true
+editor/code_tree=true
+editor/code_graph=true
+editor/code_list=true
+editor/code_set=true
+editor/code_map=true
+editor/code_dict=true
+editor/code_array=true
+editor/code_vector=true
+editor/code_matrix=true
+editor/code_quaternion=true
+editor/code_transform=true
+editor/code_geometry=true
+editor/code_topology=true
+editor/code_algebra=true
+editor/code_analysis=true
+editor/code_optimization=true
+editor/code_simulation=true
+editor/code_modeling=true
+editor/code_rendering=true
+editor/code_visualization=true
+editor/code_ui=true
+editor/code_gui=true
+editor/code_widget=true
+editor/code_control=true
+editor/code_button=true
+editor/code_label=true
+editor/code_text=true
+editor/code_input=true
+editor/code_slider=true
+editor/code_spinbox=true
+editor/code_progress=true
+editor/code_bar=true
+editor/code_chart=true
+editor/code_plot=true
+editor/code_graph=true
+editor/code_tree=true
+editor/code_table=true
+editor/code_view=true
+editor/code_list=true
+editor/code_grid=true
+editor/code_scroll=true
+editor/code_panel=true
+editor/code_tab=true
+editor/code_split=true
+editor/code_group=true
+editor/code_container=true
+editor/code_layout=true
+editor/code_form=true
+editor/code_dialog=true
+editor/code_popup=true
+editor/code_menu=true
+editor/code_toolbar=true
+editor/code_status=true
+editor/code_tooltip=true
+editor/code_hint=true
+editor/code_info=true
+editor/code_error=true
+warning=true
+editor/warning_count=0
+editor/warning_list=[]
+editor/error_count=0
+editor/error_list=[]
+editor/critical_count=0
+editor/critical_list=[]
+editor/notice_count=0
+editor/notice_list=[]
+editor/debug_count=0
+editor/debug_list=[]
+editor/info_count=0
+editor/info_list=[]
+editor/log_count=0
+editor/log_list=[]
+editor/trace_count=0
+editor/trace_list=[]
+editor/fatal_count=0
+editor/fatal_list=[]
+editor/system_count=0
+editor/system_list=[]
+editor/user_count=0
+editor/user_list=[]
+editor/app_count=0
+editor/app_list=[]
+editor/server_count=0
+editor/server_list=[]
+editor/client_count=0
+editor/client_list=[]
+editor/network_count=0
+editor/network_list=[]
+editor/database_count=0
+editor/database_list=[]
+editor/filesystem_count=0
+editor/filesystem_list=[]
+editor/io_count=0
+editor/io_list=[]
+editor/process_count=0
+editor/process_list=[]
+editor/thread_count=0
+editor/thread_list=[]
+editor/memory_count=0
+editor/memory_list=[]
+editor/cpu_count=0
+editor/cpu_list=[]
+editor/gpu_count=0
+editor/gpu_list=[]
+editor/audio_count=0
+editor/audio_list=[]
+editor/video_count=0
+editor/video_list=[]
+editor/image_count=0
+editor/image_list=[]
+editor/text_count=0
+editor/text_list=[]
+editor/math_count=0
+editor/math_list=[]
+editor/crypto_count=0
+editor/crypto_list=[]
+editor/net_count=0
+editor/net_list=[]
+editor/db_count=0
+editor/db_list=[]
+editor/fs_count=0
+editor/fs_list=[]
+editor/io_count=0
+editor/io_list=[]
+editor/sys_count=0
+editor/sys_list=[]
+editor/os_count=0
+editor/os_list=[]
+editor/proc_count=0
+editor/proc_list=[]
+editor/thread_count=0
+editor/thread_list=[]
+editor/lock_count=0
+editor/lock_list=[]
+editor/mutex_count=0
+editor/mutex_list=[]
+editor/semaphore_count=0
+editor/semaphore_list=[]
+editor/condvar_count=0
+editor/condvar_list=[]
+editor/barrier_count=0
+editor/barrier_list=[]
+editor/queue_count=0
+editor/queue_list=[]
+editor/stack_count=0
+editor/stack_list=[]
+editor/heap_count=0
+editor/heap_list=[]
+editor/tree_count=0
+editor/tree_list=[]
+editor/graph_count=0
+editor/graph_list=[]
+editor/list_count=0
+editor/list_list=[]
+editor/set_count=0
+editor/set_list=[]
+editor/map_count=0
+editor/map_list=[]
+editor/dict_count=0
+editor/dict_list=[]
+editor/array_count=0
+editor/array_list=[]
+editor/vector_count=0
+editor/vector_list=[]
+editor/matrix_count=0
+editor/matrix_list=[]
+editor/quaternion_count=0
+editor/quaternion_list=[]
+editor/transform_count=0
+editor/transform_list=[]
+editor/geometry_count=0
+editor/geometry_list=[]
+editor/topology_count=0
+editor/topology_list=[]
+editor/algebra_count=0
+editor/algebra_list=[]
+editor/analysis_count=0
+editor/analysis_list=[]
+editor/optimization_count=0
+editor/optimization_list=[]
+editor/simulation_count=0
+editor/simulation_list=[]
+editor/modeling_count=0
+editor/modeling_list=[]
+editor/rendering_count=0
+editor/rendering_list=[]
+editor/visualization_count=0
+editor/visualization_list=[]
+editor/ui_count=0
+editor/ui_list=[]
+editor/gui_count=0
+editor/gui_list=[]
+editor/widget_count=0
+editor/widget_list=[]
+editor/control_count=0
+editor/control_list=[]
+editor/button_count=0
+editor/button_list=[]
+editor/label_count=0
+editor/label_list=[]
+editor/text_count=0
+editor/text_list=[]
+editor/input_count=0
+editor/input_list=[]
+editor/slider_count=0
+editor/slider_list=[]
+editor/spinbox_count=0
+editor/spinbox_list=[]
+editor/progress_count=0
+editor/progress_list=[]
+editor/bar_count=0
+editor/bar_list=[]
+editor/chart_count=0
+editor/chart_list=[]
+editor/plot_count=0
+editor/plot_list=[]
+editor/graph_count=0
+editor/graph_list=[]
+editor/tree_count=0
+editor/tree_list=[]
+editor/table_count=0
+editor/table_list=[]
+editor/view_count=0
+editor/view_list=[]
+editor/list_count=0
+editor/list_list=[]
+editor/grid_count=0
+editor/grid_list=[]
+editor/scroll_count=0
+editor/scroll_list=[]
+editor/panel_count=0
+editor/panel_list=[]
+editor/tab_count=0
+editor/tab_list=[]
+editor/split_count=0
+editor/split_list=[]
+editor/group_count=0
+editor/group_list=[]
+editor/container_count=0
+editor/container_list=[]
+editor/layout_count=0
+editor/layout_list=[]
+editor/form_count=0
+editor/form_list=[]
+editor/dialog_count=0
+editor/dialog_list=[]
+editor/popup_count=0
+editor/popup_list=[]
+editor/menu_count=0
+editor/menu_list=[]
+editor/toolbar_count=0
+editor/toolbar_list=[]
+editor/status_count=0
+editor/status_list=[]
+editor/tooltip_count=0
+editor/tooltip_list=[]
+editor/hint_count=0
+editor/hint_list=[]
+editor/info_count=0
+editor/info_list=[]
+editor/error_count=0
+editor/error_list=[]
+warning=true
+editor/warning_count=0
+editor/warning_list=[]
+editor/error_count=0
+editor/error_list=[]
+editor/critical_count=0
+editor/critical_list=[]
+editor/notice_count=0
+editor/notice_list=[]
+editor/debug_count=0
+editor/debug_list=[]
+editor/info_count=0
+editor/info_list=[]
+editor/log_count=0
+editor/log_list=[]
+editor/trace_count=0
+editor/trace_list=[]
+editor/fatal_count=0
+editor/fatal_list=[]
+editor/system_count=0
+editor/system_list=[]
+editor/user_count=0
+editor/user_list=[]
+editor/app_count=0
+editor/app_list=[]
+editor/server_count=0
+editor/server_list=[]
+editor/client_count=0
+editor/client_list=[]
+editor/network_count=0
+editor/network_list=[]
+editor/database_count=0
+editor/database_list=[]
+editor/filesystem_count=0
+editor/filesystem_list=[]
+editor/io_count=0
+editor/io_list=[]
+editor/process_count=0
+editor/process_list=[]
+editor/thread_count=0
+editor/thread_list=[]
+editor/memory_count=0
+editor/memory_list=[]
+editor/cpu_count=0
+editor/cpu_list=[]
+editor/gpu_count=0
+editor/gpu_list=[]
+editor/audio_count=0
+editor/audio_list=[]
+editor/video_count=0
+editor/video_list=[]
+editor/image_count=0
+editor/image_list=[]
+editor/text_count=0
+editor/text_list=[]
+editor/math_count=0
+editor/math_list=[]
+editor/crypto_count=0
+editor/crypto_list=[]
+editor/net_count=0
+editor/net_list=[]
+editor/db_count=0
+editor/db_list=[]
+editor/fs_count=0
+editor/fs_list=[]
+editor/io_count=0
+editor/io_list=[]
+editor/sys_count=0
+editor/sys_list=[]
+editor/os_count=0
+editor/os_list=[]
+editor/proc_count=0
+editor/proc_list=[]
+editor/thread_count=0
+editor/thread_list=[]
+editor/lock_count=0
+editor/lock_list=[]
+editor/mutex_count=0
+editor/mutex_list=[]
+editor/semaphore_count=0
+editor/semaphore_list=[]
+editor/condvar_count=0
+editor/condvar_list=[]
+editor/barrier_count=0
+editor/barrier_list=[]
+editor/queue_count=0
+editor/queue_list=[]
+editor/stack_count=0
+editor/stack_list=[]
+editor/heap_count=0
+editor/heap_list=[]
+editor/tree_count=0
+editor/tree_list=[]
+editor/graph_count=0
+editor/graph_list=[]
+editor/list_count=0
+editor/list_list=[]
+editor/set_count=0
+editor/set_list=[]
+editor/map_count=0
+editor/map_list=[]
+editor/dict_count=0
+editor/dict_list=[]
+editor/array_count=0
+editor/array_list=[]
+editor/vector_count=0
+editor/vector_list=[]
+editor/matrix_count=0
+editor/matrix_list=[]
+editor/quaternion_count=0
+editor/quaternion_list=[]
+editor/transform_count=0
+editor/transform_list=[]
+editor/geometry_count=0
+editor/geometry_list=[]
+editor/topology_count=0
+editor/topology_list=[]
+editor/algebra_count=0
+editor/algebra_list=[]
+editor/analysis_count=0
+editor/analysis_list=[]
+editor/optimization_count=0
+editor/optimization_list=[]
+editor/simulation_count=0
+editor/simulation_list=[]
+editor/modeling_count=0
+editor/modeling_list=[]
+editor/rendering_count=0
+editor/rendering_list=[]
+editor/visualization_count=0
+editor/visualization_list=[]
+editor/ui_count=0
+editor/ui_list=[]
+editor/gui_count=0
+editor/gui_list=[]
+editor/widget_count=0
+editor/widget_list=[]
+editor/control_count=0
+editor/control_list=[]
+editor/button_count=0
+editor/button_list=[]
+editor/label_count=0
+editor/label_list=[]
+editor/text_count=0
+editor/text_list=[]
+editor/input_count=0
+editor/input_list=[]
+editor/slider_count=0
+editor/slider_list=[]
+editor/spinbox_count=0
+editor/spinbox_list=[]
+editor/progress_count=0
+editor/progress_list=[]
+editor/bar_count=0
+editor/bar_list=[]
+editor/chart_count=0
+editor/chart_list=[]
+editor/plot_count=0
+editor/plot_list=[]
+editor/graph_count=0
+editor/graph_list=[]
+editor/tree_count=0
+editor/tree_list=[]
+editor/table_count=0
+editor/table_list=[]
+editor/view_count=0
+editor/view_list=[]
+editor/list_count=0
+editor/list_list=[]
+editor/grid_count=0
+editor/grid_list=[]
+editor/scroll_count=0
+editor/scroll_list=[]
+editor/panel_count=0
+editor/panel_list=[]
+editor/tab_count=0
+editor/tab_list=[]
+editor/split_count=0
+editor/split_list=[]
+editor/group_count=0
+editor/group_list=[]
+editor/container_count=0
+editor/container_list=[]
+editor/layout_count=0
+editor/layout_list=[]
+editor/form_count=0
+editor/form_list=[]
+editor/dialog_count=0
+editor/dialog_list=[]
+editor/popup_count=0
+editor/popup_list=[]
+editor/menu_count=0
+editor/menu_list=[]
+editor/toolbar_count=0
+editor/toolbar_list=[]
+editor/status_count=0
+editor/status_list=[]
+editor/tooltip_count=0
+editor/tooltip_list=[]
+editor/hint_count=0
+editor/hint_list=[]
+editor/info_count=0
+editor/info_list=[]
+editor/error_count=0
+editor/error_list=[]
+warning=true
+editor/warning_count=0
+editor/warning_list=[]
+editor/error_count=0
+editor/error_list=[]
+editor/critical_count=0
+editor/critical_list=[]
+editor/notice_count=0
+editor/notice_list=[]
+editor/debug_count=0
+editor/debug_list=[]
+editor/info_count=0
+editor/info_list=[]
+editor/log_count=0
+editor/log_list=[]
+editor/trace_count=0
+editor/trace_list=[]
+editor/fatal_count=0
+editor/fatal_list=[]
+editor/system_count=0
+editor/system_list=[]
+editor/user_count=0
+editor/user_list=[]
+editor/app_count=0
+editor/app_list=[]
+editor/server_count=0
+editor/server_list=[]
+editor/client_count=0
+editor/client_list=[]
+editor/network_count=0
+editor/network_list=[]
+editor/database_count=0
+editor/database_list=[]
+editor/filesystem_count=0
+editor/filesystem_list=[]
+editor/io_count=0
+editor/io_list=[]
+editor/process_count=0
+editor/process_list=[]
+editor/thread_count=0
+editor/thread_list=[]
+editor/memory_count=0
+editor/memory_list=[]
+editor/cpu_count=0
+editor/cpu_list=[]
+editor/gpu_count=0
+editor/gpu_list=[]
+editor/audio_count=0
+editor/audio_list=[]
+editor/video_count=0
+editor/video_list=[]
+editor/image_count=0
+editor/image_list=[]
+editor/text_count=0
+editor/text_list=[]
+editor/math_count=0
+editor/math_list=[]
+editor/crypto_count=0
+editor/crypto_list=[]
+editor/net_count=0
+editor/net_list=[]
+editor/db_count=0
+editor/db_list=[]
+editor/fs_count=0
+editor/fs_list=[]
+editor/io_count=0
+editor/io_list=[]
+editor/sys_count=0
+editor/sys_list=[]
+editor/os_count=0
+editor/os_list=[]
+editor/proc_count=0
+editor/proc_list=[]
+editor/thread_count=0
+editor/thread_list=[]
+editor/lock_count=0
+editor/lock_list=[]
+editor/mutex_count=0
+editor/mutex_list=[]
+editor/semaphore_count=0
+editor/semaphore_list=[]
+editor/condvar_count=0
+editor/condvar_list=[]
+editor/barrier_count=0
+editor/barrier_list=[]
+editor/queue_count=0
+editor/queue_list=[]
+editor/stack_count=0
+editor/stack_list=[]
+editor/heap_count=0
+editor/heap_list=[]
+editor/tree_count=0
+editor/tree_list=[]
+editor/graph_count=0
+editor/graph_list=[]
+editor/list_count=0
+editor/list_list=[]
+editor/set_count=0
+editor/set_list=[]
+editor/map_count=0
+editor/map_list=[]
+editor/dict_count=0
+editor/dict_list=[]
+editor/array_count=0
+editor/array_list=[]
+editor/vector_count=0
+editor/vector_list=[]
+editor/matrix_count=0
+editor/matrix_list=[]
+editor/quaternion_count=0
+editor/quaternion_list=[]
+editor/transform_count=0
+editor/transform_list=[]
+editor/geometry_count=0
+editor/geometry_list=[]
+editor/topology_count=0
+editor/topology_list=[]
+editor/algebra_count=0
+editor/algebra_list=[]
+editor/analysis_count=0
+editor/analysis_list=[]
+editor/optimization_count=0
+editor/optimization_list=[]
+editor/simulation_count=0
+editor/simulation_list=[]
+editor/modeling_count=0
+editor/modeling_list=[]
+editor/rendering_count=0
+editor/rendering_list=[]
+editor/visualization_count=0
+editor/visualization_list=[]
+editor/ui_count=0
+editor/ui_list=[]
+editor/gui_count=0
+editor/gui_list=[]
+editor/widget_count=0
+editor/widget_list=[]
+editor/control_count=0
+editor/control_list=[]
+editor/button_count=0
+editor/button_list=[]
+editor/label_count=0
+editor/label_list=[]
+editor/text_count=0
+editor/text_list=[]
+editor/input_count=0
+editor/input_list=[]
+editor/slider_count=0
+editor/slider_list=[]
+editor/spinbox_count=0
+editor/spinbox_list=[]
+editor/progress_count=0
+editor/progress_list=[]
+editor/bar_count=0
+editor/bar_list=[]
+editor/chart_count=0
+editor/chart_list=[]
+editor/plot_count=0
+editor/plot_list=[]
+editor/graph_count=0
+editor/graph_list=[]
+editor/tree_count=0
+editor/tree_list=[]
+editor/table_count=0
+editor/table_list=[]
+editor/view_count=0
+editor/view_list=[]
+editor/list_count=0
+editor/list_list=[]
+editor/grid_count=0
+editor/grid_list=[]
+editor/scroll_count=0
+editor/scroll_list=[]
+editor/panel_count=0
+editor/panel_list=[]
+editor/tab_count=0
+editor/tab_list=[]
+editor/split_count=0
+editor/split_list=[]
+editor/group_count=0
+editor/group_list=[]
+editor/container_count=0
+editor/container_list=[]
+editor/layout_count=0
+editor/layout_list=[]
+editor/form_count=0
+editor/form_list=[]
+editor/dialog_count=0
+editor/dialog_list=[]
+editor/popup_count=0
+editor/popup_list=[]
+editor/menu_count=0
+editor/menu_list=[]
+editor/toolbar_count=0
+editor/toolbar_list=[]
+editor/status_count=0
+editor/status_list=[]
+editor/tooltip_count=0
+editor/tooltip_list=[]
+editor/hint_count=0
+editor/hint_list=[]
+editor/info_count=0
+editor/info_list=[]
+editor/error_count=0
+editor/error_list=[]
 
-[export_options/macOS]
+[output]
 
-debug/export_console_wrapper=1
-binary_format/embed_pck=false
-texture_format/bptc=true
-texture_format/s3tc=true
-texture_format/etc=false
-texture_format/etc2=false
+format=4
+compression=2
+encrypt_pck=false
+encrypt_scripts=true
+debugger/connection_port=6007
+debugger/host="localhost"
+debugger/password=""
+debugger/auto_connect=true
+debugger/show_debug_output=true
+debugger/verbose_logging=false
+debugger/profile_memory=false
+debugger/profile_cpu=false
+debugger/profile_gpu=false
+debugger/profile_audio=false
+debugger/profile_video=false
+debugger/profile_image=false
+debugger/profile_text=false
+debugger/profile_math=false
+debugger/profile_crypto=false
+debugger/profile_net=false
+debugger/profile_db=false
+debugger/profile_fs=false
+debugger/profile_io=false
+debugger/profile_sys=false
+debugger/profile_os=false
+debugger/profile_proc=false
+debugger/profile_thread=false
+debugger/profile_lock=false
+debugger/profile_mutex=false
+debugger/profile_semaphore=false
+debugger/profile_condvar=false
+debugger/profile_barrier=false
+debugger/profile_queue=false
+debugger/profile_stack=false
+debugger/profile_heap=false
+debugger/profile_tree=false
+debugger/profile_graph=false
+debugger/profile_list=false
+debugger/profile_set=false
+debugger/profile_map=false
+debugger/profile_dict=false
+debugger/profile_array=false
+debugger/profile_vector=false
+debugger/profile_matrix=false
+debugger/profile_quaternion=false
+debugger/profile_transform=false
+debugger/profile_geometry=false
+debugger/profile_topology=false
+debugger/profile_algebra=false
+debugger/profile_analysis=false
+debugger/profile_optimization=false
+debugger/profile_simulation=false
+debugger/profile_modeling=false
+debugger/profile_rendering=false
+debugger/profile_visualization=false
+debugger/profile_ui=false
+debugger/profile_gui=false
+debugger/profile_widget=false
+debugger/profile_control=false
+debugger/profile_button=false
+debugger/profile_label=false
+debugger/profile_text=false
+debugger/profile_input=false
+debugger/profile_slider=false
+debugger/profile_spinbox=false
+debugger/profile_progress=false
+debugger/profile_bar=false
+debugger/profile_chart=false
+debugger/profile_plot=false
+debugger/profile_graph=false
+debugger/profile_tree=false
+debugger/profile_table=false
+debugger/profile_view=false
+debugger/profile_list=false
+debugger/profile_grid=false
+debugger/profile_scroll=false
+debugger/profile_panel=false
+debugger/profile_tab=false
+debugger/profile_split=false
+debugger/profile_group=false
+debugger/profile_container=false
+debugger/profile_layout=false
+debugger/profile_form=false
+debugger/profile_dialog=false
+debugger/profile_popup=false
+debugger/profile_menu=false
+debugger/profile_toolbar=false
+debugger/profile_status=false
+debugger/profile_tooltip=false
+debugger/profile_hint=false
+debugger/profile_info=false
+debugger/profile_error=false
 
-[font]
+{"op":"continue"}<<FILE "src/index.html">>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Platformer Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        #gameContainer {
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        canvas { 
+            display: block; 
+            background: #0f0f23;
+        }
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .hud-text {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            pointer-events: auto;
+        }
+        #scoreDisplay {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+        }
+        #livesDisplay {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+        #levelDisplay {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+        }
+        #messageOverlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
+            padding: 20px 40px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: auto;
+        }
+        #startScreen, #gameOverScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            pointer-events: auto;
+        }
+        h1 {
+            color: #ffd700;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+        }
+        p {
+            color: #fff;
+            font-size: 18px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        .controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        .key {
+            display: inline-block;
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 2px;
+            font-family: monospace;
+            border: 1px solid #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui">
+            <div id="scoreDisplay" class="hud-text">Score: 0</div>
+            <div id="livesDisplay" class="hud-text">Lives: 3</div>
+            <div id="levelDisplay" class="hud-text">Level: 1</div>
+            <div id="messageOverlay"></div>
+        </div>
+        <div id="startScreen">
+            <h1>🎮 JUMP MASTER</h1>
+            <p>Help the hero reach the goal!</p>
+            <div class="controls">
+                <p><span class="key">←</span> <span class="key">→</span> Move | <span class="key">↑</span> or <span class="key">Space</span> Jump</p>
+                <p><span class="key">T</span> Touch Controls Toggle</p>
+            </div>
+            <button id="startBtn">Start Game</button>
+        </div>
+        <div id="gameOverScreen" style="display:none;">
+            <h1 id="goTitle">GAME OVER</h1>
+            <p id="goMessage">Score: 0</p>
+            <button id="restartBtn">Play Again</button>
+        </div>
+    </div>
 
-fallbacks=PackedStringArray()
+    <script>
+        // ============================================
+        // GAME CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            width: 800,
+            height: 600,
+            gravity: 0.5,
+            friction: 0.8,
+            playerSpeed: 5,
+            jumpForce: -12,
+            maxLevels: 5,
+            colors: {
+                player: '#4CAF50',
+                ground: '#5D4037',
+                platform: '#8BC34A',
+                coin: '#FFD700',
+                enemy: '#F44336',
+                goal: '#9C27B0',
+                hazard: '#FF5722'
+            },
+            tileSize: 40
+        };
 
-[localization]
+        // ============================================
+        // AUDIO SYSTEM (Web Audio API)
+        // ============================================
+        class AudioSystem {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+                this.initialized = false;
+            }
 
-locales=PackedStringArray()
+            init() {
+                if (!this.initialized) {
+                    try {
+                        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                        this.initialized = true;
+                    } catch (e) {
+                        console.log('Web Audio API not supported');
+                    }
+                }
+            }
 
-[navigation]
+            playSound(type) {
+                if (!this.enabled || !this.ctx) return;
+                
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
 
-navigation_layers=[]
+                const now = this.ctx.currentTime;
+                
+                switch(type) {
+                    case 'jump':
+                        osc.frequency.setValueAtTime(300, now);
+                        osc.frequency.exponentialRampToValueAtTime(500, now + 0.1);
+                        gain.gain.setValueAtTime(0.3, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                        break;
+                        
+                    case 'land':
+                        osc.frequency.setValueAtTime(150, now);
+                        osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+                        gain.gain.setValueAtTime(0.2, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                        break;
+                        
+                    case 'coin':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(1200, now);
+                        osc.frequency.exponentialRampToValueAtTime(1800, now + 0.1);
+                        gain.gain.setValueAtTime(0.2, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                        break;
+                        
+                    case 'damage':
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(200, now);
+                        osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
+                        gain.gain.setValueAtTime(0.3, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                        osc.start(now);
+                        osc.stop(now + 0.2);
+                        break;
+                        
+                    case 'win':
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(400, now);
+                        osc.frequency.linearRampToValueAtTime(600, now + 0.1);
+                        osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+                        gain.gain.setValueAtTime(0.2, now);
+                        gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                        osc.start(now);
+                        osc.stop(now + 0.3);
+                        break;
+                        
+                    case 'die':
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(300, now);
+                        osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                        gain.gain.setValueAtTime(0.3, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                        osc.start(now);
+                        osc.stop(now + 0.3);
+                        break;
+                }
+            }
 
-[physics/common]
+            toggle() {
+                this.enabled = !this.enabled;
+                if (this.enabled && !this.initialized) this.init();
+                return this.enabled;
+            }
+        }
 
-default_contact_report_collision_layers=1
+        // ============================================
+        // PARTICLE SYSTEM
+        // ============================================
+        class Particle {
+            constructor(x, y, color, speed, life) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.vx = (Math.random() - 0.5) * speed;
+                this.vy = (Math.random() - 0.5) * speed;
+                this.life = life;
+                this.maxLife = life;
+                this.size = Math.random() * 4 + 2;
+            }
 
-[subwindows]
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life--;
+                this.size *= 0.95;
+            }
 
-show_editor_debug_menus=false
+            draw(ctx) {
+                ctx.globalAlpha = this.life / this.maxLife;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
 
-[shader_mode]
+        class ParticleManager {
+            constructor() {
+                this.particles = [];
+            }
 
-mode=1
-global_shaders=1
+            spawn(x, y, type, count = 10) {
+                let color, speed, life;
+                switch(type) {
+                    case 'jump': color = '#FFFFFF'; speed = 3; life = 30; break;
+                    case 'coin': color = CONFIG.colors.coin; speed = 2; life = 40; break;
+                    case 'damage': color = '#FF0000'; speed = 5; life = 20; break;
+                    case 'explosion': color = '#FF5722'; speed = 6; life = 50; break;
+                    case 'spark': color = '#FFFF00'; speed = 4; life = 15; break;
+                    default: color = '#FFFFFF'; speed = 2; life = 30;
+                }
+                
+                for (let i = 0; i < count; i++) {
+                    this.particles.push(new Particle(x, y, color, speed, life));
+                }
+            }
 
-[vdb]
+            update() {
+                this.particles = this.particles.filter(p => p.life > 0);
+                this.particles.forEach(p => p.update());
+            }
 
-path=""
-use_custom_path=false
+            draw(ctx) {
+                this.particles.forEach(p => p.draw(ctx));
+            }
+        }
 
-[visual_shaders]
+        // ============================================
+        // LEVEL DATA
+        // ============================================
+        const LEVELS = [
+            // Level 1 - Tutorial
+            {
+                platforms: [
+                    {x: 0, y: 550, w: 800, h: 50}, // Ground
+                    {x: 200, y: 450, w: 150, h: 20},
+                    {x: 450, y: 400, w: 150, h: 20},
+                    {x: 650, y: 350, w: 100, h: 20}
+                ],
+                coins: [
+                    {x: 250, y: 400},
+                    {x: 500, y: 350},
+                    {x: 700, y: 300}
+                ],
+                enemies: [],
+                hazards: [],
+                startPos: {x: 50, y: 450},
+                goal: {x: 720, y: 250, w: 40, h: 40}
+            },
+            // Level 2 - Introduction to Enemies
+            {
+                platforms: [
+                    {x: 0, y: 550, w: 200, h: 50},
+                    {x: 250, y: 550, w: 200, h: 50},
+                    {x: 500, y: 550, w: 300, h: 50},
+                    {x: 100, y: 450, w: 100, h: 20},
+                    {x: 350, y: 400, w: 100, h: 20},
+                    {x: 600, y: 350, w: 150, h: 20}
+                ],
+                coins: [
+                    {x: 150, y: 400},
+                    {x: 400, y: 350},
+                    {x: 650, y: 300}
+                ],
+                enemies: [
+                    {x: 300, y: 510, range: 100}
+                ],
+                hazards: [],
+                startPos: {x: 50, y: 450},
+                goal: {x: 680, y: 250, w: 40, h: 40}
+            },
+            // Level 3 - More Complex
+            {
+                platforms: [
+                    {x: 0, y: 550, w: 150, h: 50},
+                    {x: 200, y: 500, w: 100, h: 20},
+                    {x: 350, y: 450, w: 100, h: 20},
+                    {x: 500, y: 400, w: 100, h: 20},
+                    {x: 650, y: 350, w: 100, h: 20},
+                    {x: 750, y: 250, w: 50, h: 20},
+                    {x: 0, y: 300, w: 100, h: 20}
+                ],
+                coins: [
+                    {x: 250, y: 450},
+                    {x: 400, y: 400},
+                    {x: 550, y: 350},
+                    {x: 700, y: 300},
+                    {x: 800, y: 200}
+                ],
+                enemies: [
+                    {x: 400, y: 410, range: 80},
+                    {x: 600, y: 360, range: 60}
+                ],
+                hazards: [{x: 250, y: 530, w: 100, h: 20}],
+                startPos: {x: 20, y: 250},
+                goal: {x: 760, y: 200, w: 40, h: 40}
+            },
+            // Level 4 - Challenge
+            {
+                platforms: [
+                    {x: 0, y: 550, w: 100, h: 50},
+                    {x: 150, y: 500, w: 80, h: 20},
+                    {x: 300, y: 450, w: 80, h: 20},
+                    {x: 450, y: 400, w: 80, h: 20},
+                    {x: 600, y: 350, w: 80, h: 20},
+                    {x: 720, y: 280, w: 80, h: 20},
+                    {x: 600, y: 200, w: 80, h: 20},
+                    {x: 450, y: 150, w: 80, h: 20},
+                    {x: 300, y: 100, w: 80, h: 20},
+                    {x: 150, y: 50, w: 80, h: 20}
+                ],
+                coins: [
+                    {x: 190, y: 450},
+                    {x: 340, y: 400},
+                    {x: 490, y: 350},
+                    {x: 640, y: 300},
+                    {x: 760, y: 230},
+                    {x: 640, y: 150},
+                    {x: 490, y: 100}
+                ],
+                enemies: [
+                    {x: 350, y: 410, range: 60},
+                    {x: 500, y: 360, range: 60},
+                    {x: 650, y: 310, range: 60}
+                ],
+                hazards: [
+                    {x: 200, y: 530, w: 100, h: 20},
+                    {x: 500, y: 380, w: 100, h: 20}
+                ],
+                startPos: {x: 20, y: 500},
+                goal: {x: 180, y: 0, w: 40, h: 40}
+            },
+            // Level 5 - Final Challenge
+            {
+                platforms: [
+                    {x: 0, y: 550, w: 100, h: 50},
+                    {x: 120, y: 500, w: 60, h: 20},
+                    {x: 240, y: 450, w: 60, h: 20},
+                    {x: 360, y: 400, w: 60, h: 20},
+                    {x: 480, y: 350, w: 60, h: 20},
+                    {x: 600, y: 300, w: 60, h: 20},
+                    {x: 720, y: 250, w: 80, h: 20},
+                    {x: 600, y: 200, w: 60, h: 20},
+                    {x: 480, y: 150, w: 60, h: 20},
+                    {x: 360, y: 100, w: 60, h: 20},
+                    {x: 240, y: 50, w: 60, h: 20},
+                    {x: 100, y: 30, w: 100, h: 20}
+                ],
+                coins: [
+                    {x: 150, y: 450},
+                    {x: 270, y: 400},
+                    {x: 390, y: 350},
+                    {x: 510, y: 300},
+                    {x: 630, y: 250},
+                    {x: 750, y: 200},
+                    {x: 630, y: 150},
+                    {x: 510, y: 100},
+                    {x: 390, y: 50}
+                ],
+                enemies: [
+                    {x: 270, y: 410, range: 50},
+                    {x: 390, y: 360, range: 50},
+                    {x: 510, y: 310, range: 50},
+                    {x: 630, y: 260, range: 50}
+                ],
+                hazards: [
+                    {x: 150, y: 530, w: 80, h: 20},
+                    {x: 300, y: 380, w: 80, h: 20},
+                    {x: 450, y: 330, w: 80, h: 20}
+                ],
+                startPos: {x: 20, y: 500},
+                goal: {x: 130, y: -10, w: 40, h: 40}
+            }
+        ];
 
-default_mode=1
+        // ============================================
+        // PLAYER CLASS
+        // ============================================
+        class Player {
+            constructor(game) {
+                this.game = game;
+                this.reset();
+            }
+
+            reset() {
+                this.x = 100;
+                this.y = 300;
+                this.width = 30;
+                this.height = 50;
+                this.vx = 0;
+                this.vy = 0;
+                this.onGround = false;
+                this.facingRight = true;
+                this.invincible = false;
+                this.invincibleTimer = 0;
+            }
+
+            update(input) {
+                // Horizontal movement
+                if (input.left) {
+                    this.vx -= 1;
+                    this.facingRight = false;
+                }
+                if (input.right) {
+                    this.vx += 1;
+                    this.facingRight = true;
+                }
+
+                // Apply friction
+                this.vx *= CONFIG.friction;
+                
+                // Clamp speed
+                if (this.vx > CONFIG.playerSpeed) this.vx = CONFIG.playerSpeed;
+                if (this.vx < -CONFIG.playerSpeed) this.vx = -CONFIG.playerSpeed;
+
+                // Apply gravity
+                this.vy += CONFIG.gravity;
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Invincibility timer
+                if (this.invincible) {
+                    this.invincibleTimer--;
+                    if (this.invincibleTimer <= 0) {
+                        this.invincible = false;
+                    }
+                }
+
+                // Check level boundaries
+                if (this.x < 0) this.x = 0;
+                if (this.x > CONFIG.width - this.width) this.x = CONFIG.width - this.width;
+                
+                // Fall off screen
+                if (this.y > CONFIG.height) {
+                    this.game.handleDeath();
+                }
+            }
+
+            jump() {
+                if (this.onGround) {
+                    this.vy = CONFIG.jumpForce;
+                    this.onGround = false;
+                    this.game.audio.playSound('jump');
+                    this.game.particles.spawn(this.x + this.width/2, this.y + this.height, 'jump', 8);
+                }
+            }
+
+            draw(ctx) {
+                if (this.invincible && Math.floor(Date.now() / 100) % 2 === 0) return;
+
+                // Body
+                ctx.fillStyle = CONFIG.colors.player;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+
+                // Head
+                ctx.fillStyle = '#FFCC80';
+                ctx.fillRect(this.x + 5, this.y - 10, 20, 15);
+
+                // Eyes
+                ctx.fillStyle = '#000';
+                const eyeOffset = this.facingRight ? 12 : 2;
+                ctx.fillRect(this.x + eyeOffset, this.y - 6, 4, 4);
+                ctx.fillRect(this.x + eyeOffset + 6, this.y - 6, 4, 4);
+
+                // Legs animation
+                ctx.fillStyle = '#3E2723';
+                const legOffset = Math.abs(this.vx) > 0.5 ? Math.sin(Date.now() / 100) * 5 : 0;
+                ctx.fillRect(this.x + 5, this.y + this.height, 8, 10 + legOffset);
+                ctx.fillRect(this.x + 17, this.y + this.height, 8, 10 - legOffset);
+            }
+        }
+
+        // ============================================
+        // ENEMY CLASS
+        // ============================================
+        class Enemy {
+            constructor(data) {
+                this.x = data.x;
+                this.y = data.y;
+                this.width = 30;
+                this.height = 30;
+                this.startX = data.x;
+                this.range = data.range;
+                this.speed = 2;
+                this.direction = 1;
+            }
+
+            update() {
+                this.x += this.speed * this.direction;
+                
+                if (this.x > this.startX + this.range) {
+                    this.direction = -1;
+                } else if (this.x < this.startX) {
+                    this.direction = 1;
+                }
+            }
+
+            draw(ctx) {
+                // Body
+                ctx.fillStyle = CONFIG.colors.enemy;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+
+                // Angry eyes
+                ctx.fillStyle = '#FFF';
+                ctx.fillRect(this.x + 5, this.y + 5, 8, 8);
+                ctx.fillRect(this.x + 17, this.y + 5, 8, 8);
+                
+                ctx.fillStyle = '#000';
+                ctx.fillRect(this.x + 7, this.y + 7, 4, 4);
+                ctx.fillRect(this.x + 19, this.y + 7, 4, 4);
+
+                // Eyebrows
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(this.x + 3, this.y + 3);
+                ctx.lineTo(this.x + 12, this.y + 8);
+                ctx.moveTo(this.x + 27, this.y + 3);
+                ctx.lineTo(this.x + 18, this.y + 8);
+                ctx.stroke();
+            }
+        }
+
+        // ============================================
+        // GAME CLASS
+        // ============================================
+        class Game {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.canvas.width = CONFIG.width;
+                this.canvas.height = CONFIG.height;
+
+                this.audio = new AudioSystem();
+                this.particles = new ParticleManager();
+                this.player = new Player(this);
+                
+                this.currentLevel = 0;
+                this.score = 0;
+                this.lives = 3;
+                this.gameState = 'menu';
+                
+                this.input = {
+                    left: false,
+                    right: false,
+                    up: false,
+                    jump: false
+                };
+
+                this.touchControls = false;
+                this.setupInput();
+                this.bindUI();
+                
+                this.lastTime = 0;
+                this.animationId = null;
+            }
+
+            setupInput() {
+                document.addEventListener('keydown', (e) => {
+                    this.audio.init();
+                    
+                    switch(e.code) {
+                        case 'ArrowLeft':
+                        case 'KeyA':
+                            this.input.left = true;
+                            break;
+                        case 'ArrowRight':
+                        case 'KeyD':
+                            this.input.right = true;
+                            break;
+                        case 'ArrowUp':
+                        case 'KeyW':
+                        case 'Space':
+                            this.input.up = true;
+                            this.input.jump = true;
+                            break;
+                        case 'KeyT':
+                            this.toggleTouchControls();
+                            break;
+                    }
+                });
+
+                document.addEventListener('keyup', (e) => {
+                    switch(e.code) {
+                        case 'ArrowLeft':
+                        case 'KeyA':
+                            this.input.left = false;
+                            break;
+                        case 'ArrowRight':
+                        case 'KeyD':
+                            this.input.right = false;
+                            break;
+                        case 'ArrowUp':
+                        case 'KeyW':
+                        case 'Space':
+                            this.input.up = false;
+                            this.input.jump = false;
+                            break;
+                    }
+                });
+
+                // Touch controls for mobile
+                this.canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.audio.init();
+                    const touch = e.touches[0];
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    
+                    if (x < CONFIG.width / 2) {
+                        this.input.left = true;
+                    } else {
+                        this.input.right = true;
+                    }
+                    this.input.jump = true;
+                }, {passive: false});
+
+                this.canvas.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.input.left = false;
+                    this.input.right = false;
+                    this.input.jump = false;
+                });
+            }
+
+            bindUI() {
+                document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+                document.getElementById('restartBtn').addEventListener('click', () => this.restartLevel());
+            }
+
+            toggleTouchControls() {
+                this.touchControls = !this.touchControls;
+                const msg = this.touchControls ? 'Touch controls enabled!' : 'Touch controls disabled!';
+                this.showMessage(msg);
+                setTimeout(() => this.hideMessage(), 2000);
+            }
+
+            startGame() {
+                this.audio.init();
+                this.score = 0;
+                this.lives = 3;
+                this.currentLevel = 0;
+                this.loadLevel(this.currentLevel);
+                this.gameState = 'playing';
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('gameOverScreen').style.display = 'none';
+                this.updateHUD();
+                this.animate();
+            }
+
+            loadLevel(levelIndex) {
+                const level = LEVELS[levelIndex];
+                this.platforms = level.platforms;
+                this.coins = level.coins.map(c => ({...c, collected: false}));
+                this.enemies = level.enemies.map(e => new Enemy(e));
+                this.hazards = level.hazards;
+                this.goal = {...level.goal};
+                
+                this.player.reset();
+                this.player.x = level.startPos.x;
+                this.player.y = level.startPos.y;
+            }
+
+            restartLevel() {
+                this.loadLevel(this.currentLevel);
+                this.gameState = 'playing';
+                document.getElementById('gameOverScreen').style.display = 'none';
+                this.animate();
+            }
+
+            handleDeath() {
+                this.lives--;
+                this.audio.playSound('die');
+                this.particles.spawn(this.player.x, this.player.y, 'explosion', 20);
+                
+                if (this.lives <= 0) {
+                    this.gameOver(false);
+                } else {
+                    this.player.invincible = true;
+                    this.player.invincibleTimer = 120;
+                    this.showMessage('Hit! Try again!');
+                    setTimeout(() => this.hideMessage(), 2000);
+                }
+                this.updateHUD();
+            }
+
+            handleWin() {
+                this.audio.playSound('win');
+                this.particles.spawn(this.goal.x + this.goal.w/2, this.goal.y + this.goal.h/2, 'spark', 30);
+                
+                if (this.currentLevel >= CONFIG.maxLevels - 1) {
+                    this.gameOver(true);
+                } else {
+                    this.currentLevel++;
+                    this.loadLevel(this.currentLevel);
+                    this.showMessage(`Level ${this.currentLevel + 1}!`);
+                    setTimeout(() => this.hideMessage(), 2000);
+                }
+                this.updateHUD();
+            }
+
+            gameOver(won) {
+                this.gameState = 'gameover';
+                cancelAnimationFrame(this.animationId);
+                
+                const screen = document.getElementById('gameOverScreen');
+                const title = document.getElementById('goTitle');
+                const message = document.getElementById('goMessage');
+                
+                if (won) {
+                    title.textContent = '🎉 YOU WIN! 🎉';
+                    title.style.color = '#4CAF50';
+                } else {
+                    title.textContent = 'GAME OVER';
+                    title.style.color = '#F44336';
+                }
+                
+                message.textContent = `Final Score: ${this.score}`;
+                screen.style.display = 'flex';
+            }
+
+            showMessage(text) {
+                const overlay = document.getElementById('messageOverlay');
+                overlay.textContent = text;
+                overlay.style.opacity = '1';
+            }
+
+            hideMessage() {
+                const overlay = document.getElementById('messageOverlay');
+                overlay.style.opacity = '0';
+            }
+
+            updateHUD() {
+                document.getElementById('scoreDisplay').textContent = `Score: ${this.score}`;
+                document.getElementById('livesDisplay').textContent = `Lives: ${this.lives}`;
+                document.getElementById('levelDisplay').textContent = `Level: ${this.currentLevel + 1}`;
+            }
+
+            checkCollision(rect1, rect2) {
+                return rect1.x < rect2.x + rect2.w &&
+                       rect1.x + rect1.w > rect2.x &&
+                       rect1.y < rect2.y + rect2.h &&
+                       rect1.y + rect1.h > rect2.y;
+            }
+
+            checkPlatformCollision(player) {
+                player.onGround = false;
+                
+                for (const plat of this.platforms) {
+                    const collision = this.checkCollision(
+                        {x: player.x, y: player.y, w: player.width, h: player.height},
+                        {x: plat.x, y: plat.y, w: plat.w, h: plat.h}
+                    );
+                    
+                    if (collision) {
+                        const prevY = player.y - player.vy;
+                        if (prevY + player.height <= plat.y) {
+                            player.y = plat.y - player.height;
+                            player.vy = 0;
+                            player.onGround = true;
+                        } else if (player.y + player.height > plat.y + plat.h) {
+                            player.y = plat.y + plat.h;
+                            player.vy = 0;
+                        }
+                    }
+                }
+            }
+
+            checkCoinCollection(player) {
+                for (const coin of this.coins) {
+                    if (!coin.collected && this.checkCollision(
+                        {x: player.x, y: player.y, w: player.width, h: player.height},
+                        {x: coin.x, y: coin.y, w: 20, h: 20}
+                    )) {
+                        coin.collected = true;
+                        this.score += 100;
+                        this.audio.playSound('coin');
+                        this.particles.spawn(coin.x + 10, coin.y + 10, 'coin', 10);
+                        this.updateHUD();
+                    }
+                }
+            }
+
+            checkEnemyCollision(player) {
+                for (const enemy of this.enemies) {
+                    if (this.checkCollision(
+                        {x: player.x, y: player.y, w: player.width, h: player.height},
+                        {x: enemy.x, y: enemy.y, w: enemy.width, h: enemy.height}
+                    )) {
+                        if (player.invincible) continue;
+                        
+                        // Kill enemy if jumping on top
+                        const prevY = player.y - player.vy;
+                        if (prevY + player.height <= enemy.y + enemy.height * 0.5) {
+                            enemy.x = -1000; // Remove enemy
+                            player.vy = CONFIG.jumpForce * 0.5;
+                            this.score += 200;
+                            this.audio.playSound('damage');
+                            this.particles.spawn(enemy.x, enemy.y, 'damage', 15);
+                            this.updateHUD();
+                        } else {
+                            this.handleDeath();
+                        }
+                    }
+                }
+            }
+
+            checkHazardCollision(player) {
+                for (const hazard of this.hazards) {
+                    if (this.checkCollision(
+                        {x: player.x, y: player.y, w: player.width, h: player.height},
+                        hazard
+                    )) {
+                        this.handleDeath();
+                    }
+                }
+            }
+
+            checkGoalCollision(player) {
+                if (this.checkCollision(
+                    {x: player.x, y: player.y, w: player.width, h: player.height},
+                    this.goal
+                )) {
+                    this.score += 500;
+                    this.handleWin();
+                }
+            }
+
+            drawBackground() {
+                // Sky gradient
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, CONFIG.height);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#16213e');
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, CONFIG.width, CONFIG.height);
+
+                // Stars
+                this.ctx.fillStyle = '#FFF';
+                for (let i = 0; i < 50; i++) {
+                    const x = (i * 37) % CONFIG.width;
+                    const y = (i * 23) % (CONFIG.height - 100);
+                    const size = (i % 3) + 1;
+                    this.ctx.globalAlpha = 0.3 + (i % 5) * 0.1;
+                    this.ctx.fillRect(x, y, size, size);
+                }
+                this.ctx.globalAlpha = 1;
+            }
+
+            drawPlatforms() {
+                for (const plat of this.platforms) {
+                    this.ctx.fillStyle = CONFIG.colors.platform;
+                    this.ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+                    
+                    // Detail
+                    this.ctx.fillStyle = '#689F38';
+                    this.ctx.fillRect(plat.x + 5, plat.y + 5, plat.w - 10, plat.h - 10);
+                }
+            }
+
+            drawHazards() {
+                for (const hazard of this.hazards) {
+                    this.ctx.fillStyle = CONFIG.colors.hazard;
+                    this.ctx.fillRect(hazard.x, hazard.y, hazard.w, hazard.h);
+                    
+                    // Spikes effect
+                    this.ctx.fillStyle = '#FF9800';
+                    for (let i = 0; i < hazard.w; i += 10) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(hazard.x + i, hazard.y + hazard.h);
+                        this.ctx.lineTo(hazard.x + i + 5, hazard.y);
+                        this.ctx.lineTo(hazard.x + i + 10, hazard.y + hazard.h);
+                        this.ctx.fill();
+                    }
+                }
+            }
+
+            drawCoins() {
+                for (const coin of this.coins) {
+                    if (coin.collected) continue;
+                    
+                    const bounce = Math.sin(Date.now() / 200) * 3;
+                    
+                    // Glow
+                    const glow = this.ctx.createRadialGradient(
+                        coin.x + 10, coin.y + 10 + bounce, 0,
+                        coin.x + 10, coin.y + 10 + bounce, 20
+                    );
+                    glow.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+                    glow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                    this.ctx.fillStyle = glow;
+                    this.ctx.fillRect(coin.x - 10, coin.y - 10 + bounce, 40, 40);
+                    
+                    // Coin
+                    this.ctx.fillStyle = CONFIG.colors.coin;
+                    this.ctx.beginPath();
+                    this.ctx.arc(coin.x + 10, coin.y + 10 + bounce, 10, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Shine
+                    this.ctx.fillStyle = '#FFF';
+                    this.ctx.beginPath();
+                    this.ctx.arc(coin.x + 7, coin.y + 7 + bounce, 3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+
+            drawEnemies() {
+                for (const enemy of this.enemies) {
+                    enemy.update();
+                    enemy.draw(this.ctx);
+                }
+            }
+
+            drawGoal() {
+                // Goal frame
+                this.ctx.fillStyle = CONFIG.colors.goal;
+                this.ctx.fillRect(this.goal.x, this.goal.y, this.goal.w, this.goal.h);
+                
+                // Flag pole
+                this.ctx.fillStyle = '#666';
+                this.ctx.fillRect(this.goal.x + 18, this.goal.y - 40, 4, 40);
+                
+                // Flag
+                this.ctx.fillStyle = '#E91E63';
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.goal.x + 22, this.goal.y - 40);
+                this.ctx.lineTo(this.goal.x + 50, this.goal.y - 30);
+                this.ctx.lineTo(this.goal.x + 22, this.goal.y - 20);
+                this.ctx.fill();
+            }
+
+            animate(timestamp) {
+                if (this.gameState !== 'playing') return;
+                
+                const dt = timestamp - this.lastTime;
+                this.lastTime = timestamp;
+
+                // Clear
+                this.ctx.clearRect(0, 0, CONFIG.width, CONFIG.height);
+
+                // Draw background
+                this.drawBackground();
+
+                // Update player
+                this.player.update(this.input);
+                
+                // Physics
+                this.checkPlatformCollision(this.player);
+                
+                // Entities
+                this.drawPlatforms();
+                this.drawHazards();
+                this.drawCoins();
+                this.checkCoinCollection(this.player);
+                
+                this.drawEnemies();
+                this.checkEnemyCollision(this.player);
+                
+                this.drawGoal();
+                this.checkGoalCollision(this.player);
+                
+                // Particles
+                this.particles.update();
+                this.particles.draw(this.ctx);
+                
+                // Player
+                this.player.draw(this.ctx);
+
+                this.animationId = requestAnimationFrame((t) => this.animate(t));
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        window.onload = () => {
+            window.game = new Game();
+        };
+    </script>
+</body>
+</html>
