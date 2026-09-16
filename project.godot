@@ -28,347 +28,158 @@ config/export/dedicated_server=false
 GameManager="*res://scripts/core/GameManager.gd"
 AudioManager="*res://scripts/core/AudioManager.gd"
 InputManager="*res://scripts/core/InputManager.gd"
-PhysicsSettings="*res://scripts/core/PhysicsSettings.gd"
-
-[rendering]
-
-renderer/rendering_method="forward_plus"
-renderer/rendering_method_debug=true
-renderer/rendering_method_max_concurrent_shadows=8
-renderer/environment/default_environment="res://default_env.tres"
-renderer/shaders/enable_filters=true
-renderer/culling/max_cull_distance=1000.0
-renderer/culling/min_cull_distance=0.1
-renderer/rendering_quality/bits_per_color_channel=8
-renderer/rendering_quality/use_vrs=false
-renderer/rendering_quality/allow_sparse_textures=true
-renderer/rendering_quality/triangle_cull_size=16
-renderer/rendering_quality/texture_format_compression_enabled=true
-
-[physics]
-
-common/gravity_3d=(0, -9.81, 0)
-common/physics_ticks_per_second=60
-common/sleep_threshold_linear=0.001
-common/sleep_threshold_angular=0.001
-common/default_physics_interpolation=true
-common/default_physics_max_substeps=4
-
-[input]
-
-move_forward={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":263,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-move_backward={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":262,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-move_left={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":260,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-move_right={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":261,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-brake={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":340,"key_label":0,"unicode":0,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)]
-}
-accelerate={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null)]
-}
-horn={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":72,"key_label":0,"unicode":104,"echo":false,"script":null)]
-}
-pause_game={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-camera_zoom_in={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194324,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-camera_zoom_out={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-reset_camera={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194307,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-next_vehicle={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":263,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-previous_vehicle={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":262,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-menu_accept={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":330,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-menu_cancel={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-menu_up={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":318,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-menu_down={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":319,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-menu_left={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":316,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-menu_right={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":317,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_accept={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":330,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_cancel={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_focus_next={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":336,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_focus_prev={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":337,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_page_up={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":334,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_page_down={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":335,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_select={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_menu={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"echo":false,"script":null), Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":9,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
-ui_home={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":315,"key_label":0,"unicode":0,"echo":false,"script":null)]
-}
 
 [debug]
 
-debugging/remote_edit_host=""
-debugging/remote_port=3000
-debugging/debug_fps_limit=60
-debugging/gizmos/show_gizmos=true
-debugging/interactive_debugger/show_inspector=true
+gdscript/warnings/unused_local_variable=true
+gdscript/warnings/unused_parameter=true
+gdscript/warnings/assigning_null_to_non_nullable_type=false
+gdscript/warnings/unused_global_variable=true
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/resizable=true
-window/size/transparent_viewport=false
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/fullscreen/initial_mode=true
-window/icon="res://icon.svg"
 
-[export]
+[input]
 
-file_format=5
-
-[export_filter]
-
-filter_type=blacklist
-filter_dirs=PackedStringArray(".vs", ".idea", ".git", ".godot")
-
-[external_scenes]
-
-main_menu="res://scenes/main/Main.tscn"
+move_forward={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61441,"key_label":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null)
+]
+}
+move_backward={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61443,"key_label":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
+]
+}
+move_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61439,"key_label":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)
+]
+}
+move_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61440,"key_label":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null)
+]
+}
+brake={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":340,"key_label":0,"unicode":0,"echo":false,"script":null)
+]
+}
+accelerate={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61441,"key_label":0,"unicode":0,"echo":false,"script":null)
+]
+}
+pause={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"echo":false,"script":null)
+]
+}
+restart_race={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)
+]
+}
 
 [layer_names]
 
-2d_physics/layer_1="player"
-2d_physics/layer_2="obstacles"
-3d_physics/layer_1="vehicles"
-3d_physics/layer_2="track"
-3d_physics/layer_3="colliders"
-3d_physics/layer_4="triggers"
+2d_physics=1
+2d_render=2
+3d_physics=3
+3d_render=4
 
-[locale]
+[rendering]
 
-config_path="res://locales/"
-source_string_locale="en"
+renderer/rendering_method="forward_plus"
+renderer/rendering_method_mobile="gl_compatibility"
+renderer/cull/shadows_enabled=true
+renderer/glow/glow_enabled=true
+renderer/dirty_screen_update=true
+renderer/default_color=Color(0.2, 0.2, 0.2, 1)
 
-[editor_plugins]
+[rendering/renderer_features]
 
-enabled=PackedStringArray()
-disabled=PackedStringArray()
+forward_plus/fallback_on_low_memory=true
+forward_plus/max_stalls_for_undrawn_framebuffer=3
+forward_plus/scale_shadow_buffers=true
+forward_plus/scale_light_shadows=true
 
 [shader]
 
-mode=default
-quality/type="standard"
-quality/specular_style="unity"
-quality/lighting_model="physically_correct"
-quality/use_emission_as_light_source=true
-shadow/unfiltered_contact_shadows=true
-shadow/contact_shadows=false
-shadow/high_resolution_pcf=false
-shadow/larger_contact_shadows=true
-shadow/larger_penumbra=true
-shadow/normal_bias=0.2
-shadow/filtering_enabled=true
-shadow/filtering_quality=1
-shadow/distance_normal_bias_scale=1.0
-shadow/distance_far_scale=2.0
-shadow/distance_near_scale=1.0
-shadow/distance_split_adjustment=0.0
-shadow/split_correction=1.0
-shadow/reject_occlusion_from_depth_texture=false
-shadow/fallback_shadow_map_resolution=2048
-shadow/deferred_shadow_rendering=false
-shadow/conservative_depth=False
-environment/reflection_cubemap_resolution=1024
-environment/reflection_cubemap_max_elements=8
-environment/reflection_irradiance_resolution=512
-environment/reflection_reflections_only=false
-environment/reflections_only_use_sky=false
-environment/reflections_only_use_world=false
-environment/reflections_only_use_probes=false
-environment/reflections_only_use_raycast=false
-environment/reflections_only_use_screen_space_raytracing=false
-environment/reflections_only_use_raymarching=false
-environment/reflections_only_use_tridimensional_reprojection=false
-environment/reflections_only_use_baked_reflections=false
-environment/reflections_only_use_prefiltered_cubemaps=false
-environment/reflections_only_use_dynamic_reflections=false
-environment/reflections_only_use_static_reflections=false
-environment/reflections_only_use_mixed_reflections=false
-environment/reflections_only_use_custom_reflections=false
-environment/reflections_only_use_procedural_reflections=false
-environment/reflections_only_use_screen_space_reflections=false
-environment/reflections_only_use_ray_traced_reflections=false
-environment/reflections_only_use_foveated_reflections=false
-environment/reflections_only_use_variations=false
-environment/reflections_only_use_adaptive_resolution=false
-environment/reflections_only_use_multi_sample_antialiasing=false
-environment/reflections_only_use_temporal_antialiasing=false
-environment/reflections_only_use_nvidia_dlss=false
-environment/reflections_only_use_amd_fsr=false
-environment/reflections_only_use_intel_xe=xes
-environment/reflections_only_use_nvidia_dlsr=false
-environment/reflections_only_use_amd_fsr2=false
-environment/reflections_only_use_intel_xe_lsx=false
-environment/reflections_only_use_nvidia_dlss_super_sampling=false
-environment/reflections_only_use_amd_fsr_super_sampling=false
-environment/reflections_only_use_intel_xe_super_sampling=false
-environment/reflections_only_use_nvidia_dlss_quality=false
-environment/reflections_only_use_amd_fsr_quality=false
-environment/reflections_only_use_intel_xe_quality=false
-environment/reflections_only_use_nvidia_dlss_performance=false
-environment/reflections_only_use_amd_fsr_performance=false
-environment/reflections_only_use_intel_xe_performance=false
-environment/reflections_only_use_nvidia_dlss_ultra_performance=false
-environment/reflections_only_use_amd_fsr_ultra_performance=false
-environment/reflections_only_use_intel_xe_ultra_performance=false
-environment/reflections_only_use_nvidia_dlss_maximum_performance=false
-environment/reflections_only_use_amd_fsr_maximum_performance=false
-environment/reflections_only_use_intel_xe_maximum_performance=false
-environment/reflections_only_use_nvidia_dlss_maximum_quality=false
-environment/reflections_only_use_amd_fsr_maximum_quality=false
-environment/reflections_only_use_intel_xe_maximum_quality=false
+warning_mode=1
 
-[transport]
+[shader_cache]
 
-pnp/disabled_devices=PackedStringArray()
+mode="disk"
+path="res://.godot/shader_cache/"
 
-[update]
+[storage]
 
-console_on_startup=false
-feature_config/url="https://godotengine.org/feature-flags/4.3"
+mode="disk"
+chunk_size=524288
+
+[unity]
+
+enabled=false
+
+[versions]
+
+disabled_modules=PackedStringArray()
+enabled_modules=PackedStringArray("GDScript", "VisualScript", "Mono", "DotNet", "WebAssembly", "Android", "iOS", "LinuxX11", "WindowsDesktop", "macOS")
+
+[export]
+
+main_scenes=["res://scenes/main/Main.tscn"]
+
+[subresource_type_filter]
+
+PackedStringArray("Sprite2D", "Sprite3D", "CollisionShape2D", "CollisionShape3D", "Area2D", "Area3D")
+
+[editor_plugins]
+
+PackedStringArray()
+
+[locale]
+
+common_name="English"
+country_code=""
+
+[network]
+
+permissions={}
+
+[profile]
+
+name="Default"
+color=Color(0.2, 0.4, 0.8, 1)
+
+[rpc]
+
+channel_count=1
+channel_settings={}
+
+[scene]
+
+default_state=0
+
+[settings]
+
+physics/common/jitter_fix_enabled=true
+physics/common/sleep_threshold=0.1
+physics/common/tick_max_substeps=4
 
 [vdb]
 
-use_vdb=false
-vdb_file_extension=".vdb"
+cache_dir="res://.vdb_cache/"
 
-[vrm]
-
-use_vrm=false
-vrm_file_extension=".vrm"
-
-[vr]
-
-openxr/runtime="none"
-openxr/extensions_enabled=PackedStringArray()
-openxr/extensions_disabled=PackedStringArray()
-openxr/requested_features=PackedStringArray()
-openxr/disabled_features=PackedStringArray()
-openxr/reference_space_type="stage"
-openxr/display_refresh_rate=-1
-openxr/application_identity="com.thalamus.racing"
-openxr/app_authority=""
-openxr/app_version="1.0.0"
-openxr/composition_layer_priority=0
-openxr/composition_layer_order=0
-openxr/composition_layer_flags=0
-openxr/composition_layer_z_offset=0.0
-openxr/composition_layer_color_gain=(1, 1, 1, 1)
-openxr/composition_layer_color_bias=(0, 0, 0, 0)
-openxr/composition_layer_color_tone_mapping_enabled=false
-openxr/composition_layer_color_tone_mapping_exposure=1.0
-openxr/composition_layer_color_tone_mapping_contrast=1.0
-openxr/composition_layer_color_tone_mapping_saturation=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift=0.0
-openxr/composition_layer_color_tone_mapping_hue_shift_amount=0.0
-openxr/composition_layer_color_tone_mapping_hue_shift_intensity=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_radius=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_threshold=0.0
-openxr/composition_layer_color_tone_mapping_hue_shift_target=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_source=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_enabled=false
-openxr/composition_layer_color_tone_mapping_hue_shift_mode=0
-openxr/composition_layer_color_tone_mapping_hue_shift_range_min=0.0
-openxr/composition_layer_color_tone_mapping_hue_shift_range_max=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_a=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_b=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_c=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_d=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_e=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_f=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_g=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_h=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_i=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_j=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_k=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_l=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_m=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_n=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_o=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_p=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_q=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_r=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_s=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_t=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_u=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_v=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_w=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_x=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_y=1.0
-openxr/composition_layer_color_tone_mapping_hue_shift_curve_z=1.0
+<END>>
+{"op":"continue"}
