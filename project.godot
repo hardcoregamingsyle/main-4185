@@ -6,8 +6,6 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=5
-
 [application]
 
 config/name="Thalamus Racing Simulator"
@@ -22,6 +20,9 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 config/preset_name="Default PC"
 config/release/exe_icon="res://icon.svg"
 config/export/dedicated_server=false
+config/settings/messaging/on_connect="Disabled"
+config/settings/messaging/on_state_change="Disabled"
+config/features/debug=true
 
 [autoload]
 
@@ -31,155 +32,176 @@ InputManager="*res://scripts/core/InputManager.gd"
 
 [debug]
 
-gdscript/warnings/unused_local_variable=true
-gdscript/warnings/unused_parameter=true
-gdscript/warnings/assigning_null_to_non_nullable_type=false
-gdscript/warnings/unused_global_variable=true
+gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unused_variable=2
+gdscript/warnings/deprecated_method=2
+gdscript/warnings/shadowed_global_variable=2
+gdscript/warnings/type_mismatch=2
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep"
 
 [input]
 
-move_forward={
+move_up={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61441,"key_label":0,"unicode":0,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"echo":false,"script":null)
 ]
 }
-move_backward={
+move_down={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61443,"key_label":0,"unicode":0,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
 ]
 }
 move_left={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61439,"key_label":0,"unicode":0,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"echo":false,"script":null)
 ]
 }
 move_right={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61440,"key_label":0,"unicode":0,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"echo":false,"script":null)
 ]
 }
 brake={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":340,"key_label":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":44,"key_label":0,"unicode":44,"echo":false,"script":null)
 ]
 }
 accelerate={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":61441,"key_label":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null)
 ]
 }
-pause={
+pause_game={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":27,"key_label":0,"unicode":27,"echo":false,"script":null)
 ]
 }
-restart_race={
+reset_race={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":true,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)
 ]
 }
 
 [layer_names]
 
-2d_physics=1
-2d_render=2
-3d_physics=3
-3d_render=4
+2d_physics=Physics_2D
+3d_physics=Physics_3D
 
 [rendering]
 
 renderer/rendering_method="forward_plus"
-renderer/rendering_method_mobile="gl_compatibility"
-renderer/cull/shadows_enabled=true
-renderer/glow/glow_enabled=true
-renderer/dirty_screen_update=true
-renderer/default_color=Color(0.2, 0.2, 0.2, 1)
-
-[rendering/renderer_features]
-
-forward_plus/fallback_on_low_memory=true
-forward_plus/max_stalls_for_undrawn_framebuffer=3
-forward_plus/scale_shadow_buffers=true
-forward_plus/scale_light_shadows=true
+renderer/rendering_method/desktop="forward_plus"
+renderer/rendering_method/mobile="gl_compatibility"
+renderer/caps/max_shadows_per_light=8
+renderer/caps/max_interpolated_delta=0.1
 
 [shader]
 
-warning_mode=1
-
-[shader_cache]
-
-mode="disk"
-path="res://.godot/shader_cache/"
+mode/shader_mode=0
+mode/unify_standard=1
 
 [storage]
 
-mode="disk"
-chunk_size=524288
+storage_mode=1
+storage/packing/compress_blocks=true
+storage/packing/enable_dcc=false
+storage/packing/enable_pvr=false
+storage/packing/enable_etc=false
+storage/packing/enable_etc2=false
 
-[unity]
+[environment]
 
-enabled=false
+default_environment/default_env="Environment"
+environment/fog_enabled=true
+environment/gi_enabled=true
+environment/gi_mode=1
+environment/atmosphere_enabled=true
+environment/background_mode=1
+environment/background_sky_material=""
+environment/background_color=[color:Color(1, 1, 1, 1)]
+environment/environment_diffuse_color=[color:Color(0.5, 0.5, 0.5, 1)]
+environment/environment_glow_size=2
+environment/environment_glow_level=0.5
+environment/environment_fog_type=1
+environment/environment_fog_blend_mode=0
+environment/environment_fog_depth_far=1000.0
+environment/environment_fog_depth_near=0.0
+environment/environment_fog_top=1000.0
+environment/environment_fog_bottom=0.0
+environment/environment_ambient_light_source=0
+environment/environment_ambient_light_energy=0.2
+environment/environment_ambient_light_color=[color:Color(0.7, 0.7, 0.8, 1)]
+environment/environment_ambient_light_sky_color=[color:Color(0.6, 0.7, 0.9, 1)]
+environment/environment_sun_direction=[Vector3(-0.5, -0.7, -0.5)]
+environment/environment_sun_energy=1.0
+environment/environment_sun_color=[color:Color(1, 1, 0.9, 1)]
+environment/environment_exposure_scale=10000.0
+environment/environment_ambient_light_occlusion=false
+environment/environment_ambient_light_diffuse=0.5
+environment/environment_ambient_light_specular=0.5
 
-[versions]
+[physics]
 
-disabled_modules=PackedStringArray()
-enabled_modules=PackedStringArray("GDScript", "VisualScript", "Mono", "DotNet", "WebAssembly", "Android", "iOS", "LinuxX11", "WindowsDesktop", "macOS")
+common/step_hz=60
+common/sleep_threshold=0.01
+common/linear_max_velocity=10000.0
+common/angular_max_velocity=1000.0
+common/allow_integration_fix=true
+common/solver_iterations=8
+common/solver_velocity_iterations=2
+common/solver_position_iterations=1
+3d/collision_layer=1
+3d/collision_mask=1
+3d/collision_layers=1
+3d/collision_masks=1
+3d/continuous_cd=false
+3d/substep_threshold=0.05
+3d/triangle_split_size=128
+3d/quadrant_size=2048
+3d/contact_report_count=256
+3d/joint_collision_detection=false
 
-[export]
+[scene_tree]
 
-main_scenes=["res://scenes/main/Main.tscn"]
+node/create_empty_node_on_select=false
+node/create_selected_node_on_drag_drop=false
+node/use_auto_save=true
+node/auto_save_interval=300
 
-[subresource_type_filter]
+[hotkeys]
 
-PackedStringArray("Sprite2D", "Sprite3D", "CollisionShape2D", "CollisionShape3D", "Area2D", "Area3D")
+scene/new_scene=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":78,"key_label":0,"unicode":110,"echo":false,"script":null)
+scene/save_scene=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
+scene/save_as_scene=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"shift_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
+scene/revert_scene=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)
+debug/run_project=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":84,"key_label":0,"unicode":116,"echo":false,"script":null)
+debug/stop_project=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":44,"key_label":0,"unicode":44,"echo":false,"script":null)
+debug/toggle_pause=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":80,"key_label":0,"unicode":112,"echo":false,"script":null)
+debug/break_on_next_execution=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":88,"key_label":0,"unicode":120,"echo":false,"script":null)
+debug/show_debug_overlay=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":96,"key_label":0,"unicode":96,"echo":false,"script":null)
+debug/next_frame=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":39,"key_label":0,"unicode":39,"echo":false,"script":null)
+debug/prev_frame=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":37,"key_label":0,"unicode":37,"echo":false,"script":null)
+debug/frame_step_back=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":37,"key_label":0,"unicode":37,"echo":false,"script":null)
+debug/frame_step_forward=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":39,"key_label":0,"unicode":39,"echo":false,"script":null)
+debug/frame_step_single=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":34,"key_label":0,"unicode":34,"echo":false,"script":null)
+debug/frame_step_double=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":33,"key_label":0,"unicode":33,"echo":false,"script":null)
+debug/frame_step_triple=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":33,"key_label":0,"unicode":33,"echo":false,"script":null)
+debug/frame_step_quadruple=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":33,"key_label":0,"unicode":33,"echo":false,"script":null)
+edit/find_in_files=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":70,"key_label":0,"unicode":102,"echo":false,"script":null)
+edit/find_replace=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"echo":false,"script":null)
+edit/find_next=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":114,"key_label":0,"unicode":114,"echo":false,"script":null)
+edit/find_previous=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":115,"key_label":0,"unicode":115,"echo":false,"script":null)
+tools/script_editor_toggle=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":80,"key_label":0,"unicode":112,"echo":false,"script":null)
+tools/project_settings=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":112,"key_label":0,"unicode":112,"echo":false,"script":null)
+tools/build_profile_manager=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":112,"key_label":0,"unicode":112,"echo":false,"script":null)
+tools/addons_manager=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":112,"key_label":0,"unicode":112,"echo":false,"script":null)
+view/navigate_history_back=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":42,"key_label":0,"unicode":42,"echo":false,"script":null)
+view/navigate_history_forward=Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":43,"key_label":0,"unicode":43,"echo":false,"script":null)
 
-[editor_plugins]
-
-PackedStringArray()
-
-[locale]
-
-common_name="English"
-country_code=""
-
-[network]
-
-permissions={}
-
-[profile]
-
-name="Default"
-color=Color(0.2, 0.4, 0.8, 1)
-
-[rpc]
-
-channel_count=1
-channel_settings={}
-
-[scene]
-
-default_state=0
-
-[settings]
-
-physics/common/jitter_fix_enabled=true
-physics/common/sleep_threshold=0.1
-physics/common/tick_max_substeps=4
-
-[vdb]
-
-cache_dir="res://.vdb_cache/"
-
-<END>>
-{"op":"continue"}
+<END>
